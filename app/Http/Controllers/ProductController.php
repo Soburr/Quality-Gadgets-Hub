@@ -16,6 +16,9 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('product', compact('product', 'breadcrumbChain', 'related'));
+        $reviews = $product->reviews()->latest()->get();
+        $ratingBreakdown = $product->ratingBreakdown();
+
+        return view('product', compact('product', 'breadcrumbChain', 'related', 'reviews', 'ratingBreakdown'));
     }
 }

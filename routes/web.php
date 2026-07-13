@@ -15,3 +15,8 @@ Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name(
 Route::post('/cart/add/{product}', function ($product) {
     return back()->with('status', "Added product #{$product} to cart.");
 })->name('cart.add');
+
+// Stub — Buy Now should add to cart then jump straight to checkout once that flow exists.
+Route::post('/checkout/buy-now/{product}', function ($product) {
+    return back()->with('status', "Buy now for product #{$product} — checkout flow not built yet.");
+})->name('checkout.buyNow');

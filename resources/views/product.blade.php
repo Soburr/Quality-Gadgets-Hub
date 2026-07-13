@@ -96,9 +96,12 @@
                         </div>
 
                         <div class="pdp-actions">
-                            <button type="submit" class="btn btn-primary pdp-add" @disabled($product->stock === 0)>
+                            <button type="submit" formaction="{{ route('checkout.buyNow', $product) }}" class="btn btn-primary pdp-buy" @disabled($product->stock === 0)>
+                                {{ $product->stock > 0 ? 'Buy Now' : 'Out of stock' }}
+                            </button>
+                            <button type="submit" class="btn btn-ghost pdp-add" @disabled($product->stock === 0)>
                                 <x-icon name="cart" :size="18" />
-                                {{ $product->stock > 0 ? 'Add to cart' : 'Out of stock' }}
+                                Add to cart
                             </button>
                             <button type="button" class="pdp-fav" aria-label="Save to wishlist">
                                 <x-icon name="heart" :size="20" />
@@ -118,6 +121,63 @@
                 <div class="pdp-description">
                     <h2>Product details</h2>
                     <p>{{ $product->description }}</p>
+                </div>
+            @endif
+
+            {{-- ============ RATINGS & REVIEWS ============ --}}
+            <div class="section-head" style="margin-top:36px;">
+                <div><h2>Ratings &amp; Reviews</h2><div class="sub">{{ $reviews->count() }} verified reviews</div></div>
+            </div>
+
+            <div class="reviews-summary">
+                <div class="reviews-score">
+                    <div class="reviews-score-number">{{ number_format($product->rating, 1) }}</div>
+                    <div class="stars">
+                        @for($i = 1; $i <= 5; $i++)
+                            <span class="s">{{ $i <= round($product->rating) ? '★' : '☆' }}</span>
+                        @endfor
+                    </div>
+                    <div class="reviews-score-count">{{ number_format($product->reviews_count) }} ratings</div>
+                </div>
+
+                <div class="reviews-bars">
+                    @foreach($ratingBreakdown as $star => $data)
+                        <div class="reviews-bar-row">
+                            <span class="reviews-bar-label">{{ $star }} star</span>
+                            <div class="reviews-bar-track">
+                                <div class="reviews-bar-fill" style="width: {{ $data['percent'] }}%"></div>
+                            </div>
+                            <span class="reviews-bar-count">{{ $data['count'] }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            @if($reviews->isEmpty())
+                <div class="empty-state">
+                    <p>No reviews yet for this product.</p>
+                </div>
+            @else
+                <div class="review-list">
+                    @foreach($reviews as $review)
+                        <div class="review-card">
+                            <div class="review-card-head">
+                                <span class="stars">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <span class="s">{{ $i <= $review->rating ? '★' : '☆' }}</span>
+                                    @endfor
+                                </span>
+                                @if($review->is_verified)
+                                    <span class="review-verified">Verified Purchase</span>
+                                @endif
+                            </div>
+                            @if($review->title)
+                                <h4 class="review-title">{{ $review->title }}</h4>
+                            @endif
+                            <p class="review-comment">{{ $review->comment }}</p>
+                            <div class="review-meta">{{ $review->reviewer_name }} &middot; {{ $review->created_at->format('d M Y') }}</div>
+                        </div>
+                    @endforeach
                 </div>
             @endif
         </div>
