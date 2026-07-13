@@ -18,7 +18,7 @@
         </div>
     </details>
 @else
-    <a class="mm-sublist-link" href="{{ route('category.show', $category->slug) }}" style="padding-left: {{ 40 + $depth * 16 }}px">
+    <a class="mm-sublist-link" href="{{ route('category.show', $category) }}" style="padding-left: {{ 40 + $depth * 16 }}px">
         {{ $category->label }}
     </a>
 @endif

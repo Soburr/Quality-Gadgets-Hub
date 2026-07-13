@@ -1,16 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Stub — replace with a real CartController@add once you have a Cart/Product model.
+Route::get('/category/{category}', [CategoryController::class, 'show'])->name('category.show');
+
+// Stub — replace with a real CartController@add once you have a Cart model.
 Route::post('/cart/add/{product}', function ($product) {
     return back()->with('status', "Added product #{$product} to cart.");
 })->name('cart.add');
-
-// Stub — replace with a real CategoryController@show once you have a Category model.
-Route::get('/category/{slug}', function ($slug) {
-    return "Category page for: {$slug}";
-})->name('category.show');

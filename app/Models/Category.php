@@ -22,4 +22,54 @@ class Category extends Model
     {
         return $query->whereNull('parent_id');
     }
+
+    /**
+     * This category's id plus every descendant's id, so a listing page can
+     * pull products from the whole branch (e.g. "Phone" = iPhone + Samsung
+     * + Redmi + all of their New/Premium-used children) in one query.
+     */
+    public function allDescendantIds(): array
+    {
+        $ids = [$this->id];
+
+        foreach ($this->children as $child) {
+            $ids = array_merge($ids, $child->allDescendantIds());
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Parent chain from the top down, for breadcrumbs — e.g. viewing "New"
+     * under iPhone returns [Phone, iPhone].
+     */
+    public function ancestors(): array
+    {
+        $chain = [];
+        $node = $this->parent;
+
+        while ($node) {
+            array_unshift($chain, $node);
+            $node = $node->parent;
+        }
+
+        return $chain;
+    }
+
+    /**
+     * Every category flattened into one list with a `depth` property, for
+     * building an indented <select> in an admin "create product" form —
+     * e.g. "Phone", "— iPhone", "—— New".
+     */
+    public static function flattenedForSelect()
+    {
+        $flatten = function ($categories, $depth = 0) use (&$flatten) {
+            return $categories->flatMap(function ($category) use ($depth, $flatten) {
+                $category->depth = $depth;
+                return collect([$category])->merge($flatten($category->children, $depth + 1));
+            });
+        };
+
+        return $flatten(self::topLevel()->orderBy('sort_order')->get());
+    }
 }
