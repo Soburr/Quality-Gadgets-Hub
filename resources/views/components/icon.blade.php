@@ -114,5 +114,11 @@
             <rect x="16" y="13" width="5" height="6" rx="2" stroke="currentColor" stroke-width="1.8"/>
             <path d="M20 19a4 4 0 01-4 4h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
             @break
+        @case('minus')
+            <path d="M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            @break
+        @case('plus')
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            @break
     @endswitch
 </svg>

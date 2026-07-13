@@ -375,3 +375,65 @@
   @media (prefers-reduced-motion:reduce){
     *{transition:none !important;animation:none !important;}
   }
+
+  /* ---------- CARD LINK (tap image/title/price to open product; fav + add-to-cart stay separate) ---------- */
+  .card-link{display:block;}
+
+  /* ---------- PRODUCT DETAIL PAGE ---------- */
+  .pdp{display:grid;grid-template-columns:1fr 1fr;gap:44px;margin-bottom:36px;}
+  .pdp-main-image{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:20px;height:420px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .pdp-main-image img{max-width:70%;max-height:80%;object-fit:contain;position:relative;z-index:1;}
+  .pdp-main-image .ring{width:110%;height:110%;position:absolute;opacity:.5;}
+  .pdp-thumbs{display:flex;gap:10px;margin-top:14px;}
+  .pdp-thumb{width:64px;height:64px;border-radius:10px;border:2px solid var(--line);background:var(--cream);overflow:hidden;padding:6px;flex-shrink:0;}
+  .pdp-thumb img{width:100%;height:100%;object-fit:contain;}
+  .pdp-thumb.is-active{border-color:var(--wine);}
+
+  .pdp-info{display:flex;flex-direction:column;}
+  .pdp-badge{position:static;display:inline-flex;margin-bottom:14px;align-self:flex-start;}
+  .pdp-title{font-size:26px;margin:0 0 12px;color:var(--ink);}
+  .pdp-rating{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-soft);font-weight:600;margin-bottom:18px;}
+  .pdp-rating .stars{color:var(--gold);font-size:15px;}
+  .pdp-rating .sep{color:#C9AEB6;}
+  .pdp-stock{color:var(--green);}
+  .pdp-stock.low{color:#B8860B;}
+
+  .pdp-price-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--line);}
+  .pdp-now{font-size:30px;font-weight:600;color:var(--wine);}
+  .pdp-was{font-size:15px;color:#B79098;text-decoration:line-through;}
+  .pdp-price-row .off{font-size:12.5px;font-weight:800;color:var(--green);background:#E7F5EC;padding:4px 10px;border-radius:999px;}
+
+  .pdp-field{margin-bottom:22px;}
+  .pdp-field-label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px;}
+  .pdp-field-label strong{color:var(--wine);}
+
+  .color-swatches{display:flex;gap:12px;}
+  .swatch{width:34px;height:34px;border-radius:50%;position:relative;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);}
+  .swatch input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0;}
+  .swatch::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid transparent;}
+  .swatch:has(input:checked)::after{border-color:var(--wine);}
+
+  .qty-stepper{display:inline-flex;align-items:center;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;}
+  .qty-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--cream);color:var(--wine);}
+  .qty-btn:hover{background:#FCE6EC;}
+  .qty-stepper input{width:50px;height:40px;border:none;border-left:1.5px solid var(--line);border-right:1.5px solid var(--line);text-align:center;font-family:'IBM Plex Mono';font-weight:600;font-size:14px;}
+  .qty-stepper input::-webkit-outer-spin-button,.qty-stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+
+  .pdp-actions{display:flex;gap:12px;margin-bottom:24px;}
+  .pdp-add{flex:1;justify-content:center;font-size:15px;padding:16px 26px;}
+  .pdp-add:disabled{opacity:.5;cursor:not-allowed;}
+  .pdp-fav{width:52px;height:52px;border-radius:10px;border:1.5px solid var(--line);color:var(--wine);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .pdp-fav:hover{border-color:var(--wine);background:#FCE6EC;}
+
+  .pdp-trust{display:flex;flex-direction:column;gap:10px;}
+  .pdp-trust .t{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink-soft);}
+  .pdp-trust .t svg{color:var(--green);flex-shrink:0;}
+
+  .pdp-description{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:28px;margin-bottom:10px;}
+  .pdp-description h2{font-size:18px;margin:0 0 12px;}
+  .pdp-description p{margin:0;color:var(--ink-soft);font-size:14px;line-height:1.7;}
+
+  @media (max-width:860px){
+    .pdp{grid-template-columns:1fr;gap:28px;}
+    .pdp-main-image{height:320px;}
+  }

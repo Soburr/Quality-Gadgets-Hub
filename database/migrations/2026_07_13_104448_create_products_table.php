@@ -20,6 +20,8 @@ return new class extends Migration
             $table->unsignedInteger('reviews_count')->default(0);
             $table->string('badge')->nullable();
             $table->string('image')->nullable();
+            $table->json('colors')->nullable();
+            $table->json('gallery')->nullable();
             $table->unsignedInteger('stock')->default(0);
             $table->timestamps();
         });

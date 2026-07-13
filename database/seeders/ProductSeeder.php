@@ -44,16 +44,39 @@ class ProductSeeder extends Seeder
                 [
                     'category_id'   => $this->categoryId($p['category']),
                     'name'          => $p['name'],
+                    'description'   => "Genuine {$p['name']} available at Quality Gadgets Hub. Every unit is quality-checked before shipping, backed by our 7-day return window, and ships fast within Lagos and nationwide.",
                     'price'         => $p['price'],
                     'was_price'     => $p['was_price'],
                     'rating'        => $p['rating'],
                     'reviews_count' => $p['reviews_count'],
                     'badge'         => $p['badge'],
                     'image'         => 'https://placehold.co/600x600/20141A/FFF8F6?text=QGH',
+                    'colors'        => $p['category'][0] === 'Phone' ? $this->defaultColors() : null,
+                    'gallery'       => $this->placeholderGallery(),
                     'stock'         => 25,
                 ]
             );
         }
+    }
+
+    private function defaultColors(): array
+    {
+        return [
+            ['name' => 'Midnight',  'hex' => '#1d1d1f'],
+            ['name' => 'Starlight', 'hex' => '#f0e6d8'],
+            ['name' => 'Blue',      'hex' => '#3f5b7c'],
+            ['name' => 'Pink',      'hex' => '#e8c7cf'],
+        ];
+    }
+
+    private function placeholderGallery(): array
+    {
+        return [
+            'https://placehold.co/600x600/20141A/FFF8F6?text=1',
+            'https://placehold.co/600x600/8C0027/FFF8F6?text=2',
+            'https://placehold.co/600x600/C40356/FFF8F6?text=3',
+            'https://placehold.co/600x600/20141A/FFF8F6?text=4',
+        ];
     }
 
     /**

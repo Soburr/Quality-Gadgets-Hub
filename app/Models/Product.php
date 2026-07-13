@@ -9,7 +9,12 @@ class Product extends Model
     protected $fillable = [
         'category_id', 'name', 'slug', 'description',
         'price', 'was_price', 'rating', 'reviews_count',
-        'badge', 'image', 'stock',
+        'badge', 'image', 'colors', 'gallery', 'stock',
+    ];
+
+    protected $casts = [
+        'colors' => 'array',
+        'gallery' => 'array',
     ];
 
     public function category()
