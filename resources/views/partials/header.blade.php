@@ -16,11 +16,10 @@
         </button>
     </form>
 
-    {{-- TODO: swap these '#' hrefs for real account/wishlist/cart routes once those controllers exist --}}
     <div class="header-actions">
-        <a class="item" href="#">
+        <a class="item" href="{{ auth()->check() ? route('account.show') : route('login') }}">
             <span class="icon"><x-icon name="user" :size="22" /></span>
-            <span class="label">Account</span>
+            <span class="label">{{ auth()->check() ? \Illuminate\Support\Str::before(auth()->user()->name, ' ') : 'Account' }}</span>
         </a>
         <a class="item" href="#">
             <span class="icon"><x-icon name="heart" :size="22" /></span>

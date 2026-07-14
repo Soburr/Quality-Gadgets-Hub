@@ -25,10 +25,18 @@
                 <x-icon name="chevron-down" :size="18" />
             </summary>
             <div class="mm-sublist">
-                <a class="mm-sublist-link" href="#">Sign In</a>
-                <a class="mm-sublist-link" href="#">Create Account</a>
-                <a class="mm-sublist-link" href="#">My Orders</a>
-                <a class="mm-sublist-link" href="#">Track Order</a>
+                @auth
+                    <a class="mm-sublist-link" href="{{ route('account.show') }}">My Account</a>
+                    <a class="mm-sublist-link" href="{{ route('account.orders') }}">My Orders</a>
+                    <a class="mm-sublist-link" href="#">Track Order</a>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="mm-sublist-link" style="width:100%;text-align:left;">Sign Out</button>
+                    </form>
+                @else
+                    <a class="mm-sublist-link" href="{{ route('login') }}">Sign In</a>
+                    <a class="mm-sublist-link" href="{{ route('register') }}">Create Account</a>
+                @endauth
             </div>
         </details>
 
