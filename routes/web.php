@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
@@ -11,12 +12,13 @@ Route::get('/category/{category}', [CategoryController::class, 'show'])->name('c
 
 Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.show');
 
-// Stub — replace with a real CartController@add once you have a Cart model.
-Route::post('/cart/add/{product}', function ($product) {
-    return back()->with('status', "Added product #{$product} to cart.");
-})->name('cart.add');
+Route::get('/cart', [CartController::class, 'index'])->name('cart.show');
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::patch('/cart/{itemKey}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/{itemKey}', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/checkout/buy-now/{product}', [CartController::class, 'buyNow'])->name('checkout.buyNow');
 
-// Stub — Buy Now should add to cart then jump straight to checkout once that flow exists.
-Route::post('/checkout/buy-now/{product}', function ($product) {
-    return back()->with('status', "Buy now for product #{$product} — checkout flow not built yet.");
-})->name('checkout.buyNow');
+// Stub — replace with a real CheckoutController once payment/shipping is wired up.
+Route::get('/checkout', function () {
+    return 'Checkout page not built yet.';
+})->name('checkout.show');

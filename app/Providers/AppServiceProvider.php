@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Category;
 use Illuminate\Support\Facades\View;
+use App\Services\CartService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,7 @@ public function boot(): void
             'navCategories',
             Category::topLevel()->with('children.children')->orderBy('sort_order')->get()
         );
+        $view->with('cartCount', app(CartService::class)->count());
     });
 }
 }

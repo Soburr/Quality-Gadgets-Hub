@@ -16,6 +16,7 @@
         @endforeach
 
         <a class="mm-link" href="{{ route('home') }}#grid">All Products</a>
+        <a class="mm-link" href="{{ route('cart.show') }}">Cart</a>
         <a class="mm-link" href="#">Wishlist</a>
 
         <details class="mm-accordion">

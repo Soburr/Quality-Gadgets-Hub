@@ -20,11 +20,9 @@ class HomeController extends Controller
         // Countdown target for the flash sale ring — swap for a real column, e.g. Deal::current()->ends_at
         $flashEndsAt = now()->addHours(5)->addMinutes(42)->addSeconds(58);
 
-        $cartCount = session('cart_count', 0);
-
         return view('home', compact(
             'categories', 'products', 'flashProducts', 'newArrivals',
-            'bestSellers', 'flashEndsAt', 'cartCount'
+            'bestSellers', 'flashEndsAt'
         ));
     }
 }

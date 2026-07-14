@@ -467,4 +467,51 @@
     .reviews-summary{grid-template-columns:1fr;}
     .reviews-score{border-right:none;border-bottom:1px solid var(--line);padding-right:0;padding-bottom:20px;}
   }
+
+  .cart-layout{display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;}
+
+  .cart-items{display:flex;flex-direction:column;gap:14px;}
+  .cart-row{
+    display:grid;grid-template-columns:72px 1fr auto auto auto;gap:16px;align-items:center;
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+  }
+  .cart-row-thumb{width:72px;height:72px;border-radius:10px;background:var(--cream);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+  .cart-row-thumb img{max-width:80%;max-height:80%;object-fit:contain;}
+  .cart-row-info{min-width:0;}
+  .cart-row-title{display:block;font-weight:700;font-size:14px;color:var(--ink);margin-bottom:4px;}
+  .cart-row-title:hover{color:var(--wine);}
+  .cart-row-color{font-size:12px;color:var(--ink-soft);margin-bottom:4px;}
+  .cart-row-price{font-size:13px;color:var(--ink-soft);}
+
+  .cart-row-qty{display:flex;align-items:center;gap:8px;}
+  .qty-stepper--sm .qty-btn{width:32px;height:32px;}
+  .qty-stepper--sm input{width:40px;height:32px;font-size:13px;}
+  .cart-update-btn{font-size:11.5px;font-weight:800;color:var(--wine);background:var(--cream);border:1px solid var(--line);padding:6px 10px;border-radius:8px;}
+  .cart-update-btn:hover{border-color:var(--wine);}
+
+  .cart-row-subtotal{font-size:14.5px;font-weight:600;color:var(--wine);white-space:nowrap;}
+
+  .cart-row-remove button{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);}
+  .cart-row-remove button:hover{background:#FCE6EC;color:var(--wine);}
+
+  .cart-summary{
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px;
+    position:sticky;top:90px;
+  }
+  .cart-summary h3{font-size:16px;margin:0 0 16px;}
+  .cart-summary-row{display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-soft);margin-bottom:12px;}
+  .cart-summary-total{border-top:1px solid var(--line);padding-top:12px;font-weight:800;color:var(--ink);font-size:15px;}
+  .cart-checkout-btn{width:100%;justify-content:center;margin-top:18px;margin-bottom:12px;}
+  .cart-continue-link{display:block;text-align:center;font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+  .cart-continue-link:hover{color:var(--wine);}
+
+  @media (max-width:760px){
+    .cart-layout{grid-template-columns:1fr;}
+    .cart-row{grid-template-columns:56px 1fr;grid-template-areas:"thumb info" "qty qty" "subtotal remove";}
+    .cart-row-thumb{grid-area:thumb;width:56px;height:56px;}
+    .cart-row-info{grid-area:info;}
+    .cart-row-qty{grid-area:qty;justify-content:space-between;}
+    .cart-row-subtotal{grid-area:subtotal;}
+    .cart-row-remove{grid-area:remove;justify-self:end;}
+  }
 }

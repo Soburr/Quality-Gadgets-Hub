@@ -26,7 +26,7 @@
             <span class="icon"><x-icon name="heart" :size="22" /></span>
             <span class="label">Wishlist</span>
         </a>
-        <a class="item" href="#">
+        <a class="item" href="{{ route('cart.show') }}">
             <span class="icon">
                 <x-icon name="cart" :size="22" />
                 <span class="cart-count" id="cartCount">{{ $cartCount ?? 0 }}</span>
