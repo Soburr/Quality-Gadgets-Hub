@@ -546,3 +546,43 @@
     .account-grid{grid-template-columns:1fr;}
     .auth-card{padding:26px;}
   }
+
+  .checkout-form{display:flex;flex-direction:column;gap:20px;}
+  .checkout-block{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:24px;}
+  .checkout-block h3{margin:0 0 18px;font-size:15px;}
+  .checkout-field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+  .option-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .option-card{
+    display:flex;align-items:flex-start;gap:12px;border:1.5px solid var(--line);border-radius:12px;
+    padding:14px;cursor:pointer;position:relative;
+  }
+  .option-card input{position:absolute;top:14px;right:14px;margin:0;}
+  .option-card:has(input:checked){border-color:var(--wine);background:#FCE6EC;}
+  .option-card-icon{color:var(--wine);flex-shrink:0;margin-top:2px;}
+  .option-card-body{display:flex;flex-direction:column;gap:2px;font-size:13px;}
+  .option-card-body strong{color:var(--ink);}
+  .option-card-body span{color:var(--ink-soft);font-size:12px;}
+  .checkout-note{font-size:12px;color:var(--ink-soft);margin:14px 0 0;}
+
+  .order-success{
+    display:flex;align-items:flex-start;gap:14px;background:#E7F5EC;border:1px solid #BEE3CB;color:#1E7A4C;
+    border-radius:var(--radius);padding:18px 20px;margin-bottom:24px;
+  }
+  .order-success strong{display:block;color:#155C38;}
+  .order-success p{margin:4px 0 0;font-size:13px;color:#1E7A4C;}
+
+  .order-list{display:flex;flex-direction:column;gap:10px;}
+  .order-list-row{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;
+  }
+  .order-list-row:hover{border-color:var(--wine);}
+  .order-list-row strong{display:block;font-size:14px;color:var(--ink);}
+  .order-list-date{font-size:12px;color:var(--ink-soft);}
+  .order-list-status{font-size:12px;font-weight:800;color:var(--wine);background:#FCE6EC;padding:5px 12px;border-radius:999px;}
+
+  @media (max-width:640px){
+    .checkout-field-row{grid-template-columns:1fr;}
+    .option-cards{grid-template-columns:1fr;}
+  }

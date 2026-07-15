@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
@@ -13,7 +14,8 @@ class AccountController extends Controller
 
     public function orders()
     {
-        // Stub — replace with Order::where('user_id', Auth::id())->get() once orders exist.
-        return view('account.orders');
+        $orders = Order::where('user_id', Auth::id())->latest()->get();
+
+        return view('account.orders', compact('orders'));
     }
 }
