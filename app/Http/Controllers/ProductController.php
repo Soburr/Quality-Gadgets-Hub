@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\WishlistItem;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -19,6 +21,11 @@ class ProductController extends Controller
         $reviews = $product->reviews()->latest()->get();
         $ratingBreakdown = $product->ratingBreakdown();
 
-        return view('product', compact('product', 'breadcrumbChain', 'related', 'reviews', 'ratingBreakdown'));
+        $inWishlist = Auth::check()
+            && WishlistItem::where('user_id', Auth::id())->where('product_id', $product->id)->exists();
+
+        return view('product', compact(
+            'product', 'breadcrumbChain', 'related', 'reviews', 'ratingBreakdown', 'inWishlist'
+        ));
     }
 }

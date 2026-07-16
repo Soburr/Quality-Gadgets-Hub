@@ -14,7 +14,9 @@
   }
   .card .badge.new{background:var(--green);}
   .card .badge.verified{background:var(--ink);}
-  .card .fav{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:var(--wine);z-index:2;}
+  .card .fav-form{position:absolute;top:8px;right:8px;z-index:2;}
+  .card .fav{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:var(--wine);}
+  .card .fav.is-active{background:var(--wine);color:#fff;}
   .card-link{display:block;}
   .card .thumb{
     position:relative;height:150px;border-radius:10px;background:var(--cream);

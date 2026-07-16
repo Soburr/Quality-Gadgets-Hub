@@ -17,7 +17,7 @@
 
         <a class="mm-link" href="{{ route('home') }}#grid">All Products</a>
         <a class="mm-link" href="{{ route('cart.show') }}">Cart</a>
-        <a class="mm-link" href="#">Wishlist</a>
+        <a class="mm-link" href="{{ route('wishlist.show') }}">Wishlist</a>
 
         <details class="mm-accordion">
             <summary>

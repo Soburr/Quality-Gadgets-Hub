@@ -20,8 +20,13 @@
             <span class="icon"><x-icon name="user" :size="22" /></span>
             <span class="label">{{ auth()->check() ? \Illuminate\Support\Str::before(auth()->user()->name, ' ') : 'Account' }}</span>
         </a>
-        <a class="item" href="#">
-            <span class="icon"><x-icon name="heart" :size="22" /></span>
+        <a class="item" href="{{ route('wishlist.show') }}">
+            <span class="icon">
+                <x-icon name="heart" :size="22" />
+                @if(($wishlistCount ?? 0) > 0)
+                    <span class="cart-count">{{ $wishlistCount }}</span>
+                @endif
+            </span>
             <span class="label">Wishlist</span>
         </a>
         <a class="item" href="{{ route('cart.show') }}">

@@ -43,6 +43,7 @@
   .pdp-add:disabled{opacity:.5;cursor:not-allowed;}
   .pdp-fav{width:52px;height:52px;border-radius:10px;border:1.5px solid var(--line);color:var(--wine);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .pdp-fav:hover{border-color:var(--wine);background:#FCE6EC;}
+  .pdp-fav.is-active{background:var(--wine);border-color:var(--wine);color:#fff;}
 
   .pdp-trust{display:flex;flex-direction:column;gap:10px;}
   .pdp-trust .t{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink-soft);}

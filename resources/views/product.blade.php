@@ -103,7 +103,7 @@
                                 <x-icon name="cart" :size="18" />
                                 Add to cart
                             </button>
-                            <button type="button" class="pdp-fav" aria-label="Save to wishlist">
+                            <button type="submit" formaction="{{ route('wishlist.toggle', $product) }}" class="pdp-fav @if($inWishlist) is-active @endif" aria-label="{{ $inWishlist ? 'Remove from' : 'Save to' }} wishlist">
                                 <x-icon name="heart" :size="20" />
                             </button>
                         </div>

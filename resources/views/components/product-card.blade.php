@@ -16,10 +16,14 @@
     @if($product->badge)
         <span class="badge {{ $badgeClass }}">{{ $product->badge }}</span>
     @endif
-
-    <button type="button" class="fav" aria-label="Save {{ $product->name }} to wishlist">
-        <x-icon name="heart" :size="14" />
-    </button>
+ 
+    @php $inWishlist = in_array($product->id, $wishlistProductIds ?? []); @endphp
+    <form action="{{ route('wishlist.toggle', $product) }}" method="POST" class="fav-form">
+        @csrf
+        <button type="submit" class="fav @if($inWishlist) is-active @endif" aria-label="{{ $inWishlist ? 'Remove' : 'Save' }} {{ $product->name }} {{ $inWishlist ? 'from' : 'to' }} wishlist">
+            <x-icon name="heart" :size="14" />
+        </button>
+    </form>
 
     <a href="{{ route('product.show', $product) }}" class="card-link">
         <div class="thumb">

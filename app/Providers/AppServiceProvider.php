@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Category;
 use Illuminate\Support\Facades\View;
 use App\Services\CartService;
+use App\Models\WishlistItem;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,14 @@ public function boot(): void
             Category::topLevel()->with('children.children')->orderBy('sort_order')->get()
         );
         $view->with('cartCount', app(CartService::class)->count());
+        $view->with('wishlistCount', Auth::check() ? WishlistItem::where('user_id', Auth::id())->count() : 0);
+    });
+
+    View::composer('components.product-card', function ($view) {
+            $view->with(
+                'wishlistProductIds',
+                Auth::check() ? WishlistItem::where('user_id', Auth::id())->pluck('product_id')->toArray() : []
+            );
     });
 }
 }
