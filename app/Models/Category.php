@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $fillable = ['parent_id', 'label', 'slug', 'icon', 'sort_order'];
+    protected $fillable = ['parent_id', 'label', 'slug', 'icon', 'image', 'sort_order'];
 
     public function parent()
     {
@@ -18,16 +18,16 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id')->orderBy('sort_order');
     }
 
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
     public function scopeTopLevel($query)
     {
         return $query->whereNull('parent_id');
     }
 
-    /**
-     * This category's id plus every descendant's id, so a listing page can
-     * pull products from the whole branch (e.g. "Phone" = iPhone + Samsung
-     * + Redmi + all of their New/Premium-used children) in one query.
-     */
     public function allDescendantIds(): array
     {
         $ids = [$this->id];
@@ -39,10 +39,6 @@ class Category extends Model
         return $ids;
     }
 
-    /**
-     * Parent chain from the top down, for breadcrumbs — e.g. viewing "New"
-     * under iPhone returns [Phone, iPhone].
-     */
     public function ancestors(): array
     {
         $chain = [];

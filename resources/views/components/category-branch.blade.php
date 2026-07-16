@@ -4,7 +4,9 @@
     <details class="mm-accordion @if($depth > 0) mm-accordion--nested @endif">
         <summary style="padding-left: {{ 20 + $depth * 16 }}px">
             <span class="mm-summary-label">
-                @if($depth === 0 && $category->icon)
+                @if($depth === 0 && $category->image)
+                    <img src="{{ str($category->image)->startsWith(['http://','https://']) ? $category->image : asset($category->image) }}" alt="" class="mm-category-image">
+                @elseif($depth === 0 && $category->icon)
                     <x-icon :name="$category->icon" :size="18" />
                 @endif
                 {{ $category->label }}
