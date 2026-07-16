@@ -21,6 +21,9 @@
                 <a href="{{ route('account.orders') }}" class="account-link">My Orders</a>
                 <a href="#" class="account-link">Track Order</a>
                 <a href="{{ route('cart.show') }}" class="account-link">My Cart</a>
+                @if($user->is_admin)
+                    <a href="{{ route('admin.dashboard') }}" class="account-link">Admin Dashboard</a>
+                @endif
             </div>
         </div>
 

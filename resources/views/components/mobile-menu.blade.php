@@ -29,6 +29,9 @@
                     <a class="mm-sublist-link" href="{{ route('account.show') }}">My Account</a>
                     <a class="mm-sublist-link" href="{{ route('account.orders') }}">My Orders</a>
                     <a class="mm-sublist-link" href="#">Track Order</a>
+                    @if(auth()->user()->is_admin)
+                        <a class="mm-sublist-link" href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
+                    @endif
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="mm-sublist-link" style="width:100%;text-align:left;">Sign Out</button>
