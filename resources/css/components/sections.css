@@ -1,0 +1,25 @@
+@layer components {
+  .section{padding:36px 0;}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;gap:16px;flex-wrap:wrap;}
+  .section-head h2{font-size:23px;margin:0;color:var(--ink);}
+  .section-head .sub{font-size:13px;color:var(--ink-soft);font-weight:600;margin-top:4px;}
+  .see-all{font-weight:800;font-size:13px;color:var(--magenta);}
+  .see-all:hover{text-decoration:underline;}
+
+  .section-eyebrow{
+    display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:11px;
+    letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:999px;margin-bottom:8px;
+  }
+  .section-eyebrow .dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+  .section-eyebrow.magenta{background:#FCE6EC;color:var(--wine);}
+  .section-eyebrow.gold{background:#FCEFD2;color:#8A5F00;}
+
+  .section-head--banner{
+    background:var(--wine);color:#fff;padding:22px 26px;border-radius:16px;margin-bottom:20px;
+  }
+  .section-head--banner h2{color:#fff;}
+  .section-head--banner .sub{color:#F6C6D3;}
+  .section-head--banner .count-badge{
+    background:var(--gold);color:#20141A;font-weight:800;font-size:12px;padding:7px 16px;border-radius:999px;flex-shrink:0;
+  }
+}

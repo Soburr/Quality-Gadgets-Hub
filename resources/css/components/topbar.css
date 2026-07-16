@@ -1,0 +1,8 @@
+@layer components {
+  .topbar{background:var(--wine-dark);color:#F6DCE3;font-size:12.5px;}
+  .topbar .wrap{display:flex;justify-content:space-between;align-items:center;height:36px;overflow:hidden;}
+  .topbar-marquee{white-space:nowrap;font-weight:600;letter-spacing:.02em;}
+  .topbar-links{display:flex;gap:18px;flex-shrink:0;}
+  .topbar-links a{opacity:.85;}
+  .topbar-links a:hover{opacity:1;text-decoration:underline;}
+}

@@ -1,0 +1,38 @@
+@layer components {
+  .h-scroll{display:flex;gap:16px;overflow-x:auto;padding-bottom:22px;scrollbar-width:thin;}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+
+  .card{
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px;flex:0 0 200px;position:relative;transition:box-shadow .18s, transform .18s;
+  }
+  .card:hover{box-shadow:0 16px 28px -14px rgba(140,0,39,.28);transform:translateY(-3px);}
+  .grid .card{flex:auto;}
+  .card .badge{
+    position:absolute;top:10px;left:10px;background:var(--magenta);color:#fff;font-size:10.5px;font-weight:800;
+    padding:3px 8px;border-radius:6px;z-index:2;
+  }
+  .card .badge.new{background:var(--green);}
+  .card .badge.verified{background:var(--ink);}
+  .card .fav{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:var(--wine);z-index:2;}
+  .card-link{display:block;}
+  .card .thumb{
+    position:relative;height:150px;border-radius:10px;background:var(--cream);
+    display:flex;align-items:center;justify-content:center;margin-bottom:12px;overflow:hidden;
+  }
+  .card .thumb svg.ring{width:120%;height:120%;position:absolute;opacity:.55;}
+  .card .thumb .phone{width:56px;position:relative;z-index:1;}
+  .card .title{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.3;margin:0 0 6px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:34px;}
+  .card .stars{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ink-soft);margin-bottom:8px;}
+  .card .stars .s{color:var(--gold);}
+  .card .price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .card .now{font-family:'IBM Plex Mono';font-weight:600;font-size:15px;color:var(--wine);}
+  .card .was{font-family:'IBM Plex Mono';font-size:11.5px;color:#B79098;text-decoration:line-through;}
+  .card .off{font-size:11px;font-weight:800;color:var(--green);}
+  .card .add{
+    width:100%;background:var(--cream);border:1.5px solid var(--wine);color:var(--wine);
+    padding:9px;border-radius:8px;font-weight:800;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .card .add:hover{background:var(--magenta);border-color:var(--magenta);color:#fff;}
+}

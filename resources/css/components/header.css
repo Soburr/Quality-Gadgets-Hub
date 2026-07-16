@@ -1,0 +1,34 @@
+@layer components {
+  header.site{background:transparent;}
+  .header-bar{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;}
+  .header-row{display:flex;align-items:center;gap:20px;padding:12px 20px;flex-wrap:nowrap;}
+  .brand{display:flex;align-items:center;gap:10px;flex-shrink:0;min-width:0;}
+  .brand img{width:40px;height:40px;object-fit:contain;flex-shrink:0;}
+  .brand .name{font-family:'Archivo',sans-serif;font-weight:800;font-size:17px;line-height:1.05;color:var(--wine);white-space:nowrap;}
+  .brand .name small{display:block;font-family:'Manrope';font-weight:600;font-size:10px;letter-spacing:.12em;color:var(--ink-soft);text-transform:uppercase;}
+
+  .search{flex:1 1 auto;min-width:0;max-width:640px;position:relative;}
+  .search input{
+    width:100%;height:44px;border-radius:999px;border:2px solid var(--wine);
+    padding:0 50px 0 18px;font-size:14px;background:var(--cream);color:var(--ink);
+  }
+  .search input::placeholder{color:#A9848E;}
+  .search button{
+    position:absolute;right:4px;top:4px;bottom:4px;width:40px;border-radius:50%;
+    background:var(--magenta);color:#fff;display:flex;align-items:center;justify-content:center;
+  }
+  .header-actions{display:flex;align-items:center;gap:16px;margin-left:0;flex-shrink:0;}
+  .header-actions .item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:700;color:var(--ink);}
+  .header-actions .item span.icon{position:relative;width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--wine);}
+  .cart-count{position:absolute;top:-6px;right:-8px;background:var(--gold);color:#20141A;font-size:9.5px;font-weight:800;border-radius:999px;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+
+  .category-nav{background:var(--wine);}
+  .category-nav .wrap{display:flex;gap:6px;overflow-x:auto;padding:0 20px;scrollbar-width:none;}
+  .category-nav .wrap::-webkit-scrollbar{display:none;}
+  .category-nav a{
+    flex-shrink:0;display:flex;align-items:center;gap:8px;padding:11px 6px;
+    font-size:13px;font-weight:700;color:#FADCE3;white-space:nowrap;border-bottom:3px solid transparent;
+  }
+  .category-nav a:hover{color:#fff;border-bottom-color:var(--gold);}
+  .category-nav a .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+}

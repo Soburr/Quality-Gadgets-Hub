@@ -1,0 +1,16 @@
+@layer components {
+  footer{background:var(--ink);color:#E7D3D9;margin-top:20px;}
+  .foot-top .wrap{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:30px;padding:48px 20px 30px;}
+  .foot-brand .brand .name{color:#fff;}
+  .foot-brand p{font-size:13px;color:#B79BA3;line-height:1.6;max-width:260px;margin:14px 0 18px;}
+  .foot-social{display:flex;gap:10px;}
+  .foot-social a{width:34px;height:34px;border-radius:50%;border:1px solid #5A414A;display:flex;align-items:center;justify-content:center;}
+  .foot-social a:hover{background:var(--magenta);border-color:var(--magenta);}
+  .foot-col h4{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#fff;margin:0 0 14px;}
+  .foot-col ul li{margin-bottom:10px;font-size:13px;color:#C6AAB2;}
+  .foot-col ul li:hover{color:#fff;}
+  .foot-bottom{border-top:1px solid #3A2830;}
+  .foot-bottom .wrap{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;font-size:12px;color:#9A7C85;flex-wrap:wrap;gap:10px;}
+  .pay-icons{display:flex;gap:8px;}
+  .pay-icons span{background:#2E1E24;border-radius:5px;padding:5px 9px;font-size:10.5px;font-weight:700;color:#C6AAB2;}
+}

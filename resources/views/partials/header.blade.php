@@ -8,8 +8,7 @@
         <span class="name">Quality Gadgets Hub</span>
     </a>
 
-    {{-- TODO: point this at a real SearchController@index route --}}
-    <form class="search" action="#" method="GET">
+    <form class="search" action="{{ route('search') }}" method="GET">
         <input type="text" name="q" value="{{ request('q') }}" placeholder="Search phones, brands, accessories...">
         <button type="submit" aria-label="Search">
             <x-icon name="search" :size="18" />

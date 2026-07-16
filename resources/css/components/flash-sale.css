@@ -1,0 +1,12 @@
+@layer components {
+  .flash{background:var(--wine);border-radius:20px;padding:24px 24px 8px;}
+  .flash .section-head h2{color:#fff;}
+  .flash .section-head .sub{color:#F6C6D3;}
+  .countdown{display:flex;align-items:center;gap:10px;}
+  .ring-timer{position:relative;width:52px;height:52px;}
+  .ring-timer svg{transform:rotate(-90deg);}
+  .ring-timer .bg{stroke:rgba(255,255,255,.18);}
+  .ring-timer .fg{stroke:var(--gold);stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
+  .ring-timer .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono';font-weight:600;font-size:14px;color:#fff;}
+  .timer-label{font-size:10px;color:#F6C6D3;text-align:center;margin-top:4px;letter-spacing:.08em;text-transform:uppercase;}
+}

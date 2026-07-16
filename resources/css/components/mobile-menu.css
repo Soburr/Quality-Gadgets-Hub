@@ -1,0 +1,51 @@
+@layer components {
+  .menu-toggle{
+    display:none;width:40px;height:40px;border-radius:10px;align-items:center;justify-content:center;
+    color:var(--wine);background:var(--cream);flex-shrink:0;
+  }
+  .menu-toggle:hover{background:#FCE6EC;}
+
+  .menu-backdrop{
+    position:fixed;inset:0;background:rgba(32,20,26,.5);opacity:0;visibility:hidden;
+    transition:opacity .2s;z-index:90;
+  }
+  .menu-backdrop.is-open{opacity:1;visibility:visible;}
+
+  .mobile-menu{
+    position:fixed;top:0;left:0;bottom:0;width:320px;max-width:85vw;background:var(--paper);
+    z-index:91;transform:translateX(-100%);transition:transform .25s ease;
+    display:flex;flex-direction:column;overflow-y:auto;
+  }
+  .mobile-menu.is-open{transform:translateX(0);}
+
+  .mobile-menu-head{
+    background:var(--wine);color:#fff;display:flex;align-items:center;gap:14px;
+    padding:18px 20px;flex-shrink:0;
+  }
+  .mobile-menu-head button{background:none;color:#fff;display:flex;align-items:center;justify-content:center;}
+  .mobile-menu-head span{font-family:'Archivo',sans-serif;font-weight:800;font-size:19px;margin-left:auto;}
+
+  .mobile-menu-list{padding:6px 0;}
+  .mm-link{
+    display:flex;align-items:center;padding:16px 20px;font-weight:700;font-size:15px;
+    color:var(--ink);border-bottom:1px solid var(--line);
+  }
+  .mm-accordion{border-bottom:1px solid var(--line);}
+  .mm-accordion summary{
+    display:flex;align-items:center;justify-content:space-between;padding:16px 20px;
+    font-weight:700;font-size:15px;color:var(--ink);cursor:pointer;list-style:none;
+  }
+  .mm-accordion summary::-webkit-details-marker{display:none;}
+  .mm-accordion summary svg{transition:transform .2s;color:var(--ink-soft);}
+  .mm-accordion[open] summary svg{transform:rotate(180deg);}
+  .mm-sublist{display:flex;flex-direction:column;background:var(--cream);}
+  .mm-summary-label{display:flex;align-items:center;gap:10px;}
+  .mm-accordion--nested{background:var(--cream);}
+  .mm-accordion--nested summary{font-size:14px;font-weight:600;color:var(--ink-soft);}
+  .mm-sublist-link{
+    display:flex;align-items:center;padding:13px 20px;font-size:14px;font-weight:600;
+    color:var(--ink-soft);background:var(--cream);border-bottom:1px solid var(--line);
+  }
+  .mm-sublist-link:hover{color:var(--wine);}
+  .mm-sublist a svg{color:var(--wine);flex-shrink:0;}
+}

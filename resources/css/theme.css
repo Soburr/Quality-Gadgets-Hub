@@ -1,0 +1,64 @@
+:root{
+  --wine-dark:#5C001F;
+  --wine:#8C0027;
+  --magenta:#C40356;
+  --pink:#CF4873;
+  --cream:#FFF8F6;
+  --paper:#FFFFFF;
+  --ink:#20141A;
+  --ink-soft:#6b5860;
+  --line:#F0DDE2;
+  --gold:#D99A00;
+  --green:#1E7A4C;
+  --radius:14px;
+  --wrap:1240px;
+}
+
+/* Same values again, in Tailwind's naming convention — this is what makes
+   bg-wine, text-magenta, border-line, etc. available as utility classes on
+   anything NEW you build going forward, without touching what already
+   exists (which all reads var(--wine) directly, unchanged). */
+@theme {
+  --color-wine-dark: #5C001F;
+  --color-wine: #8C0027;
+  --color-magenta: #C40356;
+  --color-pink: #CF4873;
+  --color-cream: #FFF8F6;
+  --color-paper: #FFFFFF;
+  --color-ink: #20141A;
+  --color-ink-soft: #6b5860;
+  --color-line: #F0DDE2;
+  --color-gold: #D99A00;
+  --color-green: #1E7A4C;
+
+  --font-display: 'Archivo', sans-serif;
+  --font-sans: 'Manrope', sans-serif;
+  --font-mono-brand: 'IBM Plex Mono', monospace;
+}
+
+@layer base {
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Manrope',sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.01em;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{text-decoration:none;color:inherit;}
+  ul{list-style:none;margin:0;padding:0;}
+  img{max-width:100%;display:block;}
+  button{font-family:inherit;cursor:pointer;border:none;}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+}
+
+@layer components {
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 20px;}
+
+  /* Ring motif — echoes the logo's open Q, reused across cards/tiles/timers */
+  .ring-frame{position:relative;}
+  .ring-frame svg.ring{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+}

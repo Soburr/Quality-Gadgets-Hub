@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
+
 Route::get('/category/{category}', [CategoryController::class, 'show'])->name('category.show');
 
 Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.show');
