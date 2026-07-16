@@ -79,11 +79,6 @@ class ProductSeeder extends Seeder
         ];
     }
 
-    /**
-     * Walks a label path (e.g. ['Phone', 'iPhone', 'New']) down the category
-     * tree by slug at each level, since slugs like 'new' repeat under
-     * different parents and are only unique scoped to their own parent_id.
-     */
     private function categoryId(array $path): int
     {
         $parentId = null;
