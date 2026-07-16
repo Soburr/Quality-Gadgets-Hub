@@ -7,7 +7,7 @@
         <h1>Edit Category</h1>
     </div>
 
-    <form action="{{ route('admin.categories.update', $category) }}" method="POST" class="admin-form">
+    <form action="{{ route('admin.categories.update', $category) }}" method="POST" enctype="multipart/form-data" class="admin-form">
         @csrf
         @method('PUT')
         @include('admin.categories._form', ['selectedParentId' => old('parent_id', $category->parent_id)])

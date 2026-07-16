@@ -85,7 +85,7 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|exists:categories,id',
             'icon' => 'nullable|string|max:30',
             'sort_order' => 'nullable|integer|min:0',
-            'image' => 'nullable|image|max:4096',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:8192',
         ]);
     }
 

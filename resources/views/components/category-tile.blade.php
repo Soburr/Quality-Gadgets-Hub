@@ -1,6 +1,6 @@
 @props(['category'])
 
-<a href="{{ route('category.show', $category->slug ?? \Illuminate\Support\Str::slug($category->label)) }}" class="cat-tile">
+<a href="{{ route('category.show', $category) }}" class="cat-tile">
     <div class="ring-frame">
         @if($category->image)
             <img src="{{ str($category->image)->startsWith(['http://','https://']) ? $category->image : asset($category->image) }}" alt="{{ $category->label }}" class="cat-tile-image">
