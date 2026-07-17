@@ -69,9 +69,15 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->storeImage($request->file('image'));
+        } elseif ($request->boolean('remove_image')) {
+            $validated['image'] = null;
         }
-        if ($request->hasFile('gallery')) {
+       if ($request->hasFile('gallery')) {
             $validated['gallery'] = $this->storeGallery($request->file('gallery'));
+        } else {
+            $existingGallery = $product->gallery ?? [];
+            $removed = json_decode($request->input('removed_gallery', '[]'), true) ?: [];
+            $validated['gallery'] = array_values(array_diff($existingGallery, $removed));
         }
 
         $product->update($validated);
