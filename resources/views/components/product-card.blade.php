@@ -45,13 +45,6 @@
 
         <p class="title">{{ $product->name }}</p>
 
-        <div class="stars">
-            @for($i = 1; $i <= 5; $i++)
-                <span class="s">{{ $i <= round($product->rating) ? '★' : '☆' }}</span>
-            @endfor
-            <span>({{ number_format($product->reviews_count) }})</span>
-        </div>
-
         <div class="price-row">
             <span class="now mono">&#8358;{{ number_format($product->price) }}</span>
             @if($product->was_price)
