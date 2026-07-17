@@ -181,9 +181,6 @@ document.addEventListener('DOMContentLoaded', function () {
         renderGallery(Array.from(galleryInput.files));
     });
 
-// Pre-existing saved gallery images (server-rendered, no File object
-    // behind them) — clicking × here records the image's path in a hidden
-    // field so the server actually deletes it from the product on save.
     var removedGalleryField = document.getElementById('removedGalleryField');
     var removedGalleryPaths = [];
 
