@@ -26,14 +26,14 @@
     </form>
 
     <a href="{{ route('product.show', $product) }}" class="card-link">
-        <div class="thumb">
+        <div class="thumb @if($product->image) thumb--photo @endif">
             <svg class="ring" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="38" fill="none" stroke="#C40356" stroke-opacity="0.35" stroke-width="9"
                         stroke-dasharray="{{ 238 - $gap }} {{ $gap }}"/>
             </svg>
 
             @if($product->image)
-                <img src="{{ str($product->image)->startsWith(['http://', 'https://']) ? $product->image : asset($product->image) }}" alt="{{ $product->name }}" class="phone" style="width:90px;">
+                <img src="{{ str($product->image)->startsWith(['http://', 'https://']) ? $product->image : asset($product->image) }}" alt="{{ $product->name }}" class="thumb-photo" loading="lazy">
             @else
                 <svg class="phone" viewBox="0 0 40 76">
                     <rect x="2" y="2" width="36" height="72" rx="7" fill="#20141A"/>
