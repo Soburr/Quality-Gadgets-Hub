@@ -39,3 +39,9 @@
     .option-cards{grid-template-columns:1fr;}
   }
 }
+
+@layer components {
+  .order-review-link{display:inline-block;margin-top:8px;font-size:12.5px;font-weight:800;color:var(--wine);}
+  .order-review-link:hover{text-decoration:underline;}
+  .order-reviewed-tag{display:inline-block;margin-top:8px;font-size:12.5px;font-weight:700;color:var(--green);}
+}

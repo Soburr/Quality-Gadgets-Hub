@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\WishlistItem;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,8 +26,17 @@ class ProductController extends Controller
         $inWishlist = Auth::check()
             && WishlistItem::where('user_id', Auth::id())->where('product_id', $product->id)->exists();
 
+        $hasPurchased = Auth::check() && OrderItem::whereHas('order', fn ($q) => $q->where('user_id', Auth::id())->where('status', 'delivered'))
+            ->where('product_id', $product->id)
+            ->exists();
+
+        $hasReviewed = Auth::check() && Review::where('product_id', $product->id)
+            ->where('user_id', Auth::id())
+            ->exists();
+
         return view('product', compact(
-            'product', 'breadcrumbChain', 'related', 'reviews', 'ratingBreakdown', 'inWishlist'
+            'product', 'breadcrumbChain', 'related', 'reviews', 'ratingBreakdown',
+            'inWishlist', 'hasPurchased', 'hasReviewed'
         ));
     }
 }

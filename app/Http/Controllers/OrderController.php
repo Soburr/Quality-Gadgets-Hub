@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -11,6 +12,13 @@ class OrderController extends Controller
     {
         abort_unless($order->user_id === Auth::id(), 403);
 
-        return view('order', ['order' => $order->load('items')]);
+        $order->load('items.product');
+
+        $reviewedProductIds = Review::where('user_id', Auth::id())
+            ->whereIn('product_id', $order->items->pluck('product_id')->filter())
+            ->pluck('product_id')
+            ->all();
+
+        return view('order', compact('order', 'reviewedProductIds'));
     }
 }

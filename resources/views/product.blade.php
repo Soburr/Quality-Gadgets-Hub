@@ -180,6 +180,52 @@
                     @endforeach
                 </div>
             @endif
+
+            <div class="review-form-block" id="write-review">
+                <h3>Write a review</h3>
+
+                @guest
+                    <p class="review-locked">
+                        <a href="{{ route('login') }}">Sign in</a> and purchase this product to leave a review.
+                    </p>
+                @else
+                    @if($hasReviewed)
+                        <p class="review-locked">You've already reviewed this product — thanks!</p>
+                    @elseif(!$hasPurchased)
+                        <p class="review-locked">Only customers who've purchased this product can leave a review.</p>
+                    @else
+                        @if($errors->any())
+                            <div class="auth-error">
+                                @foreach($errors->all() as $error)
+                                    <p>{{ $error }}</p>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <form action="{{ route('reviews.store', $product) }}" method="POST" class="review-form">
+                            @csrf
+                            <div class="review-form-field">
+                                <label>Your rating</label>
+                                <div class="review-rating-input">
+                                    @for($i = 5; $i >= 1; $i--)
+                                        <input type="radio" name="rating" id="star{{ $i }}" value="{{ $i }}" @checked(old('rating') == $i) required>
+                                        <label for="star{{ $i }}">★</label>
+                                    @endfor
+                                </div>
+                            </div>
+                            <div class="review-form-field">
+                                <label for="review_title">Title (optional)</label>
+                                <input type="text" id="review_title" name="title" value="{{ old('title') }}">
+                            </div>
+                            <div class="review-form-field">
+                                <label for="review_comment">Your review</label>
+                                <textarea id="review_comment" name="comment" rows="4" required>{{ old('comment') }}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </form>
+                    @endif
+                @endguest
+            </div>
         </div>
     </section>
 

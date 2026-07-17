@@ -188,3 +188,7 @@
     .cat-tree-meta{display:none;}
   }
 }
+
+@layer components {
+  .admin-table-comment{max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+}

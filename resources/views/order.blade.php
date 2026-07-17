@@ -46,6 +46,14 @@
                                     <div class="cart-row-color">Color: {{ $item->color }}</div>
                                 @endif
                                 <div class="cart-row-price mono">&#8358;{{ number_format($item->price) }} &times; {{ $item->quantity }}</div>
+
+                                @if($order->status === 'delivered' && $item->product)
+                                    @if(in_array($item->product_id, $reviewedProductIds))
+                                        <span class="order-reviewed-tag">&#10003; Reviewed</span>
+                                    @else
+                                        <a href="{{ route('product.show', $item->product) }}#write-review" class="order-review-link">Leave a review</a>
+                                    @endif
+                                @endif
                             </div>
                             <div class="cart-row-subtotal mono">&#8358;{{ number_format($item->subtotal) }}</div>
                         </div>

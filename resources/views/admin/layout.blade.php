@@ -29,6 +29,7 @@
                 <a href="{{ route('admin.products.index') }}" class="@if(request()->routeIs('admin.products.*')) is-active @endif">Products</a>
                 <a href="{{ route('admin.categories.index') }}" class="@if(request()->routeIs('admin.categories.*')) is-active @endif">Categories</a>
                 <a href="{{ route('admin.orders.index') }}" class="@if(request()->routeIs('admin.orders.*')) is-active @endif">Orders</a>
+                <a href="{{ route('admin.reviews.index') }}" class="@if(request()->routeIs('admin.reviews.*')) is-active @endif">Reviews</a>
             </nav>
 
             <div class="admin-sidebar-footer">

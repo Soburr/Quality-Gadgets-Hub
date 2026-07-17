@@ -57,4 +57,11 @@ class Product extends Model
 
         return $breakdown;
     }
+
+    public function recalculateRating(): void
+    {
+        $this->reviews_count = $this->reviews()->count();
+        $this->rating = $this->reviews_count > 0 ? round($this->reviews()->avg('rating'), 1) : 0;
+        $this->save();
+    }
 }

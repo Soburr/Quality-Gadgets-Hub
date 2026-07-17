@@ -136,3 +136,25 @@
     .cart-row-remove{grid-area:remove;justify-self:end;}
   }
 }
+
+@layer components {
+  .review-form-block{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-top:20px;}
+  .review-form-block h3{margin:0 0 16px;font-size:15px;}
+  .review-locked{font-size:13.5px;color:var(--ink-soft);margin:0;}
+  .review-locked a{color:var(--wine);font-weight:700;}
+
+  .review-form{display:flex;flex-direction:column;gap:16px;max-width:480px;}
+  .review-form-field label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  .review-form-field input[type="text"],.review-form-field textarea{
+    width:100%;border-radius:10px;border:1.5px solid var(--line);padding:10px 14px;font-size:13.5px;
+    background:var(--cream);color:var(--ink);font-family:inherit;
+  }
+  .review-form-field textarea{resize:vertical;}
+
+  .review-rating-input{display:inline-flex;flex-direction:row-reverse;gap:4px;}
+  .review-rating-input input{position:absolute;opacity:0;pointer-events:none;}
+  .review-rating-input label{font-size:28px;line-height:1;color:var(--line);cursor:pointer;transition:color .1s;}
+  .review-rating-input input:checked ~ label,
+  .review-rating-input label:hover,
+  .review-rating-input label:hover ~ label{color:var(--gold);}
+}

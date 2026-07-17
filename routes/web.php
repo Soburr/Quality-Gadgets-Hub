@@ -10,12 +10,14 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -44,6 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/account', [AccountController::class, 'show'])->name('account.show');
     Route::get('/account/orders', [AccountController::class, 'orders'])->name('account.orders');
 
+    Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.show');
     Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
@@ -63,4 +67,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
     Route::resource('categories', AdminCategoryController::class)->except('show');
+    Route::resource('reviews', AdminReviewController::class)->only(['index', 'destroy']);
 });
