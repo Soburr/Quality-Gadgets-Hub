@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\BrandController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -18,12 +19,15 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
 
 Route::get('/category/{category}', [CategoryController::class, 'show'])->name('category.show');
+
+Route::get('/brand/{brand}', [BrandController::class, 'show'])->name('brand.show');
 
 Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.show');
 
@@ -57,7 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('order.show');
 });
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('products', AdminProductController::class)->except('show');
@@ -68,4 +72,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::resource('categories', AdminCategoryController::class)->except('show');
     Route::resource('reviews', AdminReviewController::class)->only(['index', 'destroy']);
+    Route::resource('brands', AdminBrandController::class)->except('show');
 });

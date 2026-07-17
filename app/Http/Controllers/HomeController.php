@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Brand;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -11,6 +12,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $categories = Category::topLevel()->orderBy('sort_order')->get();
+        $brands = Brand::orderBy('sort_order')->get();
 
         $products      = Product::latest()->get();
         $flashProducts = Product::onDeal()->latest()->get();
@@ -22,7 +24,7 @@ class HomeController extends Controller
 
         return view('home', compact(
             'categories', 'products', 'flashProducts', 'newArrivals',
-            'bestSellers', 'flashEndsAt'
+            'bestSellers', 'flashEndsAt', 'brands'
         ));
     }
 }

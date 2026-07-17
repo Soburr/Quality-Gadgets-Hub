@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Brand;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -25,8 +26,9 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::flattenedForSelect();
+        $brands = Brand::orderBy('sort_order')->get();
 
-        return view('admin.products.create', compact('categories'));
+        return view('admin.products.create', compact('categories', 'brands'));
     }
 
     public function store(Request $request)
@@ -51,8 +53,9 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::flattenedForSelect();
+        $brands = Brand::orderBy('sort_order')->get();
 
-        return view('admin.products.edit', compact('product', 'categories'));
+        return view('admin.products.edit', compact('product', 'categories', 'brands'));
     }
 
     public function update(Request $request, Product $product)
@@ -97,6 +100,7 @@ class ProductController extends Controller
         return $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'brand_id' => 'nullable|exists:brands,id',
             'description' => 'nullable|string',
             'price' => 'required|integer|min:0',
             'was_price' => 'nullable|integer|min:0',

@@ -97,6 +97,32 @@
             </div>
         </div>
     </section>
+    
+    {{-- ============ SHOP BY BRAND ============ --}}
+    @if($brands->isNotEmpty())
+        <section class="section">
+            <div class="wrap">
+                <div class="section-head">
+                    <div><h2>Shop by brand</h2><div class="sub">Your favourite names, all in one place</div></div>
+                </div>
+                <div class="cat-grid">
+                    @foreach($brands as $brand)
+                        <a href="{{ route('brand.show', $brand) }}" class="cat-tile">
+                            <div class="ring-frame">
+                                @if($brand->logo)
+                                    <img src="{{ str($brand->logo)->startsWith(['http://','https://']) ? $brand->logo : asset($brand->logo) }}" alt="{{ $brand->name }}" class="cat-tile-image">
+                                @else
+                                    <svg class="ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#8C0027" stroke-opacity="0.25" stroke-width="8" stroke-dasharray="230 34"/></svg>
+                                    <div class="icon"><x-icon name="box" :size="24" /></div>
+                                @endif
+                            </div>
+                            <span>{{ $brand->name }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
 
     {{-- ============ NEW ARRIVALS ============ --}}
     <section class="section">

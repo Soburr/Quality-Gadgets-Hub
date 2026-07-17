@@ -28,6 +28,16 @@
         </div>
 
         <div class="admin-field">
+            <label for="brand_id">Brand (optional)</label>
+            <select id="brand_id" name="brand_id">
+                <option value="">No brand</option>
+                @foreach($brands as $brand)
+                    <option value="{{ $brand->id }}" @selected(old('brand_id', $product->brand_id ?? null) == $brand->id)>{{ $brand->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="admin-field">
             <label for="description">Description</label>
             <textarea id="description" name="description" rows="5">{{ old('description', $product->description ?? '') }}</textarea>
         </div>

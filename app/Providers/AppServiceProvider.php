@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Category;
+use App\Models\Brand;
 use Illuminate\Support\Facades\View;
 use App\Services\CartService;
 use App\Models\WishlistItem;
@@ -31,6 +32,7 @@ public function boot(): void
         );
         $view->with('cartCount', app(CartService::class)->count());
         $view->with('wishlistCount', Auth::check() ? WishlistItem::where('user_id', Auth::id())->count() : 0);
+        $view->with('navBrands', Brand::orderBy('sort_order')->get());
     });
 
     View::composer('components.product-card', function ($view) {

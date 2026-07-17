@@ -28,6 +28,7 @@
                 <a href="{{ route('admin.dashboard') }}" class="@if(request()->routeIs('admin.dashboard')) is-active @endif">Dashboard</a>
                 <a href="{{ route('admin.products.index') }}" class="@if(request()->routeIs('admin.products.*')) is-active @endif">Products</a>
                 <a href="{{ route('admin.categories.index') }}" class="@if(request()->routeIs('admin.categories.*')) is-active @endif">Categories</a>
+                <a href="{{ route('admin.brands.index') }}" class="@if(request()->routeIs('admin.brands.*')) is-active @endif">Brands</a>
                 <a href="{{ route('admin.orders.index') }}" class="@if(request()->routeIs('admin.orders.*')) is-active @endif">Orders</a>
                 <a href="{{ route('admin.reviews.index') }}" class="@if(request()->routeIs('admin.reviews.*')) is-active @endif">Reviews</a>
             </nav>
