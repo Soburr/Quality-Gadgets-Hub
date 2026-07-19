@@ -41,7 +41,7 @@
         </div>
     </section>
 
-    {{-- ============ FLASH SALE ============ --}}
+    {{-- ======== FLASH SALE ======== --}}
     <section class="section" id="deals">
         <div class="wrap">
             <div class="flash">
