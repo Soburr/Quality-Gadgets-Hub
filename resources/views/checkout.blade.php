@@ -82,7 +82,7 @@
                         </div>
                     </div>
 
-                    <div class="checkout-block">
+<div class="checkout-block">
                         <h3>Payment method</h3>
                         <div class="option-cards">
                             <label class="option-card">
@@ -91,22 +91,12 @@
                                 <span class="option-card-body"><strong>Pay on Delivery</strong><span>Cash or transfer when it arrives</span></span>
                             </label>
                             <label class="option-card">
-                                <input type="radio" name="payment_method" value="bank_transfer">
-                                <span class="option-card-icon"><x-icon name="box" :size="20" /></span>
-                                <span class="option-card-body"><strong>Bank Transfer</strong><span>Pay before dispatch</span></span>
-                            </label>
-                            <label class="option-card">
-                                <input type="radio" name="payment_method" value="card">
+                                <input type="radio" name="payment_method" value="pay_now">
                                 <span class="option-card-icon"><x-icon name="check" :size="20" /></span>
-                                <span class="option-card-body"><strong>Card</strong><span>Visa, Mastercard, Verve</span></span>
-                            </label>
-                            <label class="option-card">
-                                <input type="radio" name="payment_method" value="ussd">
-                                <span class="option-card-icon"><x-icon name="chevron-down" :size="20" /></span>
-                                <span class="option-card-body"><strong>USSD</strong><span>Pay from your bank app</span></span>
+                                <span class="option-card-body"><strong>Pay Now</strong><span>Card, bank transfer, or USSD via Paystack</span></span>
                             </label>
                         </div>
-                        <p class="checkout-note">Card and USSD payments aren't processed live yet — your order will still be placed and marked pending.</p>
+                        <p class="checkout-note">Choosing "Pay Now" takes you straight to Paystack's secure checkout to complete payment.</p>
                     </div>
                 </div>
 
