@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderConfirmationMail;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Services\CartService;
+use App\Services\PaystackService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -26,7 +29,7 @@ class CheckoutController extends Controller
         ]);
     }
 
-    public function store(Request $request, CartService $cart)
+    public function store(Request $request, CartService $cart, PaystackService $paystack)
     {
         $items = $cart->items();
 
@@ -41,7 +44,7 @@ class CheckoutController extends Controller
             'shipping_city' => 'required|string|max:255',
             'shipping_state' => 'required|string|max:255',
             'delivery_method' => 'required|in:door,pickup',
-            'payment_method' => 'required|in:card,bank_transfer,pod,ussd',
+            'payment_method' => 'required|in:pod,pay_now',
         ]);
 
         $subtotal = $cart->subtotal();
@@ -51,6 +54,7 @@ class CheckoutController extends Controller
             $order = Order::create([
                 'user_id' => Auth::id(),
                 'payment_method' => $validated['payment_method'],
+                'payment_status' => 'unpaid',
                 'delivery_method' => $validated['delivery_method'],
                 'subtotal' => $subtotal,
                 'delivery_fee' => $deliveryFee,
@@ -78,6 +82,20 @@ class CheckoutController extends Controller
         });
 
         $cart->clear();
+
+        if ($validated['payment_method'] === 'pay_now') {
+            try {
+                $authorizationUrl = $paystack->initialize($order);
+            } catch (\Throwable $e) {
+                report($e);
+                return redirect()->route('order.show', $order)
+                    ->with('status', "We couldn't start the payment — you can retry from this page.");
+            }
+
+            return redirect($authorizationUrl);
+        }
+
+        Mail::to($order->user)->queue(new OrderConfirmationMail($order));
 
         return redirect()->route('order.show', $order)->with('status', 'Order placed successfully!');
     }

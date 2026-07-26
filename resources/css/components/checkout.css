@@ -23,6 +23,8 @@
   }
   .order-success strong{display:block;color:#155C38;}
   .order-success p{margin:4px 0 0;font-size:13px;color:#1E7A4C;}
+  .order-success--error{background:#FCE6E6;border-color:#F0B8B8;color:#9B1C1C;}
+  .order-success--error strong{color:#7A1414;}
 
   .order-list{display:flex;flex-direction:column;gap:10px;}
   .order-list-row{

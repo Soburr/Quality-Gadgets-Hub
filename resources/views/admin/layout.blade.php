@@ -31,6 +31,9 @@
                 <a href="{{ route('admin.brands.index') }}" class="@if(request()->routeIs('admin.brands.*')) is-active @endif">Brands</a>
                 <a href="{{ route('admin.orders.index') }}" class="@if(request()->routeIs('admin.orders.*')) is-active @endif">Orders</a>
                 <a href="{{ route('admin.reviews.index') }}" class="@if(request()->routeIs('admin.reviews.*')) is-active @endif">Reviews</a>
+                <a href="{{ route('admin.mail-preview.welcome') }}" target="_blank" class="admin-nav-external">Preview: Welcome Email</a>
+                <a href="{{ route('admin.mail-preview.orderConfirmation') }}" target="_blank" class="admin-nav-external">Preview: Order Confirmation</a>
+                <a href="{{ route('admin.mail-preview.orderStatusUpdated') }}" target="_blank" class="admin-nav-external">Preview: Status Update</a>
             </nav>
 
             <div class="admin-sidebar-footer">

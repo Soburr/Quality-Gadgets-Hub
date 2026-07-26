@@ -192,3 +192,7 @@
 @layer components {
   .admin-table-comment{max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 }
+
+@layer components {
+  .admin-nav-external{font-size:12px !important;opacity:.75;}
+}

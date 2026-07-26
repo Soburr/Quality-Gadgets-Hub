@@ -22,6 +22,7 @@
             <h3>Customer &amp; shipping</h3>
             <p>{{ $order->user->name }} &middot; {{ $order->user->email }}</p>
             <p>{{ $order->shipping_name }}<br>{{ $order->shipping_phone }}<br>{{ $order->shipping_address }}, {{ $order->shipping_city }}, {{ $order->shipping_state }}</p>
+            <p>Payment: <strong>{{ match($order->payment_method) { 'pod' => 'Pay on Delivery', 'pay_now' => 'Paystack', default => ucfirst(str_replace('_', ' ', $order->payment_method)) } }}</strong> &middot; <strong>{{ ucfirst($order->payment_status ?? 'unpaid') }}</strong></p>
 
             <form action="{{ route('admin.orders.updateStatus', $order) }}" method="POST" class="admin-status-form">
                 @csrf

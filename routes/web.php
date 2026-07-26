@@ -12,6 +12,9 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\PaystackController;
+use App\Http\Controllers\PaystackWebhookController;
+use App\Http\Controllers\Admin\MailPreviewController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -45,6 +48,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 });
 
+Route::post('/paystack/webhook', [PaystackWebhookController::class, 'handle'])->name('paystack.webhook');
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     Route::get('/account', [AccountController::class, 'show'])->name('account.show');
@@ -59,6 +64,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('order.show');
+
+    Route::get('/checkout/pay/{order}/retry', [PaystackController::class, 'retry'])->name('paystack.retry');
+    Route::get('/paystack/callback', [PaystackController::class, 'callback'])->name('paystack.callback');
 });
 
     Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -73,4 +81,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', AdminCategoryController::class)->except('show');
     Route::resource('reviews', AdminReviewController::class)->only(['index', 'destroy']);
     Route::resource('brands', AdminBrandController::class)->except('show');
+
+    Route::get('/mail-preview/welcome', [MailPreviewController::class, 'welcome'])->name('mail-preview.welcome');
+    Route::get('/mail-preview/order-confirmation', [MailPreviewController::class, 'orderConfirmation'])->name('mail-preview.orderConfirmation');
+    Route::get('/mail-preview/order-status', [MailPreviewController::class, 'orderStatusUpdated'])->name('mail-preview.orderStatusUpdated');
 });

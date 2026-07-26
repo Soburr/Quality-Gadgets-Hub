@@ -8,8 +8,8 @@ use Illuminate\Support\Str;
 class Order extends Model
 {
     protected $fillable = [
-        'user_id', 'order_number', 'status', 'payment_method', 'delivery_method',
-        'subtotal', 'delivery_fee', 'total',
+        'user_id', 'order_number', 'status', 'payment_method', 'payment_status', 'payment_reference',
+        'delivery_method', 'subtotal', 'delivery_fee', 'total',
         'shipping_name', 'shipping_phone', 'shipping_address', 'shipping_city', 'shipping_state',
     ];
 
