@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\BrandController as AdminBrandController;
+use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -85,4 +86,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/mail-preview/welcome', [MailPreviewController::class, 'welcome'])->name('mail-preview.welcome');
     Route::get('/mail-preview/order-confirmation', [MailPreviewController::class, 'orderConfirmation'])->name('mail-preview.orderConfirmation');
     Route::get('/mail-preview/order-status', [MailPreviewController::class, 'orderStatusUpdated'])->name('mail-preview.orderStatusUpdated');
+
+    Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
+    Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
 });

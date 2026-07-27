@@ -67,21 +67,21 @@
                     <h3>Delivery method</h3>
                     <div class="option-cards">
                         <label class="option-card">
-                            <input type="radio" name="delivery_method" value="door" checked>
-                            <span class="option-card-icon"><x-icon name="truck" :size="20" /></span>
-                            <span class="option-card-body">
-                                <strong>Door Delivery</strong>
-                                <span>Delivered to your address &middot; &#8358;1,550</span>
-                            </span>
-                        </label>
-                        <label class="option-card">
-                            <input type="radio" name="delivery_method" value="pickup">
-                            <span class="option-card-icon"><x-icon name="box" :size="20" /></span>
-                            <span class="option-card-body">
-                                <strong>Pickup Station</strong>
-                                <span>Collect at a station near you &middot; &#8358;750</span>
-                            </span>
-                        </label>
+                                <input type="radio" name="delivery_method" value="door" checked>
+                                <span class="option-card-icon"><x-icon name="truck" :size="20" /></span>
+                                <span class="option-card-body">
+                                    <strong>Door Delivery</strong>
+                                    <span>Delivered to your address &middot; &#8358;{{ number_format($doorFee) }}</span>
+                                </span>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="delivery_method" value="pickup">
+                                <span class="option-card-icon"><x-icon name="box" :size="20" /></span>
+                                <span class="option-card-body">
+                                    <strong>Pickup Station</strong>
+                                    <span>Collect at a station near you &middot; &#8358;{{ number_format($pickupFee) }}</span>
+                                </span>
+                            </label>
                     </div>
                 </div>
 
@@ -116,13 +116,13 @@
                     <span class="mono">&#8358;{{ number_format($subtotal) }}</span>
                 </div>
                 <div class="cart-summary-row">
-                    <span>Delivery</span>
-                    <span id="deliveryFeeDisplay" class="mono">&#8358;1,550</span>
-                </div>
-                <div class="cart-summary-row cart-summary-total">
-                    <span>Total</span>
-                    <span class="mono" id="totalDisplay">&#8358;{{ number_format($subtotal + 1550) }}</span>
-                </div>
+                        <span>Delivery</span>
+                        <span id="deliveryFeeDisplay" class="mono">&#8358;{{ number_format($doorFee) }}</span>
+                    </div>
+                    <div class="cart-summary-total">
+                        <span>Total</span>
+                        <span class="mono" id="totalDisplay">&#8358;{{ number_format($subtotal + $doorFee) }}</span>
+                    </div>
                 <button type="submit" class="btn btn-primary cart-checkout-btn">Place Order</button>
             </aside>
         </form>
@@ -133,26 +133,19 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const subtotal = {
-            {
-                $subtotal
-            }
-        };
-        const fees = {
-            door: 1550,
-            pickup: 750
-        };
-        const feeDisplay = document.getElementById('deliveryFeeDisplay');
-        const totalDisplay = document.getElementById('totalDisplay');
+document.addEventListener('DOMContentLoaded', () => {
+    const subtotal = {{ $subtotal }};
+    const fees = { door: {{ $doorFee }}, pickup: {{ $pickupFee }} };
+    const feeDisplay = document.getElementById('deliveryFeeDisplay');
+    const totalDisplay = document.getElementById('totalDisplay');
 
-        document.querySelectorAll('input[name="delivery_method"]').forEach(input => {
-            input.addEventListener('change', () => {
-                const fee = fees[input.value];
-                feeDisplay.textContent = '₦' + fee.toLocaleString('en-NG');
-                totalDisplay.textContent = '₦' + (subtotal + fee).toLocaleString('en-NG');
-            });
+    document.querySelectorAll('input[name="delivery_method"]').forEach(input => {
+        input.addEventListener('change', () => {
+            const fee = fees[input.value];
+            feeDisplay.textContent = '₦' + fee.toLocaleString('en-NG');
+            totalDisplay.textContent = '₦' + (subtotal + fee).toLocaleString('en-NG');
         });
     });
+});
 </script>
 @endpush

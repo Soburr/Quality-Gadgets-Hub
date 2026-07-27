@@ -32,7 +32,7 @@
                 <div class="cart-layout">
                     <div class="cart-items">
                         @foreach($items as $item)
-                            <div class="cart-row">
+                            <div class="cart-row" data-price="{{ $item->product->price }}">
                                 <a href="{{ route('product.show', $item->product) }}" class="cart-row-thumb">
                                     <img src="{{ $item->product->image }}" alt="{{ $item->product->name }}">
                                 </a>
@@ -49,14 +49,14 @@
                                     @csrf
                                     @method('PATCH')
                                     <div class="qty-stepper qty-stepper--sm">
-                                        <button type="button" class="qty-btn cart-qty-minus" aria-label="Decrease quantity"><x-icon name="minus" :size="14" /></button>
-                                        <input type="number" name="quantity" value="{{ $item->quantity }}" min="0" inputmode="numeric">
-                                        <button type="button" class="qty-btn cart-qty-plus" aria-label="Increase quantity"><x-icon name="plus" :size="14" /></button>
+                                        <button type="button" class="qty-btn cart-qty-minus" aria-label="Decrease quantity">&minus;</button>
+                                        <input type="number" name="quantity" class="cart-qty-input" value="{{ $item->quantity }}" min="0" inputmode="numeric">
+                                        <button type="button" class="qty-btn cart-qty-plus" aria-label="Increase quantity">+</button>
                                     </div>
                                     <button type="submit" class="cart-update-btn">Update</button>
                                 </form>
 
-                                <div class="cart-row-subtotal mono">&#8358;{{ number_format($item->subtotal) }}</div>
+                                <div class="cart-row-subtotal mono" id="rowSubtotal-{{ $item->key }}">&#8358;{{ number_format($item->subtotal) }}</div>
 
                                 <form action="{{ route('cart.remove', $item->key) }}" method="POST" class="cart-row-remove">
                                     @csrf
@@ -73,7 +73,7 @@
                         <h3>Order Summary</h3>
                         <div class="cart-summary-row">
                             <span>Subtotal</span>
-                            <span class="mono">&#8358;{{ number_format($subtotal) }}</span>
+                            <span class="mono" id="cartSubtotal">&#8358;{{ number_format($subtotal) }}</span>
                         </div>
                         <div class="cart-summary-row">
                             <span>Delivery</span>
@@ -81,7 +81,7 @@
                         </div>
                         <div class="cart-summary-row cart-summary-total">
                             <span>Total</span>
-                            <span class="mono">&#8358;{{ number_format($subtotal) }}</span>
+                            <span class="mono" id="cartTotal">&#8358;{{ number_format($subtotal) }}</span>
                         </div>
                         <a href="{{ route('checkout.show') }}" class="btn btn-primary cart-checkout-btn">Proceed to Checkout</a>
                         <a href="{{ route('home') }}#grid" class="cart-continue-link">&larr; Continue shopping</a>
@@ -96,17 +96,44 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    function currency(n) {
+        return '₦' + n.toLocaleString('en-NG');
+    }
+
+    function recalcTotals() {
+        let total = 0;
+        document.querySelectorAll('.cart-row').forEach(row => {
+            const price = parseInt(row.dataset.price, 10);
+            const qty = parseInt(row.querySelector('.cart-qty-input').value || 0, 10);
+            total += price * qty;
+        });
+        document.getElementById('cartSubtotal').textContent = currency(total);
+        document.getElementById('cartTotal').textContent = currency(total);
+    }
+
     document.querySelectorAll('.cart-row-qty').forEach(form => {
-        const input = form.querySelector('input[name="quantity"]');
+        const row = form.closest('.cart-row');
+        const price = parseInt(row.dataset.price, 10);
+        const input = form.querySelector('.cart-qty-input');
         const minus = form.querySelector('.cart-qty-minus');
         const plus = form.querySelector('.cart-qty-plus');
+        const rowSubtotal = row.querySelector('[id^="rowSubtotal-"]');
+
+        function updateRow() {
+            const qty = parseInt(input.value || 0, 10);
+            rowSubtotal.textContent = currency(price * qty);
+            recalcTotals();
+        }
 
         minus.addEventListener('click', () => {
             input.value = Math.max(parseInt(input.value || 0, 10) - 1, 0);
+            updateRow();
         });
         plus.addEventListener('click', () => {
             input.value = parseInt(input.value || 0, 10) + 1;
+            updateRow();
         });
+        input.addEventListener('input', updateRow);
     });
 });
 </script>

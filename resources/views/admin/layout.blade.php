@@ -34,6 +34,7 @@
                 <a href="{{ route('admin.mail-preview.welcome') }}" target="_blank" class="admin-nav-external">Preview: Welcome Email</a>
                 <a href="{{ route('admin.mail-preview.orderConfirmation') }}" target="_blank" class="admin-nav-external">Preview: Order Confirmation</a>
                 <a href="{{ route('admin.mail-preview.orderStatusUpdated') }}" target="_blank" class="admin-nav-external">Preview: Status Update</a>
+                <a href="{{ route('admin.settings.edit') }}" class="@if(request()->routeIs('admin.settings.*')) is-active @endif">Settings</a>
             </nav>
 
             <div class="admin-sidebar-footer">

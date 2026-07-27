@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Setting;
 
 class CheckoutController extends Controller
 {
@@ -26,6 +27,8 @@ class CheckoutController extends Controller
             'items' => $items,
             'subtotal' => $cart->subtotal(),
             'user' => Auth::user(),
+            'doorFee' => (int) Setting::get('delivery_fee_door', 1550),
+            'pickupFee' => (int) Setting::get('delivery_fee_pickup', 750),
         ]);
     }
 
@@ -48,7 +51,9 @@ class CheckoutController extends Controller
         ]);
 
         $subtotal = $cart->subtotal();
-        $deliveryFee = $validated['delivery_method'] === 'door' ? 1550 : 750;
+        $doorFee = (int) Setting::get('delivery_fee_door', 1550);
+        $pickupFee = (int) Setting::get('delivery_fee_pickup', 750);
+        $deliveryFee = $validated['delivery_method'] === 'door' ? $doorFee : $pickupFee;
 
         $order = DB::transaction(function () use ($validated, $items, $subtotal, $deliveryFee) {
             $order = Order::create([
