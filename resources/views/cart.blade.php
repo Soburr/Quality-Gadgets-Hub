@@ -34,7 +34,7 @@
                         @foreach($items as $item)
                             <div class="cart-row" data-price="{{ $item->product->price }}">
                                 <a href="{{ route('product.show', $item->product) }}" class="cart-row-thumb">
-                                    <img src="{{ $item->product->image }}" alt="{{ $item->product->name }}">
+                                    <img src="{{ $item->product->image }}" alt="{{ $item->product->name }}" loading="lazy">
                                 </a>
 
                                 <div class="cart-row-info">

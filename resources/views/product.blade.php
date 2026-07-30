@@ -34,7 +34,7 @@
                         <div class="pdp-thumbs">
                             @foreach($product->gallery as $i => $img)
                                 <button type="button" class="pdp-thumb @if($i === 0) is-active @endif" data-img="{{ $img }}">
-                                    <img src="{{ $img }}" alt="{{ $product->name }} view {{ $i + 1 }}">
+                                    <img src="{{ $img }}" alt="{{ $product->name }} view {{ $i + 1 }}" loading="lazy">
                                 </button>
                             @endforeach
                         </div>

@@ -14,9 +14,9 @@ class HomeController extends Controller
         $categories = Category::topLevel()->orderBy('sort_order')->get();
         $brands = Brand::orderBy('sort_order')->get();
 
-        $products      = Product::latest()->get();
-        $flashProducts = Product::onDeal()->latest()->get();
-        $newArrivals   = Product::newArrivals()->latest()->get();
+        $products      = Product::latest()->paginate(24);
+        $flashProducts = Product::onDeal()->latest()->take(10)->get();
+        $newArrivals   = Product::newArrivals()->latest()->take(10)->get();
         $bestSellers   = Product::orderByDesc('rating')->take(8)->get();
 
         // Countdown target for the flash sale ring — swap for a real column, e.g. Deal::current()->ends_at

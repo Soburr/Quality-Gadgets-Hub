@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Services\ImageUploadService;
 
 class BrandController extends Controller
 {
@@ -28,7 +28,7 @@ class BrandController extends Controller
         $validated['slug'] = $this->uniqueSlug($validated['name']);
 
         if ($request->hasFile('logo')) {
-            $validated['logo'] = Storage::url($request->file('logo')->store('brands', 'public'));
+            $validated['logo'] = ImageUploadService::store($request->file('logo'), 'brands', 600);
         }
 
         Brand::create($validated);
@@ -50,7 +50,7 @@ class BrandController extends Controller
         }
 
         if ($request->hasFile('logo')) {
-            $validated['logo'] = Storage::url($request->file('logo')->store('brands', 'public'));
+            $validated['logo'] = ImageUploadService::store($request->file('logo'), 'brands', 600);
         } elseif ($request->boolean('remove_logo')) {
             $validated['logo'] = null;
         }

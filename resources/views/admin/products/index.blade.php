@@ -29,7 +29,7 @@
                     <tr>
                         <td>
                             <div class="admin-table-product">
-                                <img src="{{ str($product->image)->startsWith(['http://','https://']) ? $product->image : asset($product->image) }}" alt="">
+                                <img src="{{ str($product->image)->startsWith(['http://','https://']) ? $product->image : asset($product->image) }}" alt="" loading="lazy">
                                 <span>{{ $product->name }}</span>
                             </div>
                         </td>

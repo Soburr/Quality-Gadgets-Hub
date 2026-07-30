@@ -110,7 +110,7 @@
                         <a href="{{ route('brand.show', $brand) }}" class="cat-tile">
                             <div class="ring-frame">
                                 @if($brand->logo)
-                                    <img src="{{ str($brand->logo)->startsWith(['http://','https://']) ? $brand->logo : asset($brand->logo) }}" alt="{{ $brand->name }}" class="cat-tile-image">
+                                    <img src="{{ str($brand->logo)->startsWith(['http://','https://']) ? $brand->logo : asset($brand->logo) }}" alt="{{ $brand->name }}" class="cat-tile-image" loading="lazy">
                                 @else
                                     <svg class="ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#8C0027" stroke-opacity="0.25" stroke-width="8" stroke-dasharray="230 34"/></svg>
                                     <div class="icon"><x-icon name="box" :size="24" /></div>
@@ -165,15 +165,27 @@
     {{-- ============ MAIN PRODUCT GRID ============ --}}
     <section class="section" id="grid">
         <div class="wrap">
-            <<div class="section-head section-head--banner">
+            <div class="section-head section-head--banner">
                 <div><h2>All phones &amp; gadgets</h2><div class="sub">Everything in stock, no filters needed</div></div>
-                <span class="count-badge">{{ $products->count() }} in stock</span>
+                <span class="count-badge">{{ $products->total() }} in stock</span>
             </div>
             <div class="grid">
                 @foreach($products as $i => $product)
                     <x-product-card :product="$product" :seed="$i + 30" />
                 @endforeach
             </div>
+
+            @if($products->hasPages())
+                <div class="pager">
+                    @if($products->previousPageUrl())
+                        <a href="{{ $products->previousPageUrl() }}#grid" class="pager-btn">&larr; Prev</a>
+                    @endif
+                    <span class="pager-info">Page {{ $products->currentPage() }} of {{ $products->lastPage() }}</span>
+                    @if($products->nextPageUrl())
+                        <a href="{{ $products->nextPageUrl() }}#grid" class="pager-btn">Next &rarr;</a>
+                    @endif
+                </div>
+            @endif
         </div>
     </section>
 

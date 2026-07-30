@@ -9,6 +9,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Services\ImageUploadService;
 
 class ProductController extends Controller
 {
@@ -126,12 +127,12 @@ class ProductController extends Controller
 
     private function storeImage($file): string
     {
-        return Storage::url($file->store('products', 'public'));
+        return ImageUploadService::store($file, 'products', 1000);
     }
 
     private function storeGallery($files): array
     {
-        return collect($files)->map(fn ($file) => Storage::url($file->store('products', 'public')))->all();
+        return collect($files)->map(fn ($file) => ImageUploadService::store($file, 'products', 1000))->all();
     }
 
     private function parseColors(?string $raw): ?array

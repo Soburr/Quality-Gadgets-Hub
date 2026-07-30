@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Services\ImageUploadService;
 
 class CategoryController extends Controller
 {
@@ -91,7 +92,7 @@ class CategoryController extends Controller
 
     private function storeImage($file): string
     {
-        return Storage::url($file->store('categories', 'public'));
+        return ImageUploadService::store($file, 'categories', 800);
     }
 
     private function uniqueSlug(string $label, ?int $parentId, ?int $ignoreId = null): string
