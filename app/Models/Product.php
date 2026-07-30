@@ -7,14 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $fillable = [
-        'category_id', 'name', 'slug', 'description',
+        'category_id', 'brand_id', 'name', 'slug', 'description',
         'price', 'was_price', 'rating', 'reviews_count',
         'badge', 'image', 'colors', 'gallery', 'stock',
+        'is_flash_sale', 'flash_sale_ends_at',
     ];
 
     protected $casts = [
         'colors' => 'array',
         'gallery' => 'array',
+        'is_flash_sale' => 'boolean',
+        'flash_sale_ends_at' => 'datetime',
     ];
 
     public function category()
@@ -27,9 +30,13 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
-    public function scopeOnDeal($query)
+    public function scopeOnFlashSale($query)
     {
-        return $query->whereNotNull('was_price');
+        return $query->where('is_flash_sale', true)
+            ->where(function ($q) {
+                $q->whereNull('flash_sale_ends_at')
+                  ->orWhere('flash_sale_ends_at', '>', now());
+            });
     }
 
     public function scopeNewArrivals($query)

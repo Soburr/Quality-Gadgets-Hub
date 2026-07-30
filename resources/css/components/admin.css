@@ -196,3 +196,10 @@
 @layer components {
   .admin-nav-external{font-size:12px !important;opacity:.75;}
 }
+
+@layer components {
+  .flash-sale-field{background:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:16px;}
+  .flash-sale-toggle{display:flex;align-items:center;gap:10px;font-weight:700;font-size:13.5px;color:var(--ink);cursor:pointer;margin-bottom:0;}
+  .flash-sale-toggle input{width:18px;height:18px;accent-color:var(--wine);cursor:pointer;}
+  .flash-sale-ends{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+}

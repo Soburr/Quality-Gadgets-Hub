@@ -15,12 +15,14 @@ class HomeController extends Controller
         $brands = Brand::orderBy('sort_order')->get();
 
         $products      = Product::latest()->paginate(24);
-        $flashProducts = Product::onDeal()->latest()->take(10)->get();
+        $flashProducts = Product::onFlashSale()->latest()->take(10)->get();
         $newArrivals   = Product::newArrivals()->latest()->take(10)->get();
         $bestSellers   = Product::orderByDesc('rating')->take(8)->get();
 
-        // Countdown target for the flash sale ring — swap for a real column, e.g. Deal::current()->ends_at
-        $flashEndsAt = now()->addHours(5)->addMinutes(42)->addSeconds(58);
+        // Countdown shows the soonest-expiring flash sale product's end time.
+        // Products with no expiry (null) don't affect this — they just stay
+        // in the sale indefinitely without a ticking clock attached.
+        $flashEndsAt = $flashProducts->pluck('flash_sale_ends_at')->filter()->sort()->first() ?? now()->addDay();
 
         return view('home', compact(
             'categories', 'products', 'flashProducts', 'newArrivals',

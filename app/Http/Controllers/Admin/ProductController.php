@@ -98,7 +98,7 @@ class ProductController extends Controller
 
     private function validated(Request $request): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
@@ -107,9 +107,15 @@ class ProductController extends Controller
             'was_price' => 'nullable|integer|min:0',
             'badge' => 'nullable|string|max:30',
             'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|max:4096',
-            'gallery.*' => 'nullable|image|max:4096',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:8192',
+            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:8192',
+            'is_flash_sale' => 'nullable|boolean',
+            'flash_sale_ends_at' => 'nullable|date',
         ]);
+
+        $validated['is_flash_sale'] = $request->boolean('is_flash_sale');
+
+        return $validated;
     }
 
     private function uniqueSlug(string $name, ?int $ignoreId = null): string
