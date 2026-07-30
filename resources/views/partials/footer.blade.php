@@ -39,12 +39,15 @@
                 </ul>
             </div>
 
-            <div class="foot-col">
+    <div class="foot-col">
                 <h4>Legal</h4>
                 <ul>
-                    <li><a href="#">Terms of service</a></li>
-                    <li><a href="#">Privacy policy</a></li>
-                    <li><a href="#">Return policy</a></li>
+                    <li><a href="{{ route('pages.terms') }}">Terms &amp; Conditions</a></li>
+                    <li><a href="{{ route('pages.privacy') }}">Privacy policy</a></li>
+                    <li>
+                        <!-- <a href="{{ route('pages.returns') }}">Return policy</a> -->
+                    </li>
+                    <li><a href="{{ route('pages.refundGuidelines') }}">Refund &amp; Replacement Guidelines</a></li>
                 </ul>
             </div>
         </div>

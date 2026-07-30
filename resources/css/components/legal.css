@@ -1,0 +1,9 @@
+@layer components {
+  .legal-page{max-width:760px;}
+  .legal-page h2{font-size:19px;margin:32px 0 12px;color:var(--ink);}
+  .legal-page h2:first-child{margin-top:0;}
+  .legal-page p{margin:0 0 14px;font-size:14px;line-height:1.7;color:var(--ink-soft);}
+  .legal-page ul{margin:0 0 14px;padding-left:20px;list-style:disc;}
+  .legal-page ul li{margin-bottom:6px;font-size:14px;line-height:1.7;color:var(--ink-soft);}
+  .legal-page .legal-updated{font-size:12.5px;color:var(--ink-soft);font-weight:600;margin-bottom:28px;}
+}

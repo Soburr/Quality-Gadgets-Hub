@@ -14,6 +14,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\PaystackWebhookController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\MailPreviewController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +41,11 @@ Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.a
 Route::patch('/cart/{itemKey}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/{itemKey}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/checkout/buy-now/{product}', [CartController::class, 'buyNow'])->name('checkout.buyNow');
+
+Route::get('/terms-of-service', [PageController::class, 'terms'])->name('pages.terms');
+Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('pages.privacy');
+Route::get('/return-policy', [PageController::class, 'returns'])->name('pages.returns');
+Route::get('/refund-replacement-guidelines', [PageController::class, 'refundGuidelines'])->name('pages.refundGuidelines');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
