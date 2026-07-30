@@ -46,6 +46,8 @@ Route::get('/terms-of-service', [PageController::class, 'terms'])->name('pages.t
 Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('pages.privacy');
 Route::get('/return-policy', [PageController::class, 'returns'])->name('pages.returns');
 Route::get('/refund-replacement-guidelines', [PageController::class, 'refundGuidelines'])->name('pages.refundGuidelines');
+Route::get('/about-us', [PageController::class, 'about'])->name('pages.about');
+Route::get('/contact-us', [PageController::class, 'contact'])->name('pages.contact');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
