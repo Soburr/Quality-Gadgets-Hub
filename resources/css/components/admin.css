@@ -203,3 +203,7 @@
   .flash-sale-toggle input{width:18px;height:18px;accent-color:var(--wine);cursor:pointer;}
   .flash-sale-ends{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
 }
+
+@layer components {
+  .admin-chart-wrap{height:280px;position:relative;margin-top:12px;}
+}

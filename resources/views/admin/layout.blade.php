@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     @vite('resources/css/app.css')
+        <script src="https://unpkg.com/chart.js@4.4.4/dist/chart.umd.js"></script>
 </head>
 <body class="admin-body">
 
