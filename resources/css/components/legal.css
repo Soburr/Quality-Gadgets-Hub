@@ -32,3 +32,27 @@
   .contact-hours h3{font-size:15px;margin:0 0 8px;}
   .contact-hours p{margin:0;font-size:13.5px;color:var(--ink-soft);}
 }
+
+@layer components {
+  .error-404{max-width:520px;margin:40px auto;text-align:center;}
+  .error-404-ring{position:relative;width:180px;height:180px;margin:0 auto 24px;}
+  .error-404-ring svg{width:100%;height:100%;}
+  .error-404-code{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Archivo',sans-serif;font-weight:800;font-size:42px;color:var(--wine);
+  }
+  .error-404 h1{font-size:24px;margin:0 0 10px;color:var(--ink);}
+  .error-404 p{font-size:14px;color:var(--ink-soft);line-height:1.6;margin:0 0 28px;}
+  .error-404-actions{display:flex;gap:12px;justify-content:center;margin-bottom:28px;flex-wrap:wrap;}
+
+  .error-404-search{position:relative;max-width:360px;margin:0 auto;}
+  .error-404-search input{
+    width:100%;height:46px;border-radius:999px;border:2px solid var(--line);
+    padding:0 50px 0 20px;font-size:14px;background:var(--paper);color:var(--ink);
+  }
+  .error-404-search input:focus{border-color:var(--wine);outline:none;}
+  .error-404-search button{
+    position:absolute;right:4px;top:4px;bottom:4px;width:38px;border-radius:50%;
+    background:var(--magenta);color:#fff;display:flex;align-items:center;justify-content:center;
+  }
+}
