@@ -75,6 +75,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('order.show');
 
+    Route::post('/orders/{order}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('order.cancel');
+
     Route::get('/checkout/pay/{order}/retry', [PaystackController::class, 'retry'])->name('paystack.retry');
     Route::get('/paystack/callback', [PaystackController::class, 'callback'])->name('paystack.callback');
 });

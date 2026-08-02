@@ -16,15 +16,23 @@
             </div>
         @else
             <div class="order-list">
-                @foreach($orders as $order)
-                    <a href="{{ route('order.show', $order) }}" class="order-list-row">
-                        <div>
-                            <strong>{{ $order->order_number }}</strong>
-                            <span class="order-list-date">{{ $order->created_at->format('d M Y') }}</span>
-                        </div>
-                        <span class="order-list-status">{{ ucfirst($order->status) }}</span>
-                        <span class="mono">&#8358;{{ number_format($order->total) }}</span>
-                    </a>
+@foreach($orders as $order)
+                    <div class="order-list-row">
+                        <a href="{{ route('order.show', $order) }}" class="order-list-row-link">
+                            <div>
+                                <strong>{{ $order->order_number }}</strong>
+                                <span class="order-list-date">{{ $order->created_at->format('d M Y') }}</span>
+                            </div>
+                            <span class="order-list-status">{{ ucfirst($order->status) }}</span>
+                            <span class="mono">&#8358;{{ number_format($order->total) }}</span>
+                        </a>
+                        @if($order->status === 'pending' && $order->payment_status !== 'paid')
+                            <form action="{{ route('order.cancel', $order) }}" method="POST" onsubmit="return confirm('Cancel this order? This cannot be undone.'); event.stopPropagation();" class="order-list-cancel">
+                                @csrf
+                                <button type="submit">Cancel</button>
+                            </form>
+                        @endif
+                    </div>
                 @endforeach
             </div>
         @endif

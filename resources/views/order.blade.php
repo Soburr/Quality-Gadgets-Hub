@@ -28,12 +28,24 @@
             @endif
 
         <div class="section-head section-head--banner">
-            <div>
-                <h2>Order {{ $order->order_number }}</h2>
-                <div class="sub">Placed on {{ $order->created_at->format('d M Y, h:ia') }}</div>
+                <div>
+                    <h2>Order {{ $order->order_number }}</h2>
+                    <div class="sub">Placed on {{ $order->created_at->format('d M Y, h:ia') }}</div>
+                </div>
+                <span class="count-badge">{{ ucfirst($order->status) }}</span>
             </div>
-            <span class="count-badge">{{ ucfirst($order->status) }}</span>
-        </div>
+
+            @if($order->status === 'pending' && $order->payment_status !== 'paid')
+                <div class="order-cancel-bar">
+                    <span>Changed your mind? You can still cancel this order.</span>
+                    <form action="{{ route('order.cancel', $order) }}" method="POST" onsubmit="return confirm('Cancel this order? This cannot be undone.');">
+                        @csrf
+                        <button type="submit" class="order-cancel-btn">Cancel Order</button>
+                    </form>
+                </div>
+            @elseif($order->status === 'cancelled')
+                <div class="order-cancelled-notice">This order was cancelled.</div>
+            @endif
 
         <div class="cart-layout">
             <div class="cart-items">

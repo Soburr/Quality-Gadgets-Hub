@@ -66,3 +66,33 @@
   .bank-transfer-whatsapp:hover{background:#155C38;}
   .bank-transfer-note{font-size:12px;color:var(--ink-soft);margin:14px 0 0;}
 }
+
+@layer components {
+  .order-cancel-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    background:#FCEFD2;border:1px solid #F0D9A0;border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;
+  }
+  .order-cancel-bar span{font-size:13.5px;color:#8A5F00;font-weight:600;}
+  .order-cancel-btn{background:#fff;border:1.5px solid #9B1C1C;color:#9B1C1C;font-weight:800;font-size:12.5px;padding:9px 18px;border-radius:8px;flex-shrink:0;}
+  .order-cancel-btn:hover{background:#9B1C1C;color:#fff;}
+
+  .order-cancelled-notice{
+    background:#FCE6E6;border:1px solid #F0B8B8;color:#9B1C1C;font-weight:700;font-size:13.5px;
+    border-radius:var(--radius);padding:14px 20px;margin-bottom:24px;
+  }
+
+  .order-list-row{position:relative;}
+  .order-list-row-link{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;
+  }
+  .order-list-row-link:hover{border-color:var(--wine);}
+  .order-list-row-link strong{display:block;font-size:14px;color:var(--ink);}
+  .order-list-cancel{position:absolute;top:12px;right:20px;}
+  .order-list-cancel button{background:none;color:#9B1C1C;font-weight:700;font-size:12px;padding:4px 8px;}
+  .order-list-cancel button:hover{text-decoration:underline;}
+
+@media (max-width:640px){
+    .order-list-cancel{position:static;margin-top:8px;padding-left:20px;}
+  }
+}
