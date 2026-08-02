@@ -27,16 +27,25 @@
                     <circle cx="100" cy="100" r="86" fill="none" stroke="#8C0027" stroke-opacity="0.14" stroke-width="26"/>
                     <path d="M100 14 A86 86 0 1 1 40 166" fill="none" stroke="#C40356" stroke-width="26" stroke-linecap="round"/>
                 </svg>
-                <svg width="150" viewBox="0 0 100 200">
-                    <rect x="6" y="6" width="88" height="188" rx="16" fill="#20141A"/>
-                    <rect x="12" y="18" width="76" height="150" rx="4" fill="#FFF8F6"/>
-                    <circle cx="50" cy="188" r="6" fill="#3A2830"/>
-                </svg>
-                <div class="price-bubble">
-                    <div class="cut mono">&#8358;398,000</div>
-                    <div class="now mono">&#8358;329,000</div>
-                </div>
-                <div class="rating-bubble">&#9733; 4.8 <span style="color:var(--ink-soft);font-weight:600;">(2,140)</span></div>
+
+                @if($heroProduct)
+                    <a href="{{ route('product.show', $heroProduct) }}" class="hero-visual-link">
+                        <img src="{{ str($heroProduct->image)->startsWith(['http://','https://']) ? $heroProduct->image : asset($heroProduct->image) }}" alt="{{ $heroProduct->name }}" class="hero-product-image">
+                    </a>
+                    <div class="price-bubble">
+                        @if($heroProduct->was_price)
+                            <div class="cut mono">&#8358;{{ number_format($heroProduct->was_price) }}</div>
+                        @endif
+                        <div class="now mono">&#8358;{{ number_format($heroProduct->price) }}</div>
+                    </div>
+                    <div class="rating-bubble">&#9733; {{ number_format($heroProduct->rating, 1) }} <span style="color:var(--ink-soft);font-weight:600;">({{ number_format($heroProduct->reviews_count) }})</span></div>
+                @else
+                    <svg width="150" viewBox="0 0 100 200">
+                        <rect x="6" y="6" width="88" height="188" rx="16" fill="#20141A"/>
+                        <rect x="12" y="18" width="76" height="150" rx="4" fill="#FFF8F6"/>
+                        <circle cx="50" cy="188" r="6" fill="#3A2830"/>
+                    </svg>
+                @endif
             </div>
         </div>
     </section>

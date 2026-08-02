@@ -18,6 +18,7 @@ class HomeController extends Controller
         $flashProducts = Product::onFlashSale()->latest()->take(10)->get();
         $newArrivals   = Product::newArrivals()->latest()->take(10)->get();
         $bestSellers   = Product::orderByDesc('rating')->take(8)->get();
+        $heroProduct = $flashProducts->first() ?? $bestSellers->first() ?? $products->first();
 
         // Countdown shows the soonest-expiring flash sale product's end time.
         // Products with no expiry (null) don't affect this — they just stay
@@ -26,7 +27,7 @@ class HomeController extends Controller
 
         return view('home', compact(
             'categories', 'products', 'flashProducts', 'newArrivals',
-            'bestSellers', 'flashEndsAt', 'brands'
+            'bestSellers', 'flashEndsAt', 'brands', 'heroProduct'
         ));
     }
 }
