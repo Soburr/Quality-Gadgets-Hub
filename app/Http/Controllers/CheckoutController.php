@@ -29,6 +29,7 @@ class CheckoutController extends Controller
             'user' => Auth::user(),
             'doorFee' => (int) Setting::get('delivery_fee_door', 1550),
             'pickupFee' => (int) Setting::get('delivery_fee_pickup', 750),
+            'paymentMode' => Setting::get('payment_mode', 'paystack'),
         ]);
     }
 
@@ -49,6 +50,11 @@ class CheckoutController extends Controller
             'delivery_method' => 'required|in:door,pickup',
             'payment_method' => 'required|in:pod,pay_now',
         ]);
+
+        $paymentMode = Setting::get('payment_mode', 'paystack');
+        if ($validated['payment_method'] === 'pay_now' && $paymentMode === 'bank_transfer') {
+            $validated['payment_method'] = 'bank_transfer';
+        }
 
         $subtotal = $cart->subtotal();
         $doorFee = (int) Setting::get('delivery_fee_door', 1550);
@@ -88,7 +94,7 @@ class CheckoutController extends Controller
 
         $cart->clear();
 
-        if ($validated['payment_method'] === 'pay_now') {
+    if ($validated['payment_method'] === 'pay_now') {
             try {
                 $authorizationUrl = $paystack->initialize($order);
             } catch (\Throwable $e) {
@@ -100,8 +106,30 @@ class CheckoutController extends Controller
             return redirect($authorizationUrl);
         }
 
+        if ($validated['payment_method'] === 'bank_transfer') {
+            return redirect()->route('checkout.bankTransfer', $order);
+        }
+
         Mail::to($order->user)->queue(new OrderConfirmationMail($order));
 
         return redirect()->route('order.show', $order)->with('status', 'Order placed successfully!');
+    }
+
+    public function bankTransfer(Order $order)
+    {
+        abort_unless($order->user_id === Auth::id(), 403);
+        abort_unless($order->payment_method === 'bank_transfer', 404);
+
+        $whatsappNumber = Setting::get('whatsapp_number', '');
+        $message = "Hi, I just paid ₦".number_format($order->total)." for order {$order->order_number}.";
+        $whatsappUrl = "https://wa.me/{$whatsappNumber}?text=".urlencode($message);
+
+        return view('checkout-bank-transfer', [
+            'order' => $order,
+            'accountName' => Setting::get('bank_account_name'),
+            'accountNumber' => Setting::get('bank_account_number'),
+            'bankName' => Setting::get('bank_name'),
+            'whatsappUrl' => $whatsappUrl,
+        ]);
     }
 }

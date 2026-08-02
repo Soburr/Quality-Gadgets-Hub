@@ -93,13 +93,25 @@
                             <span class="option-card-icon"><x-icon name="truck" :size="20" /></span>
                             <span class="option-card-body"><strong>Pay on Delivery</strong><span>Cash or transfer when it arrives</span></span>
                         </label>
-                        <label class="option-card">
-                            <input type="radio" name="payment_method" value="pay_now">
-                            <span class="option-card-icon"><x-icon name="check" :size="20" /></span>
-                            <span class="option-card-body"><strong>Pay Now</strong><span>Card, bank transfer, or USSD via Paystack</span></span>
-                        </label>
-                    </div>
-                    <p class="checkout-note">Choosing "Pay Now" takes you straight to Paystack's secure checkout to complete payment.</p>
+                        @if($paymentMode === 'paystack')
+                                <label class="option-card">
+                                    <input type="radio" name="payment_method" value="pay_now">
+                                    <span class="option-card-icon"><x-icon name="check" :size="20" /></span>
+                                    <span class="option-card-body"><strong>Pay Now</strong><span>Card, bank transfer, or USSD via Paystack</span></span>
+                                </label>
+                            @else
+                                <label class="option-card">
+                                    <input type="radio" name="payment_method" value="pay_now">
+                                    <span class="option-card-icon"><x-icon name="check" :size="20" /></span>
+                                    <span class="option-card-body"><strong>Pay Now</strong><span>Bank transfer with instant confirmation</span></span>
+                                </label>
+                            @endif
+                        </div>
+                        @if($paymentMode === 'paystack')
+                            <p class="checkout-note">Choosing "Pay Now" takes you straight to Paystack's secure checkout to complete payment.</p>
+                        @else
+                            <p class="checkout-note">Choosing "Pay Now" shows our bank transfer details — your order is confirmed once you notify us on WhatsApp.</p>
+                        @endif
                 </div>
             </div>
 

@@ -47,3 +47,22 @@
   .order-review-link:hover{text-decoration:underline;}
   .order-reviewed-tag{display:inline-block;margin-top:8px;font-size:12.5px;font-weight:700;color:var(--green);}
 }
+
+@layer components {
+  .bank-transfer-card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:36px 32px;text-align:center;}
+  .bank-transfer-head{margin-bottom:24px;}
+  .bank-transfer-head h2{font-size:22px;margin:0 0 6px;}
+  .bank-transfer-head .sub{font-size:13.5px;color:var(--ink-soft);margin:0;}
+
+  .bank-transfer-rows{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;margin-bottom:24px;}
+  .bank-transfer-row{display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;color:var(--ink-soft);margin-bottom:14px;}
+  .bank-transfer-row:last-child{margin-bottom:0;}
+  .bank-transfer-row strong{color:var(--ink);font-size:15px;}
+  .bank-transfer-row--amount strong{color:var(--wine);font-size:18px;}
+  .bank-transfer-copy{width:26px;height:26px;border-radius:6px;border:1px solid var(--line);color:var(--ink-soft);display:flex;align-items:center;justify-content:center;}
+  .bank-transfer-copy:hover{border-color:var(--wine);color:var(--wine);}
+
+  .bank-transfer-whatsapp{width:100%;justify-content:center;background:#1E7A4C;}
+  .bank-transfer-whatsapp:hover{background:#155C38;}
+  .bank-transfer-note{font-size:12px;color:var(--ink-soft);margin:14px 0 0;}
+}
