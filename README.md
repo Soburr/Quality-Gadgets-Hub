@@ -134,3 +134,12 @@ All queued (`->queue()`, not `->send()`) — requires `php artisan queue:work` r
 - **Legal page content** (Privacy Policy, some of Terms & Conditions) is a mix of real client-provided text and reasonable placeholder boilerplate — not lawyer-reviewed, and not NDPR-audited.
 
 ---
+
+## Deployment Notes (cPanel)
+
+- `npm run build` **must be run locally** — cPanel shared hosting has no Node/npm. Upload the resulting `public/build/` folder to the server; without it, `@vite(...)` has nothing to serve and the site renders unstyled.
+- `php artisan queue:work` cannot run as a persistent background process on most shared cPanel plans — use cPanel's **Cron Jobs** to run `queue:work --stop-when-empty` on a schedule instead.
+- `.env` on the live server must have `APP_URL`, `SESSION_DOMAIN`, and `APP_KEY` correctly set for the real domain — a mismatch here causes silent session/login failures ("Page Expired" on every load, or "credentials don't match" even with a correct password).
+- `SESSION_SECURE_COOKIE=true` once the site is served over HTTPS.
+- `php artisan storage:link` needs SSH/Terminal access in cPanel; if unavailable, ask the host to run it, or check for a "Symlink" option in File Manager.
+- Set `APP_DEBUG=false` in production — this is also what makes the custom `errors/404.blade.php` and `errors/403.blade.php` views actually render instead of Laravel's raw debug screen.
