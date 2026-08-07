@@ -1,11 +1,11 @@
 @php $product = $product ?? null; @endphp
 
 @if($errors->any())
-<div class="auth-error">
-    @foreach($errors->all() as $error)
-    <p>{{ $error }}</p>
-    @endforeach
-</div>
+    <div class="auth-error">
+        @foreach($errors->all() as $error)
+            <p>{{ $error }}</p>
+        @endforeach
+    </div>
 @endif
 
 <div class="admin-form-grid">
@@ -20,9 +20,9 @@
             <select id="category_id" name="category_id" required>
                 <option value="">Select a category</option>
                 @foreach($categories as $cat)
-                <option value="{{ $cat->id }}" @selected(old('category_id', $product->category_id ?? null) == $cat->id)>
-                    {{ str_repeat('— ', $cat->depth) }}{{ $cat->label }}
-                </option>
+                    <option value="{{ $cat->id }}" @selected(old('category_id', $product->category_id ?? null) == $cat->id)>
+                        {{ str_repeat('— ', $cat->depth) }}{{ $cat->label }}
+                    </option>
                 @endforeach
             </select>
         </div>
@@ -32,14 +32,20 @@
             <select id="brand_id" name="brand_id">
                 <option value="">No brand</option>
                 @foreach($brands as $brand)
-                <option value="{{ $brand->id }}" @selected(old('brand_id', $product->brand_id ?? null) == $brand->id)>{{ $brand->name }}</option>
+                    <option value="{{ $brand->id }}" @selected(old('brand_id', $product->brand_id ?? null) == $brand->id)>{{ $brand->name }}</option>
                 @endforeach
             </select>
         </div>
 
         <div class="admin-field">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" rows="5">{{ old('description', $product->description ?? '') }}</textarea>
+            <label>Description</label>
+            <div class="rte-toolbar">
+                <button type="button" class="rte-btn" data-command="bold" title="Bold"><strong>B</strong></button>
+                <button type="button" class="rte-btn" data-command="italic" title="Italic"><em>i</em></button>
+                <span class="rte-hint">Press Enter for a new paragraph, Shift+Enter for a line break</span>
+            </div>
+            <div id="descriptionEditor" class="rte-editor" contenteditable="true">{!! old('description', $product->description ?? '') !!}</div>
+            <textarea name="description" id="descriptionField" hidden>{{ old('description', $product->description ?? '') }}</textarea>
         </div>
 
         <div class="admin-field-row">
@@ -80,6 +86,19 @@
         <div class="admin-field">
             <label>Color options (optional)</label>
             <div class="color-builder">
+                @if($savedColors->isNotEmpty())
+                    <div class="saved-colors">
+                        <span class="saved-colors-label">Saved colors — click to reuse</span>
+                        <div class="saved-colors-list">
+                            @foreach($savedColors as $swatch)
+                                <button type="button" class="saved-color-btn" data-name="{{ $swatch->name }}" data-hex="{{ $swatch->hex }}" title="{{ $swatch->name }} ({{ $swatch->hex }})">
+                                    <span style="background:{{ $swatch->hex }}"></span>
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 <div class="color-builder-list" id="colorBuilderList"></div>
                 <div class="color-builder-add">
                     <input type="color" id="colorPickerInput" value="#8C0027">
@@ -88,7 +107,7 @@
                 </div>
             </div>
             <textarea name="colors_raw" id="colorsRawField" hidden>{{ old('colors_raw', isset($product->colors) ? collect($product->colors)->map(fn($c) => $c['name'].':'.$c['hex'])->implode("\n") : '') }}</textarea>
-            <p class="admin-hint">Pick a color, name it, and add it — no hex codes to type.</p>
+            <p class="admin-hint">Pick a color, name it, and add it — or click a saved color above to reuse it.</p>
         </div>
     </div>
 
@@ -110,21 +129,18 @@
             <label for="gallery">Gallery images (optional, multiple)</label>
             <div class="admin-gallery-drop" id="galleryDrop">
                 @forelse($product->gallery ?? [] as $img)
-                <div class="admin-gallery-item">
-                    <img src="{{ str($img)->startsWith(['http://','https://']) ? $img : asset($img) }}" alt="">
-                    <button type="button" class="admin-gallery-item-remove" data-existing-path="{{ $img }}" aria-label="Remove this gallery image">&times;</button>
-                </div>
+                    <div class="admin-gallery-item">
+                        <img src="{{ str($img)->startsWith(['http://','https://']) ? $img : asset($img) }}" alt="">
+                        <button type="button" class="admin-gallery-item-remove" data-existing-path="{{ $img }}" aria-label="Remove this gallery image">&times;</button>
+                    </div>
                 @empty
-                <span class="admin-gallery-empty">No gallery images yet</span>
+                    <span class="admin-gallery-empty">No gallery images yet</span>
                 @endforelse
             </div>
             <label for="gallery" class="btn btn-ghost admin-gallery-choose">Choose gallery images</label>
             <input type="file" id="gallery" name="gallery[]" accept="image/*" multiple class="admin-file-hidden">
             <input type="hidden" name="removed_gallery" id="removedGalleryField" value="[]">
-            <p class="admin-hint">
-                Removed images are deleted when you save.
-                Uploading new gallery images replaces whatever remains.
-            </p>
+            <p class="admin-hint">Removed images are deleted when you save. Uploading new gallery images replaces whatever remains.</p>
         </div>
     </div>
 </div>
@@ -132,6 +148,28 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        // ---------- Rich text description editor ----------
+        var editor = document.getElementById('descriptionEditor');
+        var descriptionField = document.getElementById('descriptionField');
+
+        document.execCommand('defaultParagraphSeparator', false, 'p');
+
+        document.querySelectorAll('.rte-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                editor.focus();
+                document.execCommand(btn.dataset.command, false, null);
+                syncDescription();
+            });
+        });
+
+        function syncDescription() {
+            descriptionField.value = editor.innerHTML;
+        }
+
+        editor.addEventListener('input', syncDescription);
+        editor.addEventListener('blur', syncDescription);
+        syncDescription();
 
         // ---------- Main image live preview + remove ----------
         var imageInput = document.getElementById('image');
@@ -262,18 +300,22 @@
             renderColors();
         }
 
+        function addColor(name, hex) {
+            if (colors.some(function(c) { return c.hex.toLowerCase() === hex.toLowerCase(); })) {
+                return; // already in this product's list
+            }
+            colors.push({ name: name, hex: hex });
+            syncColors();
+        }
+
         addBtn.addEventListener('click', function() {
             var name = nameInput.value.trim();
             if (!name) {
                 nameInput.focus();
                 return;
             }
-            colors.push({
-                name: name,
-                hex: pickerInput.value
-            });
+            addColor(name, pickerInput.value);
             nameInput.value = '';
-            syncColors();
         });
 
         nameInput.addEventListener('keydown', function(e) {
@@ -281,6 +323,12 @@
                 e.preventDefault();
                 addBtn.click();
             }
+        });
+
+        document.querySelectorAll('.saved-color-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                addColor(btn.dataset.name, btn.dataset.hex);
+            });
         });
 
         renderColors();

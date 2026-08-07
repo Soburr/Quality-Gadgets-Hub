@@ -207,3 +207,29 @@
 @layer components {
   .admin-chart-wrap{height:280px;position:relative;margin-top:12px;}
 }
+
+@layer components {
+  /* ---------- RICH TEXT EDITOR (description) ---------- */
+  .rte-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+  .rte-btn{
+    width:32px;height:32px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);
+    color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:13px;
+  }
+  .rte-btn:hover{border-color:var(--wine);color:var(--wine);}
+  .rte-hint{font-size:11.5px;color:var(--ink-soft);margin-left:6px;}
+  .rte-editor{
+    min-height:140px;border-radius:10px;border:1.5px solid var(--line);padding:12px 14px;
+    background:var(--paper);color:var(--ink);font-size:13.5px;line-height:1.6;
+  }
+  .rte-editor:focus{outline:none;border-color:var(--wine);}
+  .rte-editor p{margin:0 0 10px;}
+  .rte-editor p:last-child{margin-bottom:0;}
+
+
+  .saved-colors{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line);}
+  .saved-colors-label{display:block;font-size:11.5px;font-weight:700;color:var(--ink-soft);margin-bottom:8px;}
+  .saved-colors-list{display:flex;flex-wrap:wrap;gap:8px;}
+  .saved-color-btn{width:28px;height:28px;border-radius:50%;padding:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);}
+  .saved-color-btn span{display:block;width:100%;height:100%;border-radius:50%;}
+  .saved-color-btn:hover{box-shadow:inset 0 0 0 2px var(--wine);}
+}

@@ -158,3 +158,9 @@
   .review-rating-input label:hover,
   .review-rating-input label:hover ~ label{color:var(--gold);}
 }
+
+@layer components {
+  .pdp-description-content p{margin:0 0 12px;color:var(--ink-soft);font-size:14px;line-height:1.7;}
+  .pdp-description-content p:last-child{margin-bottom:0;}
+  .pdp-description-content strong,.pdp-description-content b{color:var(--ink);font-weight:700;}
+}

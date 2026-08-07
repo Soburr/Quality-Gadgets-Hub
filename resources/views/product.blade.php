@@ -120,10 +120,10 @@
             @if($product->description)
                 <div class="pdp-description">
                     <h2>Product details</h2>
-                    <p>{{ $product->description }}</p>
+                    <div class="pdp-description-content">{!! $product->description !!}</div>
                 </div>
             @endif
-
+            
             {{-- ============ RATINGS & REVIEWS ============ --}}
             <div class="section-head" style="margin-top:36px;">
                 <div><h2>Ratings &amp; Reviews</h2><div class="sub">{{ $reviews->count() }} verified reviews</div></div>

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Category;
+use App\Models\ColorSwatch;
 use App\Models\Product;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use App\Services\ImageUploadService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -28,8 +28,9 @@ class ProductController extends Controller
     {
         $categories = Category::flattenedForSelect();
         $brands = Brand::orderBy('sort_order')->get();
+        $savedColors = ColorSwatch::orderBy('name')->get();
 
-        return view('admin.products.create', compact('categories', 'brands'));
+        return view('admin.products.create', compact('categories', 'brands', 'savedColors'));
     }
 
     public function store(Request $request)
@@ -38,6 +39,7 @@ class ProductController extends Controller
 
         $validated['slug'] = $this->uniqueSlug($validated['name']);
         $validated['colors'] = $this->parseColors($request->input('colors_raw'));
+        $this->rememberColors($validated['colors']);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->storeImage($request->file('image'));
@@ -55,8 +57,9 @@ class ProductController extends Controller
     {
         $categories = Category::flattenedForSelect();
         $brands = Brand::orderBy('sort_order')->get();
+        $savedColors = ColorSwatch::orderBy('name')->get();
 
-        return view('admin.products.edit', compact('product', 'categories', 'brands'));
+        return view('admin.products.edit', compact('product', 'categories', 'brands', 'savedColors'));
     }
 
     public function update(Request $request, Product $product)
@@ -69,6 +72,7 @@ class ProductController extends Controller
 
         if ($request->filled('colors_raw')) {
             $validated['colors'] = $this->parseColors($request->input('colors_raw'));
+            $this->rememberColors($validated['colors']);
         }
 
         if ($request->hasFile('image')) {
@@ -76,7 +80,8 @@ class ProductController extends Controller
         } elseif ($request->boolean('remove_image')) {
             $validated['image'] = null;
         }
-       if ($request->hasFile('gallery')) {
+
+        if ($request->hasFile('gallery')) {
             $validated['gallery'] = $this->storeGallery($request->file('gallery'));
         } else {
             $existingGallery = $product->gallery ?? [];
@@ -114,8 +119,36 @@ class ProductController extends Controller
         ]);
 
         $validated['is_flash_sale'] = $request->boolean('is_flash_sale');
+        $validated['description'] = $this->sanitizeDescription($validated['description'] ?? null);
 
         return $validated;
+    }
+
+    private function sanitizeDescription(?string $raw): ?string
+    {
+        if (! $raw) {
+            return null;
+        }
+
+        $allowedTags = '<b><strong><i><em><br><p><div>';
+        $clean = strip_tags($raw, $allowedTags);
+        $clean = preg_replace('/\son\w+\s*=\s*"[^"]*"/i', '', $clean);
+        $clean = preg_replace("/\son\w+\s*=\s*'[^']*'/i", '', $clean);
+        $clean = preg_replace('/javascript:/i', '', $clean);
+
+        return trim($clean) ?: null;
+    }
+
+    private function rememberColors(?array $colors): void
+    {
+        foreach ($colors ?? [] as $color) {
+            if (! empty($color['hex'])) {
+                ColorSwatch::updateOrCreate(
+                    ['hex' => $color['hex']],
+                    ['name' => $color['name'] ?: $color['hex']]
+                );
+            }
+        }
     }
 
     private function uniqueSlug(string $name, ?int $ignoreId = null): string
