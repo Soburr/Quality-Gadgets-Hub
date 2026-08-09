@@ -18,13 +18,14 @@ class HomeController extends Controller
         $flashProducts = Product::onFlashSale()->latest()->take(10)->get();
         $newArrivals   = Product::newArrivals()->latest()->take(10)->get();
         $bestSellers   = Product::orderByDesc('rating')->take(8)->get();
+        $featuredPicks = Product::featured()->latest()->take(10)->get();
         $heroProduct = $flashProducts->first() ?? $bestSellers->first() ?? $products->first();
     
         $flashEndsAt = $flashProducts->pluck('flash_sale_ends_at')->filter()->sort()->first() ?? now()->addDay();
 
         return view('home', compact(
             'categories', 'products', 'flashProducts', 'newArrivals',
-            'bestSellers', 'flashEndsAt', 'brands', 'heroProduct'
+            'bestSellers', 'flashEndsAt', 'brands', 'heroProduct', 'featuredPicks'
         ));
     }
 }

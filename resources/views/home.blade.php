@@ -50,26 +50,27 @@
         </div>
     </section>
 
-    {{-- ======== FLASH SALE ======== --}}
-    <section class="section" id="deals">
-        <div class="wrap">
-            <div class="flash">
-                <div class="section-head">
-                    <div>
-                        <h2>&#9889; Flash Sale</h2>
-                        <div class="sub">Prices this good disappear fast — restock not guaranteed</div>
+    {{-- ============ GREAT FINDS (admin-curated) ============ --}}
+    @if($featuredPicks->isNotEmpty())
+        <section class="section">
+            <div class="wrap">
+                <div class="finds">
+                    <div class="section-head">
+                        <div>
+                            <h2>&#128176; Great Finds</h2>
+                            <div class="sub">Handpicked essentials, big value</div>
+                        </div>
+                        <a class="see-all finds-see-all" href="#grid">See all &rarr;</a>
                     </div>
-                    <x-ring-timer :ends-at="$flashEndsAt" />
-                </div>
-
-                <div class="h-scroll">
-                    @foreach($flashProducts as $i => $product)
-                        <x-product-card :product="$product" :seed="$i" />
-                    @endforeach
+                    <div class="h-scroll">
+                        @foreach($featuredPicks as $i => $product)
+                            <x-product-card :product="$product" :seed="$i + 40" />
+                        @endforeach
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
     {{-- ============ VALUE PROPS ============ --}}
     <section class="values">
@@ -148,6 +149,27 @@
                 @foreach($newArrivals as $i => $product)
                     <x-product-card :product="$product" :seed="$i + 10" />
                 @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- ======== FLASH SALE ======== --}}
+    <section class="section" id="deals">
+        <div class="wrap">
+            <div class="flash">
+                <div class="section-head">
+                    <div>
+                        <h2>&#9889; Flash Sale</h2>
+                        <div class="sub">Prices this good disappear fast — restock not guaranteed</div>
+                    </div>
+                    <x-ring-timer :ends-at="$flashEndsAt" />
+                </div>
+
+                <div class="h-scroll">
+                    @foreach($flashProducts as $i => $product)
+                        <x-product-card :product="$product" :seed="$i" />
+                    @endforeach
+                </div>
             </div>
         </div>
     </section>

@@ -10,7 +10,7 @@ class Product extends Model
         'category_id', 'brand_id', 'name', 'slug', 'description',
         'price', 'was_price', 'rating', 'reviews_count',
         'badge', 'image', 'colors', 'gallery', 'stock',
-        'is_flash_sale', 'flash_sale_ends_at',
+        'is_flash_sale', 'flash_sale_ends_at', 'is_featured',
     ];
 
     protected $casts = [
@@ -37,6 +37,11 @@ class Product extends Model
                 $q->whereNull('flash_sale_ends_at')
                   ->orWhere('flash_sale_ends_at', '>', now());
             });
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
     }
 
     public function scopeNewArrivals($query)

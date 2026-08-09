@@ -116,9 +116,11 @@ class ProductController extends Controller
             'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:8192',
             'is_flash_sale' => 'nullable|boolean',
             'flash_sale_ends_at' => 'nullable|date',
+            'is_featured' => 'nullable|boolean',
         ]);
 
         $validated['is_flash_sale'] = $request->boolean('is_flash_sale');
+        $validated['is_featured'] = $request->boolean('is_featured');
         $validated['description'] = $this->sanitizeDescription($validated['description'] ?? null);
 
         return $validated;

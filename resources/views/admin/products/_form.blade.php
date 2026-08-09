@@ -84,6 +84,14 @@
         </div>
 
         <div class="admin-field">
+            <label class="flash-sale-toggle">
+                <input type="checkbox" name="is_featured" value="1" @checked(old('is_featured', $product->is_featured ?? false))>
+                <span>Feature on homepage (Great Finds row)</span>
+            </label>
+            <p class="admin-hint">Use this to spotlight budget items, accessories, or anything else worth extra visibility — independent of price or flash sale status.</p>
+        </div>
+
+        <div class="admin-field">
             <label>Color options (optional)</label>
             <div class="color-builder">
                 @if($savedColors->isNotEmpty())

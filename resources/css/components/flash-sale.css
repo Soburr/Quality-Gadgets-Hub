@@ -10,3 +10,12 @@
   .ring-timer .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono';font-weight:600;font-size:14px;color:#fff;}
   .timer-label{font-size:10px;color:#F6C6D3;text-align:center;margin-top:4px;letter-spacing:.08em;text-transform:uppercase;}
 }
+
+@layer components {
+  /* ---------- GREAT FINDS (deliberately distinct from Flash Sale's wine) ---------- */
+  .finds{background:var(--gold);border-radius:20px;padding:24px 24px 8px;}
+  .finds .section-head h2{color:#20141A;font-size:23px;}
+  .finds .section-head .sub{color:#5C3E00;font-weight:700;}
+  .finds-see-all{color:#20141A !important;}
+  .finds-see-all:hover{text-decoration:underline;}
+}
