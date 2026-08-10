@@ -15,6 +15,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\PaystackWebhookController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\FeaturedController;
 use App\Http\Controllers\Admin\MailPreviewController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,8 @@ Route::get('/category/{category}', [CategoryController::class, 'show'])->name('c
 Route::get('/brand/{brand}', [BrandController::class, 'show'])->name('brand.show');
 
 Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.show');
+
+Route::get('/great-finds', [FeaturedController::class, 'index'])->name('featured.index');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.show');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');

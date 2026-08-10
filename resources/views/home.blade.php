@@ -60,7 +60,7 @@
                             <h2>&#128176; Great Finds</h2>
                             <div class="sub">Handpicked essentials, big value</div>
                         </div>
-                        <a class="see-all finds-see-all" href="#grid">See all &rarr;</a>
+                        <a class="see-all finds-see-all" href="{{ route('featured.index') }}">See all &rarr;</a>
                     </div>
                     <div class="h-scroll">
                         @foreach($featuredPicks as $i => $product)
