@@ -31,3 +31,14 @@
     .auth-card{padding:26px;}
   }
 }
+
+@layer components {
+  .auth-password-wrap{position:relative;}
+  .auth-password-wrap input{padding-right:44px;}
+  .auth-password-toggle{
+    position:absolute;top:50%;right:12px;transform:translateY(-50%);
+    color:var(--ink-soft);display:flex;align-items:center;justify-content:center;
+    width:26px;height:26px;background:none;
+  }
+  .auth-password-toggle:hover{color:var(--wine);}
+}
