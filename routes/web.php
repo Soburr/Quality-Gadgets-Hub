@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -103,4 +104,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/export', [AdminUserController::class, 'export'])->name('users.export');
+    Route::patch('/users/{user}/toggle-admin', [AdminUserController::class, 'toggleAdmin'])->name('users.toggleAdmin');
 });
