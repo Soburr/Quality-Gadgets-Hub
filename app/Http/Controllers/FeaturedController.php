@@ -8,7 +8,7 @@ class FeaturedController extends Controller
 {
     public function index()
     {
-        $products = Product::featured()->latest()->paginate(20);
+        $products = Product::featured()->inRandomOrder(date('Ymd'))->paginate(20);
 
         return view('featured', compact('products'));
     }
