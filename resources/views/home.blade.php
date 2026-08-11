@@ -9,8 +9,8 @@
         <div class="wrap">
             <div class="hero-copy">
                 <div class="eyebrow"><span class="dot"></span>New stock just landed</div>
-                <h1>Real phones.<br>Real prices. <em>No wahala.</em></h1>
-                <p class="lede">Every device on Quality Gadgets Hub is inspected and verified before it ships — from flagship Android to budget-friendly workhorses.</p>
+                <h1>Utmost Quality <em>At all times...</em></h1>
+                <p class="lede">Welcome to your ultimate destination for original tech gadgets and other smart accessories designed to elevate your lifestyle.</p>
                 <div class="hero-ctas">
                     <a class="btn btn-primary" href="#deals">Shop flash deals</a>
                     <a class="btn btn-ghost" href="#grid">Browse all phones</a>
