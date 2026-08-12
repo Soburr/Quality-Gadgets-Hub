@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class SettingController extends Controller
 {
@@ -41,5 +43,23 @@ class SettingController extends Controller
         }
 
         return back()->with('status', 'Settings updated.');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        $user = Auth::user();
+
+        if (! Hash::check($validated['current_password'], $user->password)) {
+            return back()->withErrors(['current_password' => 'Your current password is incorrect.'])->withInput();
+        }
+
+        $user->update(['password' => Hash::make($validated['password'])]);
+
+        return back()->with('status', 'Password updated successfully.');
     }
 }

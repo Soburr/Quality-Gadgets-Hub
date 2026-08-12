@@ -104,6 +104,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+    Route::put('/settings/password', [AdminSettingController::class, 'updatePassword'])->name('settings.updatePassword');
 
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::get('/users/export', [AdminUserController::class, 'export'])->name('users.export');

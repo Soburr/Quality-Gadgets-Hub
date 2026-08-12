@@ -106,7 +106,7 @@
   .admin-form-grid{display:grid;grid-template-columns:1fr 320px;gap:24px;margin-bottom:24px;}
   .admin-form-main,.admin-form-side{display:flex;flex-direction:column;gap:18px;}
   .admin-field label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px;}
-  .admin-field input[type="text"],.admin-field input[type="number"],.admin-field select,.admin-field textarea{
+  .admin-field input[type="text"],.admin-field input[type="number"],.admin-field input[type="password"],.admin-field select,.admin-field textarea{
     width:100%;border-radius:10px;border:1.5px solid var(--line);padding:10px 14px;font-size:13.5px;
     background:var(--paper);color:var(--ink);font-family:inherit;
   }
