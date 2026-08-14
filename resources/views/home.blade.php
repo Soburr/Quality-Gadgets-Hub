@@ -9,7 +9,7 @@
         <div class="wrap">
             <div class="hero-copy">
                 <div class="eyebrow"><span class="dot"></span>New stock just landed</div>
-                <h1>Utmost Quality <em>At all times...</em></h1>
+                <h1>Utmost Quality <em>At All Times...</em></h1>
                 <p class="lede">Welcome to your ultimate destination for original tech gadgets and other smart accessories designed to elevate your lifestyle.</p>
                 <div class="hero-ctas">
                     <a class="btn btn-primary" href="#deals">Shop flash deals</a>
@@ -82,10 +82,6 @@
             <div class="value">
                 <span class="icon"><x-icon name="check" :size="20" /></span>
                 <div><h3>Fast Delivery</h3><p>Same day delivery is guaranteed for orders within Lagos and other states in its environs.</p></div>
-            </div>
-            <div class="value">
-                <span class="icon"><x-icon name="arrow-right" :size="20" /></span>
-                <div><h3>Fast dispatch</h3><p>Same-day shipping before 3pm</p></div>
             </div>
         </div>
     </section>
