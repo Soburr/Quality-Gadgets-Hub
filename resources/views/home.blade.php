@@ -77,15 +77,11 @@
         <div class="wrap">
             <div class="value">
                 <span class="icon"><x-icon name="box" :size="20" /></span>
-                <div><h3>Verified sellers</h3><p>Every phone inspected on arrival</p></div>
+                <div><h3>Pickup Option</h3><p>You can arrange a pickup or visit our physical store to collect your order. We'll be happy to assist you!</p></div>
             </div>
             <div class="value">
                 <span class="icon"><x-icon name="check" :size="20" /></span>
-                <div><h3>7-day returns</h3><p>Change your mind, no stress</p></div>
-            </div>
-            <div class="value">
-                <span class="icon"><x-icon name="truck" :size="20" /></span>
-                <div><h3>Pay on delivery</h3><p>Available across Lagos</p></div>
+                <div><h3>Fast Delivery</h3><p>Same day delivery is guaranteed for orders within Lagos and other states in its environs.</p></div>
             </div>
             <div class="value">
                 <span class="icon"><x-icon name="arrow-right" :size="20" /></span>
