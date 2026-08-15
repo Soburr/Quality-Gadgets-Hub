@@ -15,11 +15,6 @@
                     <a class="btn btn-primary" href="#deals">Shop flash deals</a>
                     <a class="btn btn-ghost" href="#grid">Browse all phones</a>
                 </div>
-                <div class="trust-row">
-                    <div class="t"><x-icon name="check" :size="16" /> Verified sellers only</div>
-                    <div class="t"><x-icon name="check" :size="16" /> 7-day return window</div>
-                    <div class="t"><x-icon name="check" :size="16" /> Pay on delivery (Lagos)</div>
-                </div>
             </div>
 
             <div class="hero-visual ring-frame">
