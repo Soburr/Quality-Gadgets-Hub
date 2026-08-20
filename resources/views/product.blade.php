@@ -119,11 +119,11 @@
                     </div>
                 </form>
 
-                <div class="pdp-trust">
+                <!-- <div class="pdp-trust">
                     <div class="t"><x-icon name="check" :size="16" /> Verified seller</div>
                     <div class="t"><x-icon name="check" :size="16" /> 7-day return window</div>
                     <div class="t"><x-icon name="truck" :size="16" /> Pay on delivery (Lagos)</div>
-                </div>
+                </div> -->
             </div>
         </div>
 

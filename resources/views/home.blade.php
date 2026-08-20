@@ -76,7 +76,7 @@
             </div>
             <div class="value">
                 <span class="icon"><x-icon name="check" :size="20" /></span>
-                <div><h3>Fast Delivery</h3><p>Same day delivery is guaranteed for orders within Lagos and other states in its environs.</p></div>
+                <div><h3>Fast Delivery</h3><p>Same day delivery is guaranteed within Lagos. Orders made from outside Lagos may take up to 24–48 hours.</p></div>
             </div>
         </div>
     </section>
