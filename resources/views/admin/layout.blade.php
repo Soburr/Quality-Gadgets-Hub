@@ -37,6 +37,7 @@
                 <a href="{{ route('admin.mail-preview.orderStatusUpdated') }}" target="_blank" class="admin-nav-external">Preview: Status Update</a>
                 <a href="{{ route('admin.settings.edit') }}" class="@if(request()->routeIs('admin.settings.*')) is-active @endif">Settings</a>
                 <a href="{{ route('admin.delivery-fees.edit') }}" class="@if(request()->routeIs('admin.delivery-fees.*')) is-active @endif">Delivery Fees</a>
+                <a href="{{ route('admin.pickup-locations.index') }}" class="@if(request()->routeIs('admin.pickup-locations.*')) is-active @endif">Pickup Locations</a>
                 <a href="{{ route('admin.users.index') }}" class="@if(request()->routeIs('admin.users.*')) is-active @endif">Users</a>
             </nav>
 

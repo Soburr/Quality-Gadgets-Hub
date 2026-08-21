@@ -84,9 +84,21 @@
                                 <span class="option-card-icon"><x-icon name="box" :size="20" /></span>
                                 <span class="option-card-body">
                                     <strong>Store Pickup</strong>
-                                    <span id="storePickupHint">Available for Lagos only &middot; &#8358;{{ number_format($storePickupFee) }}</span>
+                                    <span id="storePickupHint">Available for Lagos only</span>
                                 </span>
                             </label>
+                        </div>
+
+                        <div class="admin-field" id="pickupLocationWrap" style="display:none;margin-top:16px;">
+                            <label for="pickup_location_id">Pickup location</label>
+                            <select id="pickup_location_id" name="pickup_location_id">
+                                <option value="">Select a location</option>
+                                @foreach($pickupLocations as $location)
+                                    <option value="{{ $location->id }}" data-fee="{{ $location->fee }}" @selected(old('pickup_location_id') == $location->id)>
+                                        {{ $location->name }} &mdash; &#8358;{{ number_format($location->fee) }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 
@@ -144,39 +156,45 @@
 document.addEventListener('DOMContentLoaded', () => {
     const subtotal = {{ $subtotal }};
     const stateFees = @json($stateFees);
-    const storePickupFee = {{ $storePickupFee }};
 
     const stateSelect = document.getElementById('shipping_state');
     const deliveryOption = document.getElementById('deliveryOption');
     const storePickupOption = document.getElementById('storePickupOption');
+    const storePickupCard = document.getElementById('storePickupCard');
+    const storePickupHint = document.getElementById('storePickupHint');
+    const pickupLocationWrap = document.getElementById('pickupLocationWrap');
+    const pickupLocationSelect = document.getElementById('pickup_location_id');
     const deliveryMethodLabel = document.getElementById('deliveryMethodLabel');
     const deliveryMethodFeeLabel = document.getElementById('deliveryMethodFeeLabel');
     const feeDisplay = document.getElementById('deliveryFeeDisplay');
     const totalDisplay = document.getElementById('totalDisplay');
 
+    function selectedPickupFee() {
+        const option = pickupLocationSelect.options[pickupLocationSelect.selectedIndex];
+        return option && option.dataset.fee ? parseInt(option.dataset.fee, 10) : null;
+    }
+
     function currentDeliveryFee() {
         if (storePickupOption.checked) {
-            return storePickupFee;
+            return selectedPickupFee();
         }
         const state = stateSelect.value;
         return state && stateFees.hasOwnProperty(state) ? stateFees[state] : null;
     }
-
-    const storePickupCard = document.getElementById('storePickupCard');
-    const storePickupHint = document.getElementById('storePickupHint');
 
     function updateStorePickupAvailability() {
         const isLagos = stateSelect.value === 'Lagos';
 
         storePickupOption.disabled = !isLagos;
         storePickupCard.classList.toggle('option-card--disabled', !isLagos);
-        storePickupHint.textContent = isLagos
-            ? 'Collect at our store · ₦' + storePickupFee.toLocaleString('en-NG')
-            : 'Available for Lagos only · ₦' + storePickupFee.toLocaleString('en-NG');
+        storePickupHint.textContent = isLagos ? 'Choose a location below' : 'Available for Lagos only';
 
         if (!isLagos && storePickupOption.checked) {
             deliveryOption.checked = true;
         }
+
+        pickupLocationWrap.style.display = storePickupOption.checked ? 'block' : 'none';
+        pickupLocationSelect.required = storePickupOption.checked;
     }
 
     function recalc() {
@@ -190,10 +208,13 @@ document.addEventListener('DOMContentLoaded', () => {
             deliveryMethodFeeLabel.textContent = state
                 ? '₦' + fee.toLocaleString('en-NG')
                 : 'Select your state above to see the price';
+        } else {
+            deliveryMethodLabel.textContent = 'Delivery';
+            deliveryMethodFeeLabel.textContent = 'Select your state above to see the price';
         }
 
         if (fee === null) {
-            feeDisplay.textContent = 'Select your state';
+            feeDisplay.textContent = storePickupOption.checked ? 'Select a location' : 'Select your state';
             totalDisplay.textContent = '₦' + subtotal.toLocaleString('en-NG');
         } else {
             feeDisplay.textContent = '₦' + fee.toLocaleString('en-NG');
@@ -204,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
     stateSelect.addEventListener('change', recalc);
     deliveryOption.addEventListener('change', recalc);
     storePickupOption.addEventListener('change', recalc);
+    pickupLocationSelect.addEventListener('change', recalc);
 
     recalc();
 });

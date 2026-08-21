@@ -17,6 +17,7 @@ use App\Http\Controllers\PaystackWebhookController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\FeaturedController;
 use App\Http\Controllers\Admin\MailPreviewController;
+use App\Http\Controllers\Admin\PickupLocationController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -98,6 +99,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', AdminCategoryController::class)->except('show');
     Route::resource('reviews', AdminReviewController::class)->only(['index', 'destroy']);
     Route::resource('brands', AdminBrandController::class)->except('show');
+
+    Route::resource('pickup-locations', PickupLocationController::class)->except('show');
 
     Route::get('/mail-preview/welcome', [MailPreviewController::class, 'welcome'])->name('mail-preview.welcome');
     Route::get('/mail-preview/order-confirmation', [MailPreviewController::class, 'orderConfirmation'])->name('mail-preview.orderConfirmation');

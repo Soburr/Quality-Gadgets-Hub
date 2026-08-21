@@ -15,12 +15,12 @@
         @csrf
         @method('PUT')
 
-        <div class="admin-panel" style="margin-bottom:20px;max-width:400px;">
+        <div class="admin-panel" style="margin-bottom:20px;max-width:500px;">
             <h3>Store Pickup</h3>
-            <div class="admin-field">
-                <label for="store_pickup_fee">Fee for collecting from your physical store (&#8358;)</label>
-                <input type="number" id="store_pickup_fee" name="store_pickup_fee" value="{{ old('store_pickup_fee', $storePickupFee) }}" required min="0">
-            </div>
+            <p class="admin-hint" style="margin:0;">
+                Store Pickup now has its own per-location pricing — manage it at
+                <a href="{{ route('admin.pickup-locations.index') }}">Pickup Locations</a>.
+            </p>
         </div>
 
         <div class="admin-table-wrap">

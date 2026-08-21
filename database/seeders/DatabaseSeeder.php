@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
           ProductSeeder::class,
           ReviewSeeder::class,
           SettingSeeder::class,
-          DeliveryFeeSeeder::class
+          DeliveryFeeSeeder::class,
+          PickupLocationSeeder::class
         ]);
     }
 }
