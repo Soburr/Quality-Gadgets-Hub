@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Mail\OrderConfirmationMail;
+use App\Models\DeliveryFee;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Setting;
 use App\Services\CartService;
 use App\Services\PaystackService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use App\Models\Setting;
+use Illuminate\Validation\Rule;
 
 class CheckoutController extends Controller
 {
@@ -27,8 +29,9 @@ class CheckoutController extends Controller
             'items' => $items,
             'subtotal' => $cart->subtotal(),
             'user' => Auth::user(),
-            'doorFee' => (int) Setting::get('delivery_fee_door', 1550),
-            'pickupFee' => (int) Setting::get('delivery_fee_pickup', 750),
+            'states' => DeliveryFee::STATES,
+            'stateFees' => DeliveryFee::pluck('fee', 'state'),
+            'storePickupFee' => (int) Setting::get('store_pickup_fee', 0),
             'paymentMode' => Setting::get('payment_mode', 'paystack'),
         ]);
     }
@@ -45,21 +48,22 @@ class CheckoutController extends Controller
             'shipping_name' => 'required|string|max:255',
             'shipping_phone' => 'required|string|max:20',
             'shipping_address' => 'required|string|max:500',
+            'shipping_state' => ['required', Rule::in(DeliveryFee::STATES)],
             'shipping_city' => 'required|string|max:255',
-            'shipping_state' => 'required|string|max:255',
-            'delivery_method' => 'required|in:door,pickup',
-            'payment_method' => 'required|in:pod,pay_now',
+            'delivery_method' => 'required|in:delivery,store_pickup',
+            'payment_method' => 'required|in:pay_now',
         ]);
 
+        $subtotal = $cart->subtotal();
+
+        $deliveryFee = $validated['delivery_method'] === 'store_pickup'
+            ? (int) Setting::get('store_pickup_fee', 0)
+            : (int) (DeliveryFee::where('state', $validated['shipping_state'])->value('fee') ?? 0);
+
         $paymentMode = Setting::get('payment_mode', 'paystack');
-        if ($validated['payment_method'] === 'pay_now' && $paymentMode === 'bank_transfer') {
+        if ($paymentMode === 'bank_transfer') {
             $validated['payment_method'] = 'bank_transfer';
         }
-
-        $subtotal = $cart->subtotal();
-        $doorFee = (int) Setting::get('delivery_fee_door', 1550);
-        $pickupFee = (int) Setting::get('delivery_fee_pickup', 750);
-        $deliveryFee = $validated['delivery_method'] === 'door' ? $doorFee : $pickupFee;
 
         $order = DB::transaction(function () use ($validated, $items, $subtotal, $deliveryFee) {
             $order = Order::create([
@@ -94,7 +98,7 @@ class CheckoutController extends Controller
 
         $cart->clear();
 
-    if ($validated['payment_method'] === 'pay_now') {
+        if ($validated['payment_method'] === 'pay_now') {
             try {
                 $authorizationUrl = $paystack->initialize($order);
             } catch (\Throwable $e) {
@@ -115,7 +119,7 @@ class CheckoutController extends Controller
         return redirect()->route('order.show', $order)->with('status', 'Order placed successfully!');
     }
 
-    public function bankTransfer(Order $order)
+        public function bankTransfer(Order $order)
     {
         abort_unless($order->user_id === Auth::id(), 403);
         abort_unless($order->payment_method === 'bank_transfer', 404);

@@ -37,82 +37,78 @@
             @csrf
 
             <div class="checkout-form">
-                <div class="checkout-block">
-                    <h3>Shipping details</h3>
-                    <div class="auth-field">
-                        <label for="shipping_name">Full name</label>
-                        <input type="text" id="shipping_name" name="shipping_name" value="{{ old('shipping_name', $user->name) }}" required>
-                    </div>
-                    <div class="auth-field">
-                        <label for="shipping_phone">Phone number</label>
-                        <input type="text" id="shipping_phone" name="shipping_phone" value="{{ old('shipping_phone') }}" required>
-                    </div>
-                    <div class="auth-field">
-                        <label for="shipping_address">Delivery address</label>
-                        <input type="text" id="shipping_address" name="shipping_address" value="{{ old('shipping_address') }}" required>
-                    </div>
-                    <div class="checkout-field-row">
+                    <div class="checkout-block">
+                        <h3>Shipping details</h3>
                         <div class="auth-field">
-                            <label for="shipping_city">City / Area</label>
-                            <input type="text" id="shipping_city" name="shipping_city" value="{{ old('shipping_city') }}" required>
+                            <label for="shipping_name">Full name</label>
+                            <input type="text" id="shipping_name" name="shipping_name" value="{{ old('shipping_name', $user->name) }}" required>
                         </div>
                         <div class="auth-field">
-                            <label for="shipping_state">State</label>
-                            <input type="text" id="shipping_state" name="shipping_state" value="{{ old('shipping_state', 'Lagos') }}" required>
+                            <label for="shipping_phone">Phone number</label>
+                            <input type="text" id="shipping_phone" name="shipping_phone" value="{{ old('shipping_phone') }}" required>
+                        </div>
+                        <div class="auth-field">
+                            <label for="shipping_address">Delivery address</label>
+                            <input type="text" id="shipping_address" name="shipping_address" value="{{ old('shipping_address') }}" required>
+                        </div>
+                        <div class="checkout-field-row">
+                            <div class="auth-field">
+                                <label for="shipping_state">State</label>
+                                <select id="shipping_state" name="shipping_state" required>
+                                    <option value="">Select your state</option>
+                                    @foreach($states as $state)
+                                        <option value="{{ $state }}" @selected(old('shipping_state') === $state)>{{ $state }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="auth-field">
+                                <label for="shipping_city">City / Area</label>
+                                <input type="text" id="shipping_city" name="shipping_city" value="{{ old('shipping_city') }}" required>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="checkout-block">
-                    <h3>Delivery method</h3>
-                    <div class="option-cards">
-                        <label class="option-card">
-                                <input type="radio" name="delivery_method" value="door" checked>
+                                        <div class="checkout-block">
+                        <h3>Delivery method</h3>
+                        <div class="option-cards">
+                            <label class="option-card">
+                                <input type="radio" name="delivery_method" value="delivery" id="deliveryOption" checked>
                                 <span class="option-card-icon"><x-icon name="truck" :size="20" /></span>
                                 <span class="option-card-body">
-                                    <strong>Door Delivery</strong>
-                                    <span>Delivered to your address &middot; &#8358;{{ number_format($doorFee) }}</span>
+                                    <strong id="deliveryMethodLabel">Delivery</strong>
+                                    <span id="deliveryMethodFeeLabel">Select your state above to see the price</span>
                                 </span>
                             </label>
-                            <label class="option-card">
-                                <input type="radio" name="delivery_method" value="pickup">
+                            <label class="option-card" id="storePickupCard">
+                                <input type="radio" name="delivery_method" value="store_pickup" id="storePickupOption" disabled>
                                 <span class="option-card-icon"><x-icon name="box" :size="20" /></span>
                                 <span class="option-card-body">
-                                    <strong>Pickup Station</strong>
-                                    <span>Collect at a station near you &middot; &#8358;{{ number_format($pickupFee) }}</span>
+                                    <strong>Store Pickup</strong>
+                                    <span id="storePickupHint">Available for Lagos only &middot; &#8358;{{ number_format($storePickupFee) }}</span>
                                 </span>
                             </label>
+                        </div>
                     </div>
-                </div>
-
-                <div class="checkout-block">
-                    <h3>Payment method</h3>
-                    <div class="option-cards">
-                        <label class="option-card">
-                            <input type="radio" name="payment_method" value="pod" checked>
-                            <span class="option-card-icon"><x-icon name="truck" :size="20" /></span>
-                            <span class="option-card-body"><strong>Pay on Delivery</strong><span>Cash or transfer when it arrives</span></span>
-                        </label>
-                        @if($paymentMode === 'paystack')
-                                <label class="option-card">
-                                    <input type="radio" name="payment_method" value="pay_now">
-                                    <span class="option-card-icon"><x-icon name="check" :size="20" /></span>
+                
+                    <div class="checkout-block">
+                        <h3>Payment method</h3>
+                        <div class="option-cards">
+                            <label class="option-card">
+                                <input type="radio" name="payment_method" value="pay_now" checked>
+                                <span class="option-card-icon"><x-icon name="check" :size="20" /></span>
+                                @if($paymentMode === 'paystack')
                                     <span class="option-card-body"><strong>Pay Now</strong><span>Card, bank transfer, or USSD via Paystack</span></span>
-                                </label>
-                            @else
-                                <label class="option-card">
-                                    <input type="radio" name="payment_method" value="pay_now">
-                                    <span class="option-card-icon"><x-icon name="check" :size="20" /></span>
+                                @else
                                     <span class="option-card-body"><strong>Pay Now</strong><span>Bank transfer with instant confirmation</span></span>
-                                </label>
-                            @endif
+                                @endif
+                            </label>
                         </div>
                         @if($paymentMode === 'paystack')
-                            <p class="checkout-note">Choosing "Pay Now" takes you straight to Paystack's secure checkout to complete payment.</p>
+                            <p class="checkout-note">You'll be taken straight to Paystack's secure checkout to complete payment.</p>
                         @else
-                            <p class="checkout-note">Choosing "Pay Now" shows our bank transfer details — your order is confirmed once you notify us on WhatsApp.</p>
+                            <p class="checkout-note">You'll see our bank transfer details next — your order is confirmed once you notify us on WhatsApp.</p>
                         @endif
-                </div>
+                    </div>
             </div>
 
             <aside class="cart-summary">
@@ -127,13 +123,13 @@
                     <span>Subtotal</span>
                     <span class="mono">&#8358;{{ number_format($subtotal) }}</span>
                 </div>
-                <div class="cart-summary-row">
+                    <div class="cart-summary-row">
                         <span>Delivery</span>
-                        <span id="deliveryFeeDisplay" class="mono">&#8358;{{ number_format($doorFee) }}</span>
+                        <span id="deliveryFeeDisplay" class="mono">Select your state</span>
                     </div>
                     <div class="cart-summary-total">
                         <span>Total</span>
-                        <span class="mono" id="totalDisplay">&#8358;{{ number_format($subtotal + $doorFee) }}</span>
+                        <span class="mono" id="totalDisplay">&#8358;{{ number_format($subtotal) }}</span>
                     </div>
                 <button type="submit" class="btn btn-primary cart-checkout-btn">Place Order</button>
             </aside>
@@ -147,17 +143,69 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const subtotal = {{ $subtotal }};
-    const fees = { door: {{ $doorFee }}, pickup: {{ $pickupFee }} };
+    const stateFees = @json($stateFees);
+    const storePickupFee = {{ $storePickupFee }};
+
+    const stateSelect = document.getElementById('shipping_state');
+    const deliveryOption = document.getElementById('deliveryOption');
+    const storePickupOption = document.getElementById('storePickupOption');
+    const deliveryMethodLabel = document.getElementById('deliveryMethodLabel');
+    const deliveryMethodFeeLabel = document.getElementById('deliveryMethodFeeLabel');
     const feeDisplay = document.getElementById('deliveryFeeDisplay');
     const totalDisplay = document.getElementById('totalDisplay');
 
-    document.querySelectorAll('input[name="delivery_method"]').forEach(input => {
-        input.addEventListener('change', () => {
-            const fee = fees[input.value];
+    function currentDeliveryFee() {
+        if (storePickupOption.checked) {
+            return storePickupFee;
+        }
+        const state = stateSelect.value;
+        return state && stateFees.hasOwnProperty(state) ? stateFees[state] : null;
+    }
+
+    const storePickupCard = document.getElementById('storePickupCard');
+    const storePickupHint = document.getElementById('storePickupHint');
+
+    function updateStorePickupAvailability() {
+        const isLagos = stateSelect.value === 'Lagos';
+
+        storePickupOption.disabled = !isLagos;
+        storePickupCard.classList.toggle('option-card--disabled', !isLagos);
+        storePickupHint.textContent = isLagos
+            ? 'Collect at our store · ₦' + storePickupFee.toLocaleString('en-NG')
+            : 'Available for Lagos only · ₦' + storePickupFee.toLocaleString('en-NG');
+
+        if (!isLagos && storePickupOption.checked) {
+            deliveryOption.checked = true;
+        }
+    }
+
+    function recalc() {
+        updateStorePickupAvailability();
+
+        const fee = currentDeliveryFee();
+
+        if (deliveryOption.checked) {
+            const state = stateSelect.value;
+            deliveryMethodLabel.textContent = state === 'Lagos' ? 'Door Delivery' : (state ? 'Park Pickup' : 'Delivery');
+            deliveryMethodFeeLabel.textContent = state
+                ? '₦' + fee.toLocaleString('en-NG')
+                : 'Select your state above to see the price';
+        }
+
+        if (fee === null) {
+            feeDisplay.textContent = 'Select your state';
+            totalDisplay.textContent = '₦' + subtotal.toLocaleString('en-NG');
+        } else {
             feeDisplay.textContent = '₦' + fee.toLocaleString('en-NG');
             totalDisplay.textContent = '₦' + (subtotal + fee).toLocaleString('en-NG');
-        });
-    });
+        }
+    }
+
+    stateSelect.addEventListener('change', recalc);
+    deliveryOption.addEventListener('change', recalc);
+    storePickupOption.addEventListener('change', recalc);
+
+    recalc();
 });
 </script>
 @endpush

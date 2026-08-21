@@ -18,34 +18,34 @@
 
 <section class="section">
     <div class="wrap">
-            @if(session('status'))
-                <div class="order-success @if(str_contains(session('status'), "couldn't") || str_contains(session('status'), 'not successful')) order-success--error @endif">
-                    <x-icon name="check" :size="22" />
-                    <div>
-                        <strong>{{ session('status') }}</strong>
-                    </div>
-                </div>
-            @endif
+        @if(session('status'))
+        <div class="order-success @if(str_contains(session('status'), " couldn't") || str_contains(session('status'), 'not successful' )) order-success--error @endif">
+            <x-icon name="check" :size="22" />
+            <div>
+                <strong>{{ session('status') }}</strong>
+            </div>
+        </div>
+        @endif
 
         <div class="section-head section-head--banner">
-                <div>
-                    <h2>Order {{ $order->order_number }}</h2>
-                    <div class="sub">Placed on {{ $order->created_at->format('d M Y, h:ia') }}</div>
-                </div>
-                <span class="count-badge">{{ ucfirst($order->status) }}</span>
+            <div>
+                <h2>Order {{ $order->order_number }}</h2>
+                <div class="sub">Placed on {{ $order->created_at->format('d M Y, h:ia') }}</div>
             </div>
+            <span class="count-badge">{{ ucfirst($order->status) }}</span>
+        </div>
 
-            @if($order->status === 'pending' && $order->payment_status !== 'paid')
-                <div class="order-cancel-bar">
-                    <span>Changed your mind? You can still cancel this order.</span>
-                    <form action="{{ route('order.cancel', $order) }}" method="POST" onsubmit="return confirm('Cancel this order? This cannot be undone.');">
-                        @csrf
-                        <button type="submit" class="order-cancel-btn">Cancel Order</button>
-                    </form>
-                </div>
-            @elseif($order->status === 'cancelled')
-                <div class="order-cancelled-notice">This order was cancelled.</div>
-            @endif
+        @if($order->status === 'pending' && $order->payment_status !== 'paid')
+        <div class="order-cancel-bar">
+            <span>Changed your mind? You can still cancel this order.</span>
+            <form action="{{ route('order.cancel', $order) }}" method="POST" onsubmit="return confirm('Cancel this order? This cannot be undone.');">
+                @csrf
+                <button type="submit" class="order-cancel-btn">Cancel Order</button>
+            </form>
+        </div>
+        @elseif($order->status === 'cancelled')
+        <div class="order-cancelled-notice">This order was cancelled.</div>
+        @endif
 
         <div class="cart-layout">
             <div class="cart-items">
@@ -80,7 +80,12 @@
                 </p>
 
                 <div class="cart-summary-row"><span>Subtotal</span><span class="mono">&#8358;{{ number_format($order->subtotal) }}</span></div>
-                <div class="cart-summary-row"><span>Delivery ({{ $order->delivery_method === 'door' ? 'Door' : 'Pickup' }})</span><span class="mono">&#8358;{{ number_format($order->delivery_fee) }}</span></div>
+                @php
+                $deliveryLabel = $order->delivery_method === 'store_pickup'
+                ? 'Store Pickup'
+                : ($order->shipping_state === 'Lagos' ? 'Door Delivery' : 'Park Pickup');
+                @endphp
+                <div class="cart-summary-row"><span>Delivery ({{ $deliveryLabel }})</span><span class="mono">&#8358;{{ number_format($order->delivery_fee) }}</span></div>
                 <div class="cart-summary-row cart-summary-total"><span>Total</span><span class="mono">&#8358;{{ number_format($order->total) }}</span></div>
 
                 <p style="font-size:12.5px;color:var(--ink-soft);margin-top:16px;">

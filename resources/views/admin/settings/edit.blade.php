@@ -19,7 +19,7 @@
     </div>
     @endif
 
-    <div class="admin-panel" style="margin-bottom:24px;">
+    <!-- <div class="admin-panel" style="margin-bottom:24px;">
         <h3>Delivery Fees</h3>
         <div class="admin-field-row" style="max-width:500px;">
             <div class="admin-field">
@@ -31,7 +31,7 @@
                 <input type="number" id="delivery_fee_pickup" name="delivery_fee_pickup" value="{{ old('delivery_fee_pickup', $pickupFee) }}" required min="0">
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="admin-panel" style="margin-bottom:24px;">
         <h3>Online Payment</h3>

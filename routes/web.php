@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\DeliveryFeeController as AdminDeliveryFeeController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -105,6 +106,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
     Route::put('/settings/password', [AdminSettingController::class, 'updatePassword'])->name('settings.updatePassword');
+
+    Route::get('/delivery-fees', [AdminDeliveryFeeController::class, 'edit'])->name('delivery-fees.edit');
+    Route::put('/delivery-fees', [AdminDeliveryFeeController::class, 'update'])->name('delivery-fees.update');
 
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::get('/users/export', [AdminUserController::class, 'export'])->name('users.export');

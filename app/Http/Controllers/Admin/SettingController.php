@@ -26,11 +26,9 @@ class SettingController extends Controller
         ));
     }
 
-    public function update(Request $request)
+        public function update(Request $request)
     {
         $validated = $request->validate([
-            'delivery_fee_door' => 'required|integer|min:0',
-            'delivery_fee_pickup' => 'required|integer|min:0',
             'payment_mode' => 'required|in:paystack,bank_transfer',
             'bank_account_name' => 'required_if:payment_mode,bank_transfer|nullable|string|max:255',
             'bank_account_number' => 'required_if:payment_mode,bank_transfer|nullable|string|max:20',
