@@ -68,7 +68,7 @@
                         </div>
                     </div>
 
-                                        <div class="checkout-block">
+                    <div class="checkout-block">
                         <h3>Delivery method</h3>
                         <div class="option-cards">
                             <label class="option-card">
@@ -90,18 +90,18 @@
                         </div>
 
                         <div class="admin-field" id="pickupLocationWrap" style="display:none;margin-top:16px;">
-                            <label for="pickup_location_id">Pickup location</label>
+                            <label for="pickup_location_id">Delivery area (Lagos)</label>
                             <select id="pickup_location_id" name="pickup_location_id">
-                                <option value="">Select a location</option>
-                                @foreach($pickupLocations as $location)
-                                    <option value="{{ $location->id }}" data-fee="{{ $location->fee }}" @selected(old('pickup_location_id') == $location->id)>
-                                        {{ $location->name }} &mdash; &#8358;{{ number_format($location->fee) }}
+                                <option value="">Select your area</option>
+                                @foreach($lagosAreas as $area)
+                                    <option value="{{ $area->id }}" data-fee="{{ $area->fee }}" @selected(old('pickup_location_id') == $area->id)>
+                                        {{ $area->name }} &mdash; &#8358;{{ number_format($area->fee) }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-                
+
                     <div class="checkout-block">
                         <h3>Payment method</h3>
                         <div class="option-cards">
@@ -169,52 +169,71 @@ document.addEventListener('DOMContentLoaded', () => {
     const feeDisplay = document.getElementById('deliveryFeeDisplay');
     const totalDisplay = document.getElementById('totalDisplay');
 
-    function selectedPickupFee() {
+    function isLagos() {
+        return stateSelect.value === 'Lagos';
+    }
+
+    function selectedAreaFee() {
         const option = pickupLocationSelect.options[pickupLocationSelect.selectedIndex];
         return option && option.dataset.fee ? parseInt(option.dataset.fee, 10) : null;
     }
 
+    function updateStorePickupAvailability() {
+        storePickupOption.disabled = !isLagos();
+        storePickupCard.classList.toggle('option-card--disabled', !isLagos());
+        storePickupHint.textContent = isLagos() ? 'Collect at our store · Free' : 'Available for Lagos only';
+
+        if (!isLagos() && storePickupOption.checked) {
+            deliveryOption.checked = true;
+        }
+    }
+
+    function updateAreaVisibility() {
+        const showArea = deliveryOption.checked && isLagos();
+        pickupLocationWrap.style.display = showArea ? 'block' : 'none';
+        pickupLocationSelect.required = showArea;
+    }
+
     function currentDeliveryFee() {
         if (storePickupOption.checked) {
-            return selectedPickupFee();
+            return 0;
+        }
+        if (isLagos()) {
+            return selectedAreaFee();
         }
         const state = stateSelect.value;
         return state && stateFees.hasOwnProperty(state) ? stateFees[state] : null;
     }
 
-    function updateStorePickupAvailability() {
-        const isLagos = stateSelect.value === 'Lagos';
-
-        storePickupOption.disabled = !isLagos;
-        storePickupCard.classList.toggle('option-card--disabled', !isLagos);
-        storePickupHint.textContent = isLagos ? 'Choose a location below' : 'Available for Lagos only';
-
-        if (!isLagos && storePickupOption.checked) {
-            deliveryOption.checked = true;
-        }
-
-        pickupLocationWrap.style.display = storePickupOption.checked ? 'block' : 'none';
-        pickupLocationSelect.required = storePickupOption.checked;
-    }
-
     function recalc() {
         updateStorePickupAvailability();
+        updateAreaVisibility();
 
         const fee = currentDeliveryFee();
 
         if (deliveryOption.checked) {
             const state = stateSelect.value;
-            deliveryMethodLabel.textContent = state === 'Lagos' ? 'Door Delivery' : (state ? 'Park Pickup' : 'Delivery');
-            deliveryMethodFeeLabel.textContent = state
-                ? '₦' + fee.toLocaleString('en-NG')
-                : 'Select your state above to see the price';
+            if (isLagos()) {
+                deliveryMethodLabel.textContent = 'Door Delivery';
+                deliveryMethodFeeLabel.textContent = fee !== null
+                    ? '₦' + fee.toLocaleString('en-NG')
+                    : 'Select your delivery area below';
+            } else {
+                deliveryMethodLabel.textContent = state ? 'Park Pickup' : 'Delivery';
+                deliveryMethodFeeLabel.textContent = state
+                    ? '₦' + fee.toLocaleString('en-NG')
+                    : 'Select your state above to see the price';
+            }
         } else {
             deliveryMethodLabel.textContent = 'Delivery';
             deliveryMethodFeeLabel.textContent = 'Select your state above to see the price';
         }
 
-        if (fee === null) {
-            feeDisplay.textContent = storePickupOption.checked ? 'Select a location' : 'Select your state';
+        if (storePickupOption.checked) {
+            feeDisplay.textContent = 'Free';
+            totalDisplay.textContent = '₦' + subtotal.toLocaleString('en-NG');
+        } else if (fee === null) {
+            feeDisplay.textContent = isLagos() ? 'Select your delivery area' : 'Select your state';
             totalDisplay.textContent = '₦' + subtotal.toLocaleString('en-NG');
         } else {
             feeDisplay.textContent = '₦' + fee.toLocaleString('en-NG');

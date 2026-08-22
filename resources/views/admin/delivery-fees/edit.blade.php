@@ -18,8 +18,8 @@
         <div class="admin-panel" style="margin-bottom:20px;max-width:500px;">
             <h3>Store Pickup</h3>
             <p class="admin-hint" style="margin:0;">
-                Store Pickup now has its own per-location pricing — manage it at
-                <a href="{{ route('admin.pickup-locations.index') }}">Pickup Locations</a>.
+                Store Pickup is always free. Door Delivery within Lagos is priced per area instead of a flat state fee — manage those prices at
+                <a href="{{ route('admin.pickup-locations.index') }}">Delivery Areas (Lagos)</a>.
             </p>
         </div>
 

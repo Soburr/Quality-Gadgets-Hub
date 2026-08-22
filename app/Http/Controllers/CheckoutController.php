@@ -34,7 +34,7 @@ class CheckoutController extends Controller
             'user' => Auth::user(),
             'states' => DeliveryFee::STATES,
             'stateFees' => DeliveryFee::pluck('fee', 'state'),
-            'pickupLocations' => PickupLocation::orderBy('sort_order')->get(),
+            'lagosAreas' => PickupLocation::orderBy('sort_order')->get(),
             'paymentMode' => Setting::get('payment_mode', 'paystack'),
         ]);
     }
@@ -56,46 +56,30 @@ class CheckoutController extends Controller
             'shipping_name' => 'required|string|max:255',
             'shipping_phone' => 'required|string|max:20',
             'shipping_address' => 'required|string|max:500',
-            'shipping_state' => [
-                'required',
-                Rule::in(DeliveryFee::STATES),
-            ],
+            'shipping_state' => ['required', Rule::in(DeliveryFee::STATES)],
             'shipping_city' => 'required|string|max:255',
             'delivery_method' => 'required|in:delivery,store_pickup',
-            'pickup_location_id' => 'nullable|required_if:delivery_method,store_pickup|exists:pickup_locations,id',
             'payment_method' => 'required|in:pay_now',
         ]);
 
-        if (
-            $validated['delivery_method'] === 'store_pickup'
-            && $validated['shipping_state'] !== 'Lagos'
-        ) {
-            return back()
-                ->withErrors([
-                    'delivery_method' => 'Store Pickup is only available for Lagos.',
-                ])
-                ->withInput();
+        if ($validated['delivery_method'] === 'store_pickup' && $validated['shipping_state'] !== 'Lagos') {
+            return back()->withErrors(['delivery_method' => 'Store Pickup is only available for Lagos.'])->withInput();
         }
 
         $subtotal = $cart->subtotal();
         $pickupLocationName = null;
 
         if ($validated['delivery_method'] === 'store_pickup') {
-            $pickupLocation = PickupLocation::findOrFail(
-                $validated['pickup_location_id']
-            );
+            $deliveryFee = 0;
+        } elseif ($validated['shipping_state'] === 'Lagos') {
+            $request->validate(['pickup_location_id' => 'required|exists:pickup_locations,id']);
 
-            $deliveryFee = (int) $pickupLocation->fee;
-            $pickupLocationName = $pickupLocation->name;
+            $area = PickupLocation::findOrFail($request->input('pickup_location_id'));
+            $deliveryFee = (int) $area->fee;
+            $pickupLocationName = $area->name;
         } else {
-            $deliveryFee = (int) (
-                DeliveryFee::where(
-                    'state',
-                    $validated['shipping_state']
-                )->value('fee') ?? 0
-            );
+            $deliveryFee = (int) (DeliveryFee::where('state', $validated['shipping_state'])->value('fee') ?? 0);
         }
-
         $paymentMode = Setting::get('payment_mode', 'paystack');
 
         if ($paymentMode === 'bank_transfer') {

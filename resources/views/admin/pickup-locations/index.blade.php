@@ -4,12 +4,12 @@
 
 @section('content')
     <div class="admin-header">
-        <h1>Pickup Locations</h1>
-        <a href="{{ route('admin.pickup-locations.create') }}" class="btn btn-primary">+ New Location</a>
+        <h1>Delivery Areas (Lagos)</h1>
+        <a href="{{ route('admin.pickup-locations.create') }}" class="btn btn-primary">+ New Area</a>
     </div>
 
     <p class="admin-hint" style="margin-bottom:20px;">
-        These show up as "Store Pickup" sub-options at checkout, only when the customer's state is Lagos.
+        These prices apply to Door Delivery when the customer's state is Lagos — they pick their area at checkout and pay the fee attached to it. Store Pickup itself is always free.
     </p>
 
     <div class="admin-table-wrap">

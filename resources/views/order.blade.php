@@ -81,9 +81,11 @@
 
                 <div class="cart-summary-row"><span>Subtotal</span><span class="mono">&#8358;{{ number_format($order->subtotal) }}</span></div>
                     @php
-                        $deliveryLabel = $order->delivery_method === 'store_pickup'
-                            ? 'Store Pickup — '.$order->pickup_location
-                            : ($order->shipping_state === 'Lagos' ? 'Door Delivery' : 'Park Pickup');
+                        $deliveryLabel = match(true) {
+                            $order->delivery_method === 'store_pickup' => 'Store Pickup (Free)',
+                            $order->shipping_state === 'Lagos' => 'Door Delivery — '.$order->pickup_location,
+                            default => 'Park Pickup',
+                        };
                     @endphp
                     <div class="cart-summary-row"><span>Delivery ({{ $deliveryLabel }})</span><span class="mono">&#8358;{{ number_format($order->delivery_fee) }}</span></div>
                 <div class="cart-summary-row cart-summary-total"><span>Total</span><span class="mono">&#8358;{{ number_format($order->total) }}</span></div>
