@@ -81,8 +81,6 @@
             <div class="pay-icons">
                 <span>Card</span>
                 <span>Bank Transfer</span>
-                <span>POD</span>
-                <span>USSD</span>
             </div>
         </div>
     </div>
