@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DeliveryFee extends Model
 {
-    protected $fillable = ['state', 'fee'];
+    protected $fillable = ['state', 'fee', 'courier_fee'];
 
     public const STATES = [
         'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue', 'Borno',

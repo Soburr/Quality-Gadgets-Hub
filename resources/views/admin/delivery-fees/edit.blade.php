@@ -28,7 +28,8 @@
                 <thead>
                     <tr>
                         <th>State</th>
-                        <th>Fee (&#8358;)</th>
+                        <th>Park Pickup fee (&#8358;)</th>
+                        <th>Courier surcharge (&#8358;)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,11 +38,18 @@
                             <td>
                                 {{ $fee->state }}
                                 @if($fee->state === 'Lagos')
-                                    <span class="admin-badge admin-badge--delivered" style="margin-left:8px;">Door Delivery</span>
+                                    <span class="admin-badge admin-badge--delivered" style="margin-left:8px;">Door Delivery (priced by area)</span>
                                 @endif
                             </td>
                             <td>
-                                <input type="number" name="fees[{{ $fee->id }}]" value="{{ old('fees.'.$fee->id, $fee->fee) }}" min="0" required style="max-width:160px;">
+                                <input type="number" name="fees[{{ $fee->id }}]" value="{{ old('fees.'.$fee->id, $fee->fee) }}" min="0" required style="max-width:160px;" @disabled($fee->state === 'Lagos')>
+                            </td>
+                            <td>
+                                @if($fee->state === 'Lagos')
+                                    <span class="admin-hint" style="margin:0;">N/A</span>
+                                @else
+                                    <input type="number" name="courier_fees[{{ $fee->id }}]" value="{{ old('courier_fees.'.$fee->id, $fee->courier_fee) }}" min="0" required style="max-width:160px;">
+                                @endif
                             </td>
                         </tr>
                     @endforeach

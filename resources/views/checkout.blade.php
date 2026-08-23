@@ -71,14 +71,6 @@
                     <div class="checkout-block">
                         <h3>Delivery method</h3>
                         <div class="option-cards">
-                            <label class="option-card">
-                                <input type="radio" name="delivery_method" value="delivery" id="deliveryOption" checked>
-                                <span class="option-card-icon"><x-icon name="truck" :size="20" /></span>
-                                <span class="option-card-body">
-                                    <strong id="deliveryMethodLabel">Delivery</strong>
-                                    <span id="deliveryMethodFeeLabel">Select your state above to see the price</span>
-                                </span>
-                            </label>
                             <label class="option-card" id="storePickupCard">
                                 <input type="radio" name="delivery_method" value="store_pickup" id="storePickupOption" disabled>
                                 <span class="option-card-icon"><x-icon name="box" :size="20" /></span>
@@ -87,18 +79,36 @@
                                     <span id="storePickupHint">Available for Lagos only</span>
                                 </span>
                             </label>
-                        </div>
 
-                        <div class="admin-field" id="pickupLocationWrap" style="display:none;margin-top:16px;">
-                            <label for="pickup_location_id">Delivery area (Lagos)</label>
-                            <select id="pickup_location_id" name="pickup_location_id">
-                                <option value="">Select your area</option>
-                                @foreach($lagosAreas as $area)
-                                    <option value="{{ $area->id }}" data-fee="{{ $area->fee }}" @selected(old('pickup_location_id') == $area->id)>
-                                        {{ $area->name }} &mdash; &#8358;{{ number_format($area->fee) }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <label class="option-card">
+                                <input type="radio" name="delivery_method" value="delivery" id="deliveryOption" checked>
+                                <span class="option-card-icon"><x-icon name="truck" :size="20" /></span>
+                                <span class="option-card-body">
+                                    <strong id="deliveryMethodLabel">Delivery</strong>
+                                    <span id="deliveryMethodFeeLabel">Select your state above to see the price</span>
+                                </span>
+                            </label>
+
+                            <div class="admin-field" id="pickupLocationWrap" style="display:none;">
+                                <label for="pickup_location_id">Delivery area (Lagos)</label>
+                                <select id="pickup_location_id" name="pickup_location_id">
+                                    <option value="">Select your area</option>
+                                    @foreach($lagosAreas as $area)
+                                        <option value="{{ $area->id }}" data-fee="{{ $area->fee }}" @selected(old('pickup_location_id') == $area->id)>
+                                            {{ $area->name }} &mdash; &#8358;{{ number_format($area->fee) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <label class="option-card" id="courierCard">
+                                <input type="radio" name="delivery_method" value="courier" id="courierOption" disabled>
+                                <span class="option-card-icon"><x-icon name="truck" :size="20" /></span>
+                                <span class="option-card-body">
+                                    <strong>Courier Delivery</strong>
+                                    <span id="courierHint">Select your state above to see the price</span>
+                                </span>
+                            </label>
                         </div>
                     </div>
 
@@ -156,12 +166,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     const subtotal = {{ $subtotal }};
     const stateFees = @json($stateFees);
+    const courierFees = @json(\App\Models\DeliveryFee::pluck('courier_fee', 'state'));
 
     const stateSelect = document.getElementById('shipping_state');
     const deliveryOption = document.getElementById('deliveryOption');
     const storePickupOption = document.getElementById('storePickupOption');
     const storePickupCard = document.getElementById('storePickupCard');
     const storePickupHint = document.getElementById('storePickupHint');
+    const courierOption = document.getElementById('courierOption');
+    const courierCard = document.getElementById('courierCard');
+    const courierHint = document.getElementById('courierHint');
     const pickupLocationWrap = document.getElementById('pickupLocationWrap');
     const pickupLocationSelect = document.getElementById('pickup_location_id');
     const deliveryMethodLabel = document.getElementById('deliveryMethodLabel');
@@ -178,36 +192,42 @@ document.addEventListener('DOMContentLoaded', () => {
         return option && option.dataset.fee ? parseInt(option.dataset.fee, 10) : null;
     }
 
-    function updateStorePickupAvailability() {
-        storePickupOption.disabled = !isLagos();
-        storePickupCard.classList.toggle('option-card--disabled', !isLagos());
-        storePickupHint.textContent = isLagos() ? 'Collect at our store · Free' : 'Available for Lagos only';
-
-        if (!isLagos() && storePickupOption.checked) {
-            deliveryOption.checked = true;
-        }
+    function courierFeeForState() {
+        const state = stateSelect.value;
+        if (!state || !stateFees.hasOwnProperty(state)) return null;
+        return stateFees[state] + (courierFees[state] || 0);
     }
 
-    function updateAreaVisibility() {
-        const showArea = deliveryOption.checked && isLagos();
+    function updateAvailability() {
+        const lagos = isLagos();
+
+        storePickupOption.disabled = !lagos;
+        storePickupCard.classList.toggle('option-card--disabled', !lagos);
+        storePickupHint.textContent = lagos ? 'Collect at our store · Free' : 'Available for Lagos only';
+        if (!lagos && storePickupOption.checked) deliveryOption.checked = true;
+
+        courierOption.disabled = lagos || !stateSelect.value;
+        courierCard.classList.toggle('option-card--disabled', lagos || !stateSelect.value);
+        courierHint.textContent = lagos
+            ? 'Not needed — use Door Delivery for Lagos'
+            : (stateSelect.value ? '₦' + courierFeeForState().toLocaleString('en-NG') : 'Select your state above to see the price');
+        if (lagos && courierOption.checked) deliveryOption.checked = true;
+
+        const showArea = deliveryOption.checked && lagos;
         pickupLocationWrap.style.display = showArea ? 'block' : 'none';
         pickupLocationSelect.required = showArea;
     }
 
     function currentDeliveryFee() {
-        if (storePickupOption.checked) {
-            return 0;
-        }
-        if (isLagos()) {
-            return selectedAreaFee();
-        }
+        if (storePickupOption.checked) return 0;
+        if (courierOption.checked) return courierFeeForState();
+        if (isLagos()) return selectedAreaFee();
         const state = stateSelect.value;
         return state && stateFees.hasOwnProperty(state) ? stateFees[state] : null;
     }
 
     function recalc() {
-        updateStorePickupAvailability();
-        updateAreaVisibility();
+        updateAvailability();
 
         const fee = currentDeliveryFee();
 
@@ -224,9 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     ? '₦' + fee.toLocaleString('en-NG')
                     : 'Select your state above to see the price';
             }
-        } else {
-            deliveryMethodLabel.textContent = 'Delivery';
-            deliveryMethodFeeLabel.textContent = 'Select your state above to see the price';
         }
 
         if (storePickupOption.checked) {
@@ -244,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     stateSelect.addEventListener('change', recalc);
     deliveryOption.addEventListener('change', recalc);
     storePickupOption.addEventListener('change', recalc);
+    courierOption.addEventListener('change', recalc);
     pickupLocationSelect.addEventListener('change', recalc);
 
     recalc();

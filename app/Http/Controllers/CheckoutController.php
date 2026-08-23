@@ -58,12 +58,15 @@ class CheckoutController extends Controller
             'shipping_address' => 'required|string|max:500',
             'shipping_state' => ['required', Rule::in(DeliveryFee::STATES)],
             'shipping_city' => 'required|string|max:255',
-            'delivery_method' => 'required|in:delivery,store_pickup',
+            'delivery_method' => 'required|in:delivery,store_pickup,courier',
             'payment_method' => 'required|in:pay_now',
         ]);
 
         if ($validated['delivery_method'] === 'store_pickup' && $validated['shipping_state'] !== 'Lagos') {
             return back()->withErrors(['delivery_method' => 'Store Pickup is only available for Lagos.'])->withInput();
+        }
+        if ($validated['delivery_method'] === 'courier' && $validated['shipping_state'] === 'Lagos') {
+            return back()->withErrors(['delivery_method' => 'Courier Delivery is only available outside Lagos.'])->withInput();
         }
 
         $subtotal = $cart->subtotal();
@@ -78,7 +81,10 @@ class CheckoutController extends Controller
             $deliveryFee = (int) $area->fee;
             $pickupLocationName = $area->name;
         } else {
-            $deliveryFee = (int) (DeliveryFee::where('state', $validated['shipping_state'])->value('fee') ?? 0);
+            $stateFee = DeliveryFee::where('state', $validated['shipping_state'])->first();
+            $deliveryFee = $validated['delivery_method'] === 'courier'
+                ? (int) $stateFee->fee + (int) $stateFee->courier_fee
+                : (int) $stateFee->fee;
         }
         $paymentMode = Setting::get('payment_mode', 'paystack');
 
