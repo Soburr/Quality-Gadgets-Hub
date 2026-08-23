@@ -69,7 +69,7 @@
                     </div>
 
                     <div class="checkout-block">
-                        <h3>Delivery method</h3>
+                        <h3>Shipment Option</h3>
                         <div class="option-cards">
                             <label class="option-card" id="storePickupCard">
                                 <input type="radio" name="delivery_method" value="store_pickup" id="storePickupOption" disabled>
