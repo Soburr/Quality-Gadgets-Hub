@@ -9,7 +9,7 @@
     </div>
 
     <p class="admin-hint" style="margin-bottom:20px;">
-        These prices apply to Door Delivery when the customer's state is Lagos — they pick their area at checkout and pay the fee attached to it. Store Pickup itself is always free.
+        These prices apply to Doorstep Delivery when the customer's state is Lagos — they pick their area at checkout and pay the fee attached to it. Store Pickup itself is always free.
     </p>
 
     <div class="admin-table-wrap">

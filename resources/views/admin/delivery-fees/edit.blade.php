@@ -8,7 +8,7 @@
     </div>
 
     <p class="admin-hint" style="margin-bottom:20px;">
-        Set what customers pay for delivery to each state. Lagos shows as "Door Delivery" at checkout — every other state shows as "Park Pickup" automatically, using the price you set here.
+        Set what customers pay for delivery to each state. Lagos shows as "Doorstep Delivery" at checkout — every other state shows as "Park Pickup" automatically, using the price you set here.
     </p>
 
     <form action="{{ route('admin.delivery-fees.update') }}" method="POST" class="admin-form">
@@ -18,7 +18,7 @@
         <div class="admin-panel" style="margin-bottom:20px;max-width:500px;">
             <h3>Store Pickup</h3>
             <p class="admin-hint" style="margin:0;">
-                Store Pickup is always free. Door Delivery within Lagos is priced per area instead of a flat state fee — manage those prices at
+                Store Pickup is always free. Doorstep Delivery within Lagos is priced per area instead of a flat state fee — manage those prices at
                 <a href="{{ route('admin.pickup-locations.index') }}">Delivery Areas (Lagos)</a>.
             </p>
         </div>
@@ -38,7 +38,7 @@
                             <td>
                                 {{ $fee->state }}
                                 @if($fee->state === 'Lagos')
-                                    <span class="admin-badge admin-badge--delivered" style="margin-left:8px;">Door Delivery (priced by area)</span>
+                                    <span class="admin-badge admin-badge--delivered" style="margin-left:8px;">Doorstep Delivery (priced by area)</span>
                                 @endif
                             </td>
                             <td>

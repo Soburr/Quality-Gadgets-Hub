@@ -23,7 +23,7 @@
         <h3>Delivery Fees</h3>
         <div class="admin-field-row" style="max-width:500px;">
             <div class="admin-field">
-                <label for="delivery_fee_door">Door delivery fee (&#8358;)</label>
+                <label for="delivery_fee_door">Doorstep delivery fee (&#8358;)</label>
                 <input type="number" id="delivery_fee_door" name="delivery_fee_door" value="{{ old('delivery_fee_door', $doorFee) }}" required min="0">
             </div>
             <div class="admin-field">

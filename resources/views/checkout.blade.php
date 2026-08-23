@@ -47,10 +47,6 @@
                             <label for="shipping_phone">Phone number</label>
                             <input type="text" id="shipping_phone" name="shipping_phone" value="{{ old('shipping_phone') }}" required>
                         </div>
-                        <div class="auth-field">
-                            <label for="shipping_address">Delivery address</label>
-                            <input type="text" id="shipping_address" name="shipping_address" value="{{ old('shipping_address') }}" required>
-                        </div>
                         <div class="checkout-field-row">
                             <div class="auth-field">
                                 <label for="shipping_state">State</label>
@@ -65,6 +61,10 @@
                                 <label for="shipping_city">City / Area</label>
                                 <input type="text" id="shipping_city" name="shipping_city" value="{{ old('shipping_city') }}" required>
                             </div>
+                        </div>
+                        <div class="auth-field">
+                            <label for="shipping_address">Delivery address</label>
+                            <input type="text" id="shipping_address" name="shipping_address" value="{{ old('shipping_address') }}" required>
                         </div>
                     </div>
 
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         courierOption.disabled = lagos || !stateSelect.value;
         courierCard.classList.toggle('option-card--disabled', lagos || !stateSelect.value);
         courierHint.textContent = lagos
-            ? 'Not needed — use Door Delivery for Lagos'
+            ? 'Not needed — use Doorstep Delivery for Lagos'
             : (stateSelect.value ? '₦' + courierFeeForState().toLocaleString('en-NG') : 'Select your state above to see the price');
         if (lagos && courierOption.checked) deliveryOption.checked = true;
 
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (deliveryOption.checked) {
             const state = stateSelect.value;
             if (isLagos()) {
-                deliveryMethodLabel.textContent = 'Door Delivery';
+                deliveryMethodLabel.textContent = 'Doorstep Delivery';
                 deliveryMethodFeeLabel.textContent = fee !== null
                     ? '₦' + fee.toLocaleString('en-NG')
                     : 'Select your delivery area below';

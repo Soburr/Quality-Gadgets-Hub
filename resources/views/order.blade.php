@@ -84,7 +84,7 @@
                         $deliveryLabel = match(true) {
                             $order->delivery_method === 'store_pickup' => 'Store Pickup (Free)',
                             $order->delivery_method === 'courier' => 'Courier Delivery',
-                            $order->shipping_state === 'Lagos' => 'Door Delivery — '.$order->pickup_location,
+                            $order->shipping_state === 'Lagos' => 'Doorstep Delivery — '.$order->pickup_location,
                             default => 'Park Pickup',
                         };
                     @endphp
