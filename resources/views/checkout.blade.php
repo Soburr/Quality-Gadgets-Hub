@@ -47,6 +47,10 @@
                             <label for="shipping_phone">Phone number</label>
                             <input type="text" id="shipping_phone" name="shipping_phone" value="{{ old('shipping_phone') }}" required>
                         </div>
+                        <div class="auth-field">
+                            <label for="shipping_address">Delivery address</label>
+                            <input type="text" id="shipping_address" name="shipping_address" value="{{ old('shipping_address') }}" required>
+                        </div>
                         <div class="checkout-field-row">
                             <div class="auth-field">
                                 <label for="shipping_state">State</label>
