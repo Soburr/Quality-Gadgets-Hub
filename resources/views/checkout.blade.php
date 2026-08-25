@@ -48,7 +48,7 @@
                             <input type="text" id="shipping_phone" name="shipping_phone" value="{{ old('shipping_phone') }}" required>
                         </div>
                         <div class="auth-field">
-                            <label for="shipping_address">Delivery address</label>
+                            <label for="shipping_address">Address</label>
                             <input type="text" id="shipping_address" name="shipping_address" value="{{ old('shipping_address') }}" required>
                         </div>
                         <div class="checkout-field-row">
@@ -65,10 +65,6 @@
                                 <label for="shipping_city">City / Area</label>
                                 <input type="text" id="shipping_city" name="shipping_city" value="{{ old('shipping_city') }}" required>
                             </div>
-                        </div>
-                        <div class="auth-field">
-                            <label for="shipping_address">Delivery address</label>
-                            <input type="text" id="shipping_address" name="shipping_address" value="{{ old('shipping_address') }}" required>
                         </div>
                     </div>
 
