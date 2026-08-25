@@ -75,11 +75,11 @@ class CheckoutController extends Controller
         if ($validated['delivery_method'] === 'store_pickup') {
             $deliveryFee = 0;
         } elseif ($validated['shipping_state'] === 'Lagos') {
-            $request->validate(['pickup_location_id' => 'required|exists:pickup_locations,id']);
+            $lagosFees = PickupLocation::pluck('fee')->unique()->values();
+            $request->validate(['pickup_location_id' => ['required', Rule::in($lagosFees)]]);
 
-            $area = PickupLocation::findOrFail($request->input('pickup_location_id'));
-            $deliveryFee = (int) $area->fee;
-            $pickupLocationName = $area->name;
+            $deliveryFee = (int) $request->input('pickup_location_id');
+            $pickupLocationName = PickupLocation::where('fee', $deliveryFee)->pluck('name')->implode(', ');
         } else {
             $stateFee = DeliveryFee::where('state', $validated['shipping_state'])->first();
             $deliveryFee = $validated['delivery_method'] === 'courier'

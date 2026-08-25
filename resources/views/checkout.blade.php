@@ -90,15 +90,17 @@
                             </label>
 
                             <div class="admin-field" id="pickupLocationWrap" style="display:none;">
-                                <label for="pickup_location_id">Delivery area (Lagos)</label>
-                                <select id="pickup_location_id" name="pickup_location_id">
-                                    <option value="">Select your area</option>
-                                    @foreach($lagosAreas as $area)
-                                        <option value="{{ $area->id }}" data-fee="{{ $area->fee }}" @selected(old('pickup_location_id') == $area->id)>
-                                            {{ $area->name }} &mdash; &#8358;{{ number_format($area->fee) }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <div class="auth-field">
+                                    <label for="pickup_location_id">Delivery area (Lagos)</label>
+                                    <select id="pickup_location_id" name="pickup_location_id">
+                                        <option value="">Select your delivery area</option>
+                                        @foreach($lagosAreas->groupBy('fee') as $fee => $areasInTier)
+                                            <option value="{{ $fee }}" @selected(old('pickup_location_id') == $fee)>
+                                                {{ $areasInTier->pluck('name')->implode(', ') }}: &#8358;{{ number_format($fee, 2) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
 
                             <label class="option-card" id="courierCard">
@@ -188,8 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function selectedAreaFee() {
-        const option = pickupLocationSelect.options[pickupLocationSelect.selectedIndex];
-        return option && option.dataset.fee ? parseInt(option.dataset.fee, 10) : null;
+        return pickupLocationSelect.value ? parseInt(pickupLocationSelect.value, 10) : null;
+    }    function selectedAreaFee() {
+        return pickupLocationSelect.value ? parseInt(pickupLocationSelect.value, 10) : null;
     }
 
     function courierFeeForState() {
