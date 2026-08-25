@@ -91,7 +91,7 @@
 
                             <div class="admin-field" id="pickupLocationWrap" style="display:none;">
                                 <div class="auth-field">
-                                    <label for="pickup_location_id">Delivery area (Lagos)</label>
+                                    <label for="pickup_location_id">Delivery Fee (Lagos)</label>
                                     <select id="pickup_location_id" name="pickup_location_id">
                                         <option value="">Select your delivery area</option>
                                         @foreach($lagosAreas->groupBy('fee') as $fee => $areasInTier)
