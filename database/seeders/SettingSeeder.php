@@ -15,6 +15,6 @@ class SettingSeeder extends Seeder
         Setting::set('bank_account_name', 'Quality Gadgets Hub');
         Setting::set('bank_account_number', '5401750176');
         Setting::set('bank_name', 'Providus Bank');
-        Setting::set('whatsapp_number', '2348169698791');
+        Setting::set('whatsapp_number', '2347049486290');
     }
 }
