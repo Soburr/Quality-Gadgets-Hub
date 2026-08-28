@@ -25,7 +25,7 @@
 
                 <ul>
                     <li>Enjoy a 6&ndash;12 months manufacturer's warranty on new items.</li>
-                    <li>Benefit from a 2-week warranty on pre-owned items.</li>
+                    <li>Benefit from a 2-weeks - 1 warranty on pre-owned items.</li>
                 </ul>
 
                 <p>Please note: The warranty does not extend to damages caused by physical impact, water exposure, or self-inflicted harm.</p>
