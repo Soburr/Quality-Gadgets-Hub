@@ -70,7 +70,7 @@
                 </div>
                 <div class="admin-field">
                     <label for="whatsapp_number">WhatsApp number (with country code, no + or spaces)</label>
-                    <input type="text" id="whatsapp_number" name="whatsapp_number" value="{{ old('whatsapp_number', $whatsappNumber) }}" placeholder="2348169698791">
+                    <input type="text" id="whatsapp_number" name="whatsapp_number" value="{{ old('whatsapp_number', $whatsappNumber) }}" placeholder="2347049486290">
                 </div>
             </div>
         </div>
