@@ -92,31 +92,79 @@
         </div>
 
         <div class="admin-field">
-            <label>Color options (optional)</label>
-            <div class="color-builder">
-                @if($savedColors->isNotEmpty())
-                    <div class="saved-colors">
-                        <span class="saved-colors-label">Saved colors — click to reuse</span>
-                        <div class="saved-colors-list">
-                            @foreach($savedColors as $swatch)
-                                <button type="button" class="saved-color-btn" data-name="{{ $swatch->name }}" data-hex="{{ $swatch->hex }}" title="{{ $swatch->name }} ({{ $swatch->hex }})">
-                                    <span style="background:{{ $swatch->hex }}"></span>
-                                </button>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
+            <label>Color variants (optional)</label>
+            <p class="admin-hint" style="margin-bottom:12px;">Each color can have its own price and photo. Leave price blank to use the base price above; leave photo blank to use the main image.</p>
 
-                <div class="color-builder-list" id="colorBuilderList"></div>
-                <div class="color-builder-add">
-                    <input type="color" id="colorPickerInput" value="#8C0027">
-                    <input type="text" id="colorNameInput" placeholder="Color name (e.g. Midnight)">
-                    <button type="button" id="colorAddBtn" class="btn btn-ghost">+ Add color</button>
+            @if($savedColors->isNotEmpty())
+                <div class="saved-colors">
+                    <span class="saved-colors-label">Saved colors — click to add a variant</span>
+                    <div class="saved-colors-list">
+                        @foreach($savedColors as $swatch)
+                            <button type="button" class="saved-color-btn" data-name="{{ $swatch->name }}" data-hex="{{ $swatch->hex }}">
+                                <span class="saved-color-swatch" style="background:{{ $swatch->hex }}"></span>
+                                <span class="saved-color-name">{{ $swatch->name }}</span>
+                                <span class="saved-color-plus">+</span>
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <div id="colorVariantsList" class="color-variants-list"></div>
+            <button type="button" id="addColorVariantBtn" class="btn btn-ghost" style="margin-top:10px;">+ Add color variant</button>
+        </div>
+
+        <script type="application/json" id="colorsExistingField">{!! json_encode(collect($product->colors ?? [])->map(function ($c) {
+            $raw = $c['image'] ?? null;
+            $gallery = $c['gallery'] ?? [];
+            return [
+                'name' => $c['name'] ?? '',
+                'hex' => $c['hex'] ?? '#000000',
+                'price' => $c['price'] ?? null,
+                'image' => $raw,
+                'image_url' => $raw ? (str($raw)->startsWith(['http://', 'https://']) ? $raw : asset($raw)) : null,
+                'gallery' => $gallery,
+                'gallery_urls' => collect($gallery)->map(fn ($g) => str($g)->startsWith(['http://', 'https://']) ? $g : asset($g))->values(),
+            ];
+        })->values()) !!}</script>
+
+                <template id="colorVariantTemplate">
+            <div class="color-variant-row" data-index="__INDEX__">
+                <div class="color-variant-top">
+                    <input type="color" name="colors[__INDEX__][hex]" value="#8C0027" class="cv-hex">
+                    <input type="text" name="colors[__INDEX__][name]" placeholder="Color name (e.g. Red)" class="cv-name">
+                    <div class="cv-price-wrap">
+                        <span>&#8358;</span>
+                        <input type="number" name="colors[__INDEX__][price]" min="0" placeholder="Same as base price" class="cv-price">
+                    </div>
+                    <button type="button" class="cv-remove" aria-label="Remove this color">&times;</button>
+                </div>
+                <div class="cv-image-row">
+                    <div class="cv-image-block">
+                        <span class="cv-block-label">Main photo</span>
+                        <div class="admin-image-drop-wrap cv-image-wrap">
+                            <label for="cvImage__INDEX__" class="admin-image-drop admin-image-drop--sm cv-image-drop">
+                                <img class="cv-image-preview" src="" alt="" style="display:none;">
+                                <span class="admin-image-drop-label cv-image-label">Add photo</span>
+                            </label>
+                            <button type="button" class="admin-image-remove is-hidden cv-image-remove-btn" aria-label="Remove photo">&times;</button>
+                        </div>
+                        <input type="file" id="cvImage__INDEX__" name="colors[__INDEX__][image]" accept="image/*" class="admin-file-hidden cv-image-input">
+                        <input type="hidden" name="colors[__INDEX__][existing_image]" value="" class="cv-existing-image">
+                        <input type="hidden" name="colors[__INDEX__][remove_image]" value="0" class="cv-remove-image-flag">
+                    </div>
+
+                    <div class="cv-image-block cv-gallery-block">
+                        <span class="cv-block-label">Other images (optional)</span>
+                        <div class="cv-gallery-strip"></div>
+                        <label for="cvGallery__INDEX__" class="btn btn-ghost cv-gallery-choose">+ Add images</label>
+                        <input type="file" id="cvGallery__INDEX__" name="colors[__INDEX__][gallery][]" accept="image/*" multiple class="admin-file-hidden cv-gallery-input">
+                        <input type="hidden" name="colors[__INDEX__][existing_gallery]" value="[]" class="cv-existing-gallery">
+                        <input type="hidden" name="colors[__INDEX__][removed_gallery]" value="[]" class="cv-removed-gallery">
+                    </div>
                 </div>
             </div>
-            <textarea name="colors_raw" id="colorsRawField" hidden>{{ old('colors_raw', isset($product->colors) ? collect($product->colors)->map(fn($c) => $c['name'].':'.$c['hex'])->implode("\n") : '') }}</textarea>
-            <p class="admin-hint">Pick a color, name it, and add it — or click a saved color above to reuse it.</p>
-        </div>
+        </template>
     </div>
 
     <div class="admin-form-side">
@@ -263,83 +311,139 @@
             });
         });
 
-        // ---------- Color builder ----------
-        var list = document.getElementById('colorBuilderList');
-        var rawField = document.getElementById('colorsRawField');
-        var nameInput = document.getElementById('colorNameInput');
-        var pickerInput = document.getElementById('colorPickerInput');
-        var addBtn = document.getElementById('colorAddBtn');
+        (function () {
+            var list = document.getElementById('colorVariantsList');
+            var templateHtml = document.getElementById('colorVariantTemplate').innerHTML;
+            var addBtn = document.getElementById('addColorVariantBtn');
+            var existingColors = JSON.parse(document.getElementById('colorsExistingField').textContent || '[]');
+            var index = 0;
 
-        var colors = rawField.value
-            .split('\n')
-            .map(function(line) {
-                return line.trim();
-            })
-            .filter(Boolean)
-            .map(function(line) {
-                var parts = line.split(':');
-                return {
-                    name: (parts[0] || '').trim(),
-                    hex: (parts[1] || '#000000').trim()
-                };
-            });
+            function addRow(data) {
+                data = data || {};
+                var html = templateHtml.split('__INDEX__').join(index);
+                var wrapper = document.createElement('div');
+                wrapper.innerHTML = html.trim();
+                var row = wrapper.firstElementChild;
+                list.appendChild(row);
 
-        function renderColors() {
-            list.innerHTML = '';
-            colors.forEach(function(color, index) {
-                var item = document.createElement('div');
-                item.className = 'color-builder-item';
-                item.innerHTML =
-                    '<span class="color-builder-swatch" style="background:' + color.hex + '"></span>' +
-                    '<span class="color-builder-name">' + color.name + '</span>' +
-                    '<button type="button" class="color-builder-remove" aria-label="Remove ' + color.name + '">&times;</button>';
-                item.querySelector('.color-builder-remove').addEventListener('click', function() {
-                    colors.splice(index, 1);
-                    syncColors();
+                var hexInput = row.querySelector('.cv-hex');
+                var nameInput = row.querySelector('.cv-name');
+                var priceInput = row.querySelector('.cv-price');
+                var imageInput = row.querySelector('.cv-image-input');
+                var imagePreview = row.querySelector('.cv-image-preview');
+                var imageLabel = row.querySelector('.cv-image-label');
+                var existingImageField = row.querySelector('.cv-existing-image');
+                var removeImageFlag = row.querySelector('.cv-remove-image-flag');
+                var removeImageBtn = row.querySelector('.cv-image-remove-btn');
+                var removeRowBtn = row.querySelector('.cv-remove');
+                var galleryStrip = row.querySelector('.cv-gallery-strip');
+                var galleryInput = row.querySelector('.cv-gallery-input');
+                var existingGalleryField = row.querySelector('.cv-existing-gallery');
+                var removedGalleryField = row.querySelector('.cv-removed-gallery');
+                var removedGalleryPaths = [];
+                if (data.hex) hexInput.value = data.hex;
+                if (data.name) nameInput.value = data.name;
+                if (data.price !== null && data.price !== undefined) priceInput.value = data.price;
+                if (data.image_url) {
+                    imagePreview.src = data.image_url;
+                    imagePreview.style.display = 'block';
+                    imageLabel.style.display = 'none';
+                    existingImageField.value = data.image;
+                    removeImageBtn.classList.remove('is-hidden');
+                }
+
+                imageInput.addEventListener('change', function () {
+                    var file = imageInput.files[0];
+                    if (!file) return;
+                    imagePreview.src = URL.createObjectURL(file);
+                    imagePreview.style.display = 'block';
+                    imageLabel.style.display = 'none';
+                    removeImageFlag.value = '0';
+                    removeImageBtn.classList.remove('is-hidden');
                 });
-                list.appendChild(item);
+
+                removeImageBtn.addEventListener('click', function () {
+                    imageInput.value = '';
+                    imagePreview.src = '';
+                    imagePreview.style.display = 'none';
+                    imageLabel.style.display = 'block';
+                    existingImageField.value = '';
+                    removeImageFlag.value = '1';
+                    removeImageBtn.classList.add('is-hidden');
+                });
+
+                removeRowBtn.addEventListener('click', function () {
+                    row.remove();
+                });
+
+                // ---- Variant gallery ----
+                function renderSavedGallery() {
+                    galleryStrip.innerHTML = '';
+
+                    var saved = JSON.parse(existingGalleryField.value || '[]');
+                    var urls = data.gallery_urls || [];
+
+                    saved.forEach(function (path, i) {
+                        if (removedGalleryPaths.indexOf(path) !== -1) return;
+
+                        var item = document.createElement('div');
+                        item.className = 'cv-gallery-item';
+
+                        var img = document.createElement('img');
+                        img.src = urls[i] || path;
+                        item.appendChild(img);
+
+                        var rm = document.createElement('button');
+                        rm.type = 'button';
+                        rm.className = 'cv-gallery-remove';
+                        rm.innerHTML = '&times;';
+                        rm.setAttribute('aria-label', 'Remove this image');
+                        rm.addEventListener('click', function () {
+                            removedGalleryPaths.push(path);
+                            removedGalleryField.value = JSON.stringify(removedGalleryPaths);
+                            renderSavedGallery();
+                        });
+                        item.appendChild(rm);
+
+                        galleryStrip.appendChild(item);
+                    });
+
+                    Array.from(galleryInput.files).forEach(function (file) {
+                        var item = document.createElement('div');
+                        item.className = 'cv-gallery-item cv-gallery-item--new';
+                        var img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        item.appendChild(img);
+                        galleryStrip.appendChild(item);
+                    });
+
+                    if (!galleryStrip.children.length) {
+                        var empty = document.createElement('span');
+                        empty.className = 'cv-gallery-empty';
+                        empty.textContent = 'No extra images yet';
+                        galleryStrip.appendChild(empty);
+                    }
+                }
+
+                if (data.gallery && data.gallery.length) {
+                    existingGalleryField.value = JSON.stringify(data.gallery);
+                }
+
+                galleryInput.addEventListener('change', renderSavedGallery);
+                renderSavedGallery();
+
+                index++;
+            }
+
+            existingColors.forEach(function (c) { addRow(c); });
+            addBtn.addEventListener('click', function () { addRow(); });
+
+            document.querySelectorAll('.saved-color-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    addRow({ name: btn.dataset.name, hex: btn.dataset.hex });
+                });
             });
-        }
-
-        function syncColors() {
-            rawField.value = colors.map(function(c) {
-                return c.name + ':' + c.hex;
-            }).join('\n');
-            renderColors();
-        }
-
-        function addColor(name, hex) {
-            if (colors.some(function(c) { return c.hex.toLowerCase() === hex.toLowerCase(); })) {
-                return; // already in this product's list
-            }
-            colors.push({ name: name, hex: hex });
-            syncColors();
-        }
-
-        addBtn.addEventListener('click', function() {
-            var name = nameInput.value.trim();
-            if (!name) {
-                nameInput.focus();
-                return;
-            }
-            addColor(name, pickerInput.value);
-            nameInput.value = '';
-        });
-
-        nameInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addBtn.click();
-            }
-        });
-
-        document.querySelectorAll('.saved-color-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                addColor(btn.dataset.name, btn.dataset.hex);
-            });
-        });
-
-        renderColors();
+        })();
 
         // ---------- Flash sale toggle ----------
         var flashCheckbox = document.getElementById('isFlashSale');

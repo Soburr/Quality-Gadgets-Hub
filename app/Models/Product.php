@@ -81,4 +81,19 @@ class Product extends Model
         $this->rating = $this->reviews_count > 0 ? round($this->reviews()->avg('rating'), 1) : 0;
         $this->save();
     }
+
+    public function priceForColor(?string $colorName): int
+    {
+        if (! $colorName || empty($this->colors)) {
+            return $this->price;
+        }
+
+        foreach ($this->colors as $color) {
+            if (($color['name'] ?? null) === $colorName && ! empty($color['price'])) {
+                return (int) $color['price'];
+            }
+        }
+
+        return $this->price;
+    }
 }

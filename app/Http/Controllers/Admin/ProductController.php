@@ -38,7 +38,7 @@ class ProductController extends Controller
         $validated = $this->validated($request);
 
         $validated['slug'] = $this->uniqueSlug($validated['name']);
-        $validated['colors'] = $this->parseColors($request->input('colors_raw'));
+        $validated['colors'] = $this->processColorVariants($request);
         $this->rememberColors($validated['colors']);
 
         if ($request->hasFile('image')) {
@@ -70,10 +70,8 @@ class ProductController extends Controller
             $validated['slug'] = $this->uniqueSlug($validated['name'], $product->id);
         }
 
-        if ($request->filled('colors_raw')) {
-            $validated['colors'] = $this->parseColors($request->input('colors_raw'));
-            $this->rememberColors($validated['colors']);
-        }
+        $validated['colors'] = $this->processColorVariants($request);
+        $this->rememberColors($validated['colors']);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->storeImage($request->file('image'));
@@ -117,6 +115,13 @@ class ProductController extends Controller
             'is_flash_sale' => 'nullable|boolean',
             'flash_sale_ends_at' => 'nullable|date',
             'is_featured' => 'nullable|boolean',
+            'colors' => 'nullable|array',
+            'colors.*.name' => 'nullable|string|max:100',
+            'colors.*.hex' => 'nullable|string|max:20',
+            'colors.*.price' => 'nullable|integer|min:0',
+            'colors.*.image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:8192',
+            'colors.*.gallery' => 'nullable|array',
+            'colors.*.gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:8192',
         ]);
 
         $validated['is_flash_sale'] = $request->boolean('is_flash_sale');
@@ -176,22 +181,53 @@ class ProductController extends Controller
         return collect($files)->map(fn ($file) => ImageUploadService::store($file, 'products', 1000))->all();
     }
 
-    private function parseColors(?string $raw): ?array
+    private function processColorVariants(Request $request): ?array
     {
-        if (! $raw) {
+        $rows = $request->input('colors', []);
+
+        if (empty($rows)) {
             return null;
         }
 
-        $colors = collect(explode("\n", $raw))
-            ->map(fn ($line) => trim($line))
-            ->filter()
-            ->map(function ($line) {
-                [$name, $hex] = array_pad(explode(':', $line, 2), 2, null);
-                return ['name' => trim($name), 'hex' => trim($hex ?? '#000000')];
-            })
-            ->values()
-            ->all();
+        $variants = [];
 
-        return $colors ?: null;
+        foreach ($rows as $i => $row) {
+            $name = trim($row['name'] ?? '');
+
+            if ($name === '') {
+                continue;
+            }
+
+            $hex = trim($row['hex'] ?? '#000000');
+            $price = isset($row['price']) && $row['price'] !== '' ? (int) $row['price'] : null;
+
+            $image = ($row['existing_image'] ?? '') !== '' ? $row['existing_image'] : null;
+
+            if ($request->hasFile("colors.$i.image")) {
+                $image = ImageUploadService::store($request->file("colors.$i.image"), 'products', 1000);
+            } elseif (($row['remove_image'] ?? '0') === '1') {
+                $image = null;
+            }
+
+            $existingGallery = json_decode($row['existing_gallery'] ?? '[]', true) ?: [];
+            $removedGallery = json_decode($row['removed_gallery'] ?? '[]', true) ?: [];
+            $gallery = array_values(array_diff($existingGallery, $removedGallery));
+
+            if ($request->hasFile("colors.$i.gallery")) {
+                foreach ($request->file("colors.$i.gallery") as $file) {
+                    $gallery[] = ImageUploadService::store($file, 'products', 1000);
+                }
+            }
+
+            $variants[] = [
+                'name' => $name,
+                'hex' => $hex,
+                'price' => $price,
+                'image' => $image,
+                'gallery' => $gallery ?: null,
+            ];
+        }
+
+        return $variants ?: null;
     }
 }

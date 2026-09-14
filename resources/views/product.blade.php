@@ -40,15 +40,14 @@
                     <img id="pdpMainImage" src="{{ $mainImageUrl }}" alt="{{ $product->name }}">
                 </div>
 
-                @if($allImages->count() > 1)
-                <div class="pdp-thumbs">
-                    @foreach($allImages as $i => $img)
-                    <button type="button" class="pdp-thumb @if($i === 0) is-active @endif" data-img="{{ $img }}">
-                        <img src="{{ $img }}" alt="{{ $product->name }} view {{ $i + 1 }}">
-                    </button>
-                    @endforeach
-                </div>
-                @endif
+                                        <div class="pdp-thumbs" id="pdpThumbs" style="{{ $allImages->count() > 1 ? '' : 'display:none;' }}">
+                        @foreach($allImages as $i => $img)
+                            <button type="button" class="pdp-thumb @if($i === 0) is-active @endif" data-img="{{ $img }}">
+                                <img src="{{ $img }}" alt="{{ $product->name }} view {{ $i + 1 }}" loading="lazy">
+                            </button>
+                        @endforeach
+                    </div>
+                    <div class="pdp-thumbs" id="pdpVariantThumbs" style="display:none;"></div>
             </div>
 
             {{-- INFO --}}
@@ -72,29 +71,47 @@
                     </span>
                 </div>
 
-                <div class="pdp-price-row">
-                    <span class="pdp-now mono">&#8358;{{ number_format($product->price) }}</span>
-                    @if($product->was_price)
-                    <span class="pdp-was mono">&#8358;{{ number_format($product->was_price) }}</span>
-                    <span class="off">{{ round((1 - $product->price / $product->was_price) * 100) }}% off</span>
-                    @endif
-                </div>
+                    @php
+                        $initialColorPrice = !empty($product->colors) ? ($product->colors[0]['price'] ?? null) : null;
+                        $displayPrice = $initialColorPrice ?? $product->price;
+                    @endphp
+                    <div class="pdp-price-row">
+                        <span class="pdp-now mono" id="pdpPriceNow">&#8358;{{ number_format($displayPrice) }}</span>
+                        @if($product->was_price)
+                            <span class="pdp-was mono" id="pdpPriceWas" style="{{ $initialColorPrice ? 'display:none;' : '' }}">&#8358;{{ number_format($product->was_price) }}</span>
+                            <span class="off" id="pdpPriceOff" style="{{ $initialColorPrice ? 'display:none;' : '' }}">{{ round((1 - $product->price / $product->was_price) * 100) }}% off</span>
+                        @endif
+                    </div>
 
                 <form action="{{ route('cart.add', $product) }}" method="POST" class="pdp-form">
                     @csrf
 
-                    @if(!empty($product->colors))
-                    <div class="pdp-field">
-                        <span class="pdp-field-label">Color: <strong id="selectedColorName">{{ $product->colors[0]['name'] }}</strong></span>
-                        <div class="color-swatches">
-                            @foreach($product->colors as $i => $color)
-                            <label class="swatch" style="background:{{ $color['hex'] }}">
-                                <input type="radio" name="color" value="{{ $color['name'] }}" data-name="{{ $color['name'] }}" @checked($i===0)>
-                            </label>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
+                        @if(!empty($product->colors))
+                            <div class="pdp-field">
+                                <span class="pdp-field-label">Color: <strong id="selectedColorName">{{ $product->colors[0]['name'] }}</strong></span>
+                                <div class="color-swatches">
+                                    @foreach($product->colors as $i => $color)
+                                        <label class="swatch" style="background:{{ $color['hex'] }}" title="{{ $color['name'] }}">
+                                            @php
+                                                $variantImages = collect([]);
+                                                if (!empty($color['image'])) {
+                                                    $variantImages->push(str($color['image'])->startsWith(['http://','https://']) ? $color['image'] : asset($color['image']));
+                                                }
+                                                foreach (($color['gallery'] ?? []) as $g) {
+                                                    $variantImages->push(str($g)->startsWith(['http://','https://']) ? $g : asset($g));
+                                                }
+                                            @endphp
+                                            <input type="radio" name="color" value="{{ $color['name'] }}"
+                                                data-name="{{ $color['name'] }}"
+                                                data-price="{{ $color['price'] ?? '' }}"
+                                                data-image="{{ $variantImages->first() ?? '' }}"
+                                                data-gallery="{{ $variantImages->toJson() }}"
+                                                @checked($i === 0)>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
 
                     <div class="pdp-field">
                         <span class="pdp-field-label">Quantity</span>
@@ -274,12 +291,84 @@
             });
         });
 
-        const colorName = document.getElementById('selectedColorName');
-        document.querySelectorAll('input[name="color"]').forEach(input => {
-            input.addEventListener('change', () => {
-                if (colorName) colorName.textContent = input.dataset.name;
-            });
+    const colorName = document.getElementById('selectedColorName');
+    const priceNowEl = document.getElementById('pdpPriceNow');
+    const priceWasEl = document.getElementById('pdpPriceWas');
+    const priceOffEl = document.getElementById('pdpPriceOff');
+    const basePrice = {{ $product->price }};
+
+    function formatNaira(amount) {
+        return '₦' + Math.round(amount).toLocaleString('en-NG');
+    }
+
+    document.querySelectorAll('input[name="color"]').forEach(input => {
+        input.addEventListener('change', () => {
+            if (colorName) colorName.textContent = input.dataset.name;
+
+            const overridePrice = input.dataset.price;
+            if (priceNowEl) {
+                if (overridePrice) {
+                    priceNowEl.textContent = formatNaira(parseInt(overridePrice, 10));
+                    if (priceWasEl) priceWasEl.style.display = 'none';
+                    if (priceOffEl) priceOffEl.style.display = 'none';
+                } else {
+                    priceNowEl.textContent = formatNaira(basePrice);
+                    if (priceWasEl) priceWasEl.style.display = '';
+                    if (priceOffEl) priceOffEl.style.display = '';
+                }
+            }
+
+            const baseThumbs = document.getElementById('pdpThumbs');
+            const variantThumbs = document.getElementById('pdpVariantThumbs');
+            let variantGallery = [];
+
+            try {
+                variantGallery = JSON.parse(input.dataset.gallery || '[]');
+            } catch (e) {
+                variantGallery = [];
+            }
+
+            if (variantGallery.length && mainImage) {
+                mainImage.src = variantGallery[0];
+
+                variantThumbs.innerHTML = '';
+                variantGallery.forEach((src, i) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'pdp-thumb' + (i === 0 ? ' is-active' : '');
+                    btn.dataset.img = src;
+
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = input.dataset.name + ' view ' + (i + 1);
+                    img.loading = 'lazy';
+                    btn.appendChild(img);
+
+                    btn.addEventListener('click', () => {
+                        variantThumbs.querySelectorAll('.pdp-thumb').forEach(t => t.classList.remove('is-active'));
+                        btn.classList.add('is-active');
+                        mainImage.src = src;
+                    });
+
+                    variantThumbs.appendChild(btn);
+                });
+
+                variantThumbs.style.display = variantGallery.length > 1 ? 'flex' : 'none';
+                baseThumbs.style.display = 'none';
+            } else {
+                variantThumbs.style.display = 'none';
+                variantThumbs.innerHTML = '';
+                baseThumbs.style.display = baseThumbs.children.length > 1 ? 'flex' : 'none';
+
+                if (input.dataset.image && mainImage) {
+                    mainImage.src = input.dataset.image;
+                    baseThumbs.querySelectorAll('.pdp-thumb').forEach(thumb => {
+                        thumb.classList.toggle('is-active', thumb.dataset.img === input.dataset.image);
+                    });
+                }
+            }
         });
+    });
 
         const qtyInput = document.getElementById('qtyInput');
         const qtyMinus = document.getElementById('qtyMinus');

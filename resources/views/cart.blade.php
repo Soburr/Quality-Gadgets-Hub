@@ -32,7 +32,7 @@
                 <div class="cart-layout">
                     <div class="cart-items">
                         @foreach($items as $item)
-                            <div class="cart-row" data-price="{{ $item->product->price }}">
+                            <div class="cart-row" data-price="{{ $item->unit_price }}">
                                 <a href="{{ route('product.show', $item->product) }}" class="cart-row-thumb">
                                     <img src="{{ $item->product->image }}" alt="{{ $item->product->name }}" loading="lazy">
                                 </a>
@@ -42,7 +42,7 @@
                                     @if($item->color)
                                         <div class="cart-row-color">Color: {{ $item->color }}</div>
                                     @endif
-                                    <div class="cart-row-price mono">&#8358;{{ number_format($item->product->price) }}</div>
+                                    <div class="cart-row-price mono">&#8358;{{ number_format($item->unit_price) }}</div>
                                 </div>
 
                                 <form action="{{ route('cart.update', $item->key) }}" method="POST" class="cart-row-qty">

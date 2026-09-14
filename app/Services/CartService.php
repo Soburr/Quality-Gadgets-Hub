@@ -14,6 +14,7 @@ class CartService
     {
         $cart = $this->raw();
         $key = $this->makeKey($product->id, $color);
+        $unitPrice = $product->priceForColor($color);
 
         if (isset($cart[$key])) {
             $cart[$key]['quantity'] += $quantity;
@@ -22,6 +23,7 @@ class CartService
                 'product_id' => $product->id,
                 'quantity' => $quantity,
                 'color' => $color,
+                'unit_price' => $unitPrice,
             ];
         }
 
@@ -76,12 +78,15 @@ class CartService
                     return null;
                 }
 
+                $unitPrice = $row['unit_price'] ?? $product->price;
+
                 return (object) [
                     'key' => $key,
                     'product' => $product,
                     'quantity' => $row['quantity'],
                     'color' => $row['color'],
-                    'subtotal' => $product->price * $row['quantity'],
+                    'unit_price' => $unitPrice,
+                    'subtotal' => $unitPrice * $row['quantity'],
                 ];
             })
             ->filter()

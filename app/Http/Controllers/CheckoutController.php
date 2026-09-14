@@ -120,7 +120,7 @@ class CheckoutController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $item->product->id,
                     'product_name' => $item->product->name,
-                    'price' => $item->product->price,
+                    'price' => $item->unit_price,
                     'quantity' => $item->quantity,
                     'color' => $item->color,
                     'subtotal' => $item->subtotal,
