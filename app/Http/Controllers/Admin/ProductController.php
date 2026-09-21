@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\ColorSwatch;
+use App\Models\StorageSwatch;
 use App\Models\Product;
 use App\Services\ImageUploadService;
 use Illuminate\Http\Request;
@@ -29,8 +30,9 @@ class ProductController extends Controller
         $categories = Category::flattenedForSelect();
         $brands = Brand::orderBy('sort_order')->get();
         $savedColors = ColorSwatch::orderBy('name')->get();
+        $savedStorage = StorageSwatch::orderBy('name')->get();
 
-        return view('admin.products.create', compact('categories', 'brands', 'savedColors'));
+        return view('admin.products.create', compact('categories', 'brands', 'savedColors', 'savedStorage'));
     }
 
     public function store(Request $request)
@@ -38,8 +40,10 @@ class ProductController extends Controller
         $validated = $this->validated($request);
 
         $validated['slug'] = $this->uniqueSlug($validated['name']);
-        $validated['colors'] = $this->processColorVariants($request);
+        $validated['colors'] = $this->processColorVariants($request, 'colors');
         $this->rememberColors($validated['colors']);
+        $validated['storage'] = $this->processColorVariants($request, 'storage');
+        $this->rememberStorageOptions($validated['storage']);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->storeImage($request->file('image'));
@@ -58,8 +62,9 @@ class ProductController extends Controller
         $categories = Category::flattenedForSelect();
         $brands = Brand::orderBy('sort_order')->get();
         $savedColors = ColorSwatch::orderBy('name')->get();
+        $savedStorage = StorageSwatch::orderBy('name')->get();
 
-        return view('admin.products.edit', compact('product', 'categories', 'brands', 'savedColors'));
+        return view('admin.products.edit', compact('product', 'categories', 'brands', 'savedColors', 'savedStorage'));
     }
 
     public function update(Request $request, Product $product)
@@ -70,8 +75,10 @@ class ProductController extends Controller
             $validated['slug'] = $this->uniqueSlug($validated['name'], $product->id);
         }
 
-        $validated['colors'] = $this->processColorVariants($request);
+        $validated['colors'] = $this->processColorVariants($request, 'colors');
         $this->rememberColors($validated['colors']);
+        $validated['storage'] = $this->processColorVariants($request, 'storage');
+        $this->rememberStorageOptions($validated['storage']);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->storeImage($request->file('image'));
@@ -122,6 +129,12 @@ class ProductController extends Controller
             'colors.*.image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:8192',
             'colors.*.gallery' => 'nullable|array',
             'colors.*.gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:8192',
+            'storage' => 'nullable|array',
+            'storage.*.name' => 'nullable|string|max:100',
+            'storage.*.price' => 'nullable|integer|min:0',
+            'storage.*.image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:8192',
+            'storage.*.gallery' => 'nullable|array',
+            'storage.*.gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:8192',
         ]);
 
         $validated['is_flash_sale'] = $request->boolean('is_flash_sale');
@@ -158,6 +171,15 @@ class ProductController extends Controller
         }
     }
 
+    private function rememberStorageOptions(?array $storage): void
+    {
+        foreach ($storage ?? [] as $option) {
+            if (! empty($option['name'])) {
+                StorageSwatch::firstOrCreate(['name' => $option['name']]);
+            }
+        }
+    }
+
     private function uniqueSlug(string $name, ?int $ignoreId = null): string
     {
         $base = Str::slug($name);
@@ -181,9 +203,9 @@ class ProductController extends Controller
         return collect($files)->map(fn ($file) => ImageUploadService::store($file, 'products', 1000))->all();
     }
 
-    private function processColorVariants(Request $request): ?array
+    private function processColorVariants(Request $request, string $field): ?array
     {
-        $rows = $request->input('colors', []);
+        $rows = $request->input($field, []);
 
         if (empty($rows)) {
             return null;
@@ -198,13 +220,12 @@ class ProductController extends Controller
                 continue;
             }
 
-            $hex = trim($row['hex'] ?? '#000000');
             $price = isset($row['price']) && $row['price'] !== '' ? (int) $row['price'] : null;
 
             $image = ($row['existing_image'] ?? '') !== '' ? $row['existing_image'] : null;
 
-            if ($request->hasFile("colors.$i.image")) {
-                $image = ImageUploadService::store($request->file("colors.$i.image"), 'products', 1000);
+            if ($request->hasFile("$field.$i.image")) {
+                $image = ImageUploadService::store($request->file("$field.$i.image"), 'products', 1000);
             } elseif (($row['remove_image'] ?? '0') === '1') {
                 $image = null;
             }
@@ -213,19 +234,19 @@ class ProductController extends Controller
             $removedGallery = json_decode($row['removed_gallery'] ?? '[]', true) ?: [];
             $gallery = array_values(array_diff($existingGallery, $removedGallery));
 
-            if ($request->hasFile("colors.$i.gallery")) {
-                foreach ($request->file("colors.$i.gallery") as $file) {
+            if ($request->hasFile("$field.$i.gallery")) {
+                foreach ($request->file("$field.$i.gallery") as $file) {
                     $gallery[] = ImageUploadService::store($file, 'products', 1000);
                 }
             }
 
-            $variants[] = [
-                'name' => $name,
-                'hex' => $hex,
-                'price' => $price,
-                'image' => $image,
-                'gallery' => $gallery ?: null,
-            ];
+            $variant = ['name' => $name, 'price' => $price, 'image' => $image, 'gallery' => $gallery ?: null];
+
+            if ($field === 'colors') {
+                $variant['hex'] = trim($row['hex'] ?? '#000000');
+            }
+
+            $variants[] = $variant;
         }
 
         return $variants ?: null;

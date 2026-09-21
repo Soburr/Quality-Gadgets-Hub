@@ -10,7 +10,7 @@ class Product extends Model
         'category_id', 'brand_id', 'name', 'slug', 'description',
         'price', 'was_price', 'rating', 'reviews_count',
         'badge', 'image', 'colors', 'gallery', 'stock',
-        'is_flash_sale', 'flash_sale_ends_at', 'is_featured',
+        'is_flash_sale', 'flash_sale_ends_at', 'is_featured', 'storage'
     ];
 
     protected $casts = [
@@ -18,6 +18,7 @@ class Product extends Model
         'gallery' => 'array',
         'is_flash_sale' => 'boolean',
         'flash_sale_ends_at' => 'datetime',
+        'storage' => 'array',
     ];
 
     public function category()
@@ -95,5 +96,25 @@ class Product extends Model
         }
 
         return $this->price;
+    }
+
+        public function priceForStorage(?string $storageName): ?int
+    {
+        if (! $storageName || empty($this->storage)) {
+            return null;
+        }
+
+        foreach ($this->storage as $option) {
+            if (($option['name'] ?? null) === $storageName && ! empty($option['price'])) {
+                return (int) $option['price'];
+            }
+        }
+
+        return null;
+    }
+
+    public function resolvePrice(?string $color, ?string $storage): int
+    {
+        return $this->priceForStorage($storage) ?? $this->priceForColor($color);
     }
 }

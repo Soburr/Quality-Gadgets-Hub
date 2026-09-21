@@ -123,6 +123,7 @@ class CheckoutController extends Controller
                     'price' => $item->unit_price,
                     'quantity' => $item->quantity,
                     'color' => $item->color,
+                    'storage' => $item->storage,
                     'subtotal' => $item->subtotal,
                 ]);
             }

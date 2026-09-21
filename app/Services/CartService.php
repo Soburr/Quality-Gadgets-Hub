@@ -10,11 +10,11 @@ class CartService
 {
     protected string $sessionKey = 'cart';
 
-    public function add(Product $product, int $quantity = 1, ?string $color = null): void
+    public function add(Product $product, int $quantity = 1, ?string $color = null, ?string $storage = null): void
     {
         $cart = $this->raw();
-        $key = $this->makeKey($product->id, $color);
-        $unitPrice = $product->priceForColor($color);
+        $key = $this->makeKey($product->id, $color, $storage);
+        $unitPrice = $product->resolvePrice($color, $storage);
 
         if (isset($cart[$key])) {
             $cart[$key]['quantity'] += $quantity;
@@ -23,6 +23,7 @@ class CartService
                 'product_id' => $product->id,
                 'quantity' => $quantity,
                 'color' => $color,
+                'storage' => $storage,
                 'unit_price' => $unitPrice,
             ];
         }
@@ -85,6 +86,7 @@ class CartService
                     'product' => $product,
                     'quantity' => $row['quantity'],
                     'color' => $row['color'],
+                    'storage' => $row['storage'] ?? null,
                     'unit_price' => $unitPrice,
                     'subtotal' => $unitPrice * $row['quantity'],
                 ];
@@ -108,8 +110,8 @@ class CartService
         Session::forget($this->sessionKey);
     }
 
-    private function makeKey(int $productId, ?string $color): string
+    private function makeKey(int $productId, ?string $color, ?string $storage = null): string
     {
-        return md5($productId . '|' . ($color ?? ''));
+        return md5($productId . '|' . ($color ?? '') . '|' . ($storage ?? ''));
     }
 }

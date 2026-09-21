@@ -23,7 +23,7 @@ class CartController extends Controller
             'color' => 'nullable|string',
         ]);
 
-        $cart->add($product, (int) $request->input('quantity', 1), $request->input('color'));
+        $cart->add($product, (int) $request->input('quantity', 1), $request->input('color'), $request->input('storage'));
 
         return back()->with('status', "{$product->name} added to cart.");
     }
@@ -35,7 +35,7 @@ class CartController extends Controller
             'color' => 'nullable|string',
         ]);
 
-        $cart->add($product, (int) $request->input('quantity', 1), $request->input('color'));
+        $cart->add($product, (int) $request->input('quantity', 1), $request->input('color'), $request->input('storage'));
 
         return redirect()->route('cart.show')->with('status', 'Added to cart — continue below to checkout.');
     }

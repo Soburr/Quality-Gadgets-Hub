@@ -23,13 +23,12 @@
         <div class="pdp">
             {{-- GALLERY --}}
             @php
-
-            $mainImageUrl = str($product->image)->startsWith(['http://', 'https://']) ? $product->image : asset($product->image);
-            $galleryImages = collect($product->gallery ?? [])
-            ->map(fn ($img) => str($img)->startsWith(['http://', 'https://']) ? $img : asset($img))
-            ->reject(fn ($img) => $img === $mainImageUrl)
-            ->values();
-            $allImages = collect([$mainImageUrl])->merge($galleryImages);
+                $mainImageUrl = str($product->image)->startsWith(['http://', 'https://']) ? $product->image : asset($product->image);
+                $galleryImages = collect($product->gallery ?? [])
+                    ->map(fn ($img) => str($img)->startsWith(['http://', 'https://']) ? $img : asset($img))
+                    ->reject(fn ($img) => $img === $mainImageUrl)
+                    ->values();
+                $allImages = collect([$mainImageUrl])->merge($galleryImages);
             @endphp
 
             <div class="pdp-gallery">
@@ -40,14 +39,14 @@
                     <img id="pdpMainImage" src="{{ $mainImageUrl }}" alt="{{ $product->name }}">
                 </div>
 
-                                        <div class="pdp-thumbs" id="pdpThumbs" style="{{ $allImages->count() > 1 ? '' : 'display:none;' }}">
-                        @foreach($allImages as $i => $img)
-                            <button type="button" class="pdp-thumb @if($i === 0) is-active @endif" data-img="{{ $img }}">
-                                <img src="{{ $img }}" alt="{{ $product->name }} view {{ $i + 1 }}" loading="lazy">
-                            </button>
-                        @endforeach
-                    </div>
-                    <div class="pdp-thumbs" id="pdpVariantThumbs" style="display:none;"></div>
+                <div class="pdp-thumbs" id="pdpThumbs" style="{{ $allImages->count() > 1 ? '' : 'display:none;' }}">
+                    @foreach($allImages as $i => $img)
+                        <button type="button" class="pdp-thumb @if($i === 0) is-active @endif" data-img="{{ $img }}">
+                            <img src="{{ $img }}" alt="{{ $product->name }} view {{ $i + 1 }}" loading="lazy">
+                        </button>
+                    @endforeach
+                </div>
+                <div class="pdp-thumbs" id="pdpVariantThumbs" style="display:none;"></div>
             </div>
 
             {{-- INFO --}}
@@ -62,7 +61,7 @@
                     <span class="stars">
                         @for($i = 1; $i <= 5; $i++)
                             <span class="s">{{ $i <= round($product->rating) ? '★' : '☆' }}</span>
-                    @endfor
+                        @endfor
                     </span>
                     <span class="pdp-reviews">{{ number_format($product->reviews_count) }} reviews</span>
                     <span class="sep">&middot;</span>
@@ -71,47 +70,79 @@
                     </span>
                 </div>
 
-                    @php
-                        $initialColorPrice = !empty($product->colors) ? ($product->colors[0]['price'] ?? null) : null;
-                        $displayPrice = $initialColorPrice ?? $product->price;
-                    @endphp
-                    <div class="pdp-price-row">
-                        <span class="pdp-now mono" id="pdpPriceNow">&#8358;{{ number_format($displayPrice) }}</span>
-                        @if($product->was_price)
-                            <span class="pdp-was mono" id="pdpPriceWas" style="{{ $initialColorPrice ? 'display:none;' : '' }}">&#8358;{{ number_format($product->was_price) }}</span>
-                            <span class="off" id="pdpPriceOff" style="{{ $initialColorPrice ? 'display:none;' : '' }}">{{ round((1 - $product->price / $product->was_price) * 100) }}% off</span>
-                        @endif
-                    </div>
+                @php
+                    // Storage price wins over color price when both exist —
+                    // matches Product::resolvePrice()'s priority on the backend.
+                    $initialStoragePrice = !empty($product->storage) ? ($product->storage[0]['price'] ?? null) : null;
+                    $initialColorPrice = !empty($product->colors) ? ($product->colors[0]['price'] ?? null) : null;
+                    $initialOverridePrice = $initialStoragePrice ?? $initialColorPrice;
+                    $displayPrice = $initialOverridePrice ?? $product->price;
+                @endphp
+                <div class="pdp-price-row">
+                    <span class="pdp-now mono" id="pdpPriceNow">&#8358;{{ number_format($displayPrice) }}</span>
+                    @if($product->was_price)
+                        <span class="pdp-was mono" id="pdpPriceWas" style="{{ $initialOverridePrice ? 'display:none;' : '' }}">&#8358;{{ number_format($product->was_price) }}</span>
+                        <span class="off" id="pdpPriceOff" style="{{ $initialOverridePrice ? 'display:none;' : '' }}">{{ round((1 - $product->price / $product->was_price) * 100) }}% off</span>
+                    @endif
+                </div>
 
                 <form action="{{ route('cart.add', $product) }}" method="POST" class="pdp-form">
                     @csrf
 
-                        @if(!empty($product->colors))
-                            <div class="pdp-field">
-                                <span class="pdp-field-label">Color: <strong id="selectedColorName">{{ $product->colors[0]['name'] }}</strong></span>
-                                <div class="color-swatches">
-                                    @foreach($product->colors as $i => $color)
-                                        <label class="swatch" style="background:{{ $color['hex'] }}" title="{{ $color['name'] }}">
-                                            @php
-                                                $variantImages = collect([]);
-                                                if (!empty($color['image'])) {
-                                                    $variantImages->push(str($color['image'])->startsWith(['http://','https://']) ? $color['image'] : asset($color['image']));
-                                                }
-                                                foreach (($color['gallery'] ?? []) as $g) {
-                                                    $variantImages->push(str($g)->startsWith(['http://','https://']) ? $g : asset($g));
-                                                }
-                                            @endphp
-                                            <input type="radio" name="color" value="{{ $color['name'] }}"
-                                                data-name="{{ $color['name'] }}"
-                                                data-price="{{ $color['price'] ?? '' }}"
-                                                data-image="{{ $variantImages->first() ?? '' }}"
-                                                data-gallery="{{ $variantImages->toJson() }}"
-                                                @checked($i === 0)>
-                                        </label>
-                                    @endforeach
-                                </div>
+                    @if(!empty($product->colors))
+                        <div class="pdp-field">
+                            <span class="pdp-field-label">Color: <strong id="selectedColorName">{{ $product->colors[0]['name'] }}</strong></span>
+                            <div class="color-swatches">
+                                @foreach($product->colors as $i => $color)
+                                    @php
+                                        $variantImages = collect([]);
+                                        if (!empty($color['image'])) {
+                                            $variantImages->push(str($color['image'])->startsWith(['http://','https://']) ? $color['image'] : asset($color['image']));
+                                        }
+                                        foreach (($color['gallery'] ?? []) as $g) {
+                                            $variantImages->push(str($g)->startsWith(['http://','https://']) ? $g : asset($g));
+                                        }
+                                    @endphp
+                                    <label class="swatch" style="background:{{ $color['hex'] }}" title="{{ $color['name'] }}">
+                                        <input type="radio" name="color" value="{{ $color['name'] }}"
+                                            data-name="{{ $color['name'] }}"
+                                            data-price="{{ $color['price'] ?? '' }}"
+                                            data-image="{{ $variantImages->first() ?? '' }}"
+                                            data-gallery="{{ $variantImages->toJson() }}"
+                                            @checked($i === 0)>
+                                    </label>
+                                @endforeach
                             </div>
-                        @endif
+                        </div>
+                    @endif
+
+                    @if(!empty($product->storage))
+                        <div class="pdp-field">
+                            <span class="pdp-field-label">Storage: <strong id="selectedStorageName">{{ $product->storage[0]['name'] }}</strong></span>
+                            <div class="storage-options">
+                                @foreach($product->storage as $i => $option)
+                                    @php
+                                        $storageImages = collect([]);
+                                        if (!empty($option['image'])) {
+                                            $storageImages->push(str($option['image'])->startsWith(['http://','https://']) ? $option['image'] : asset($option['image']));
+                                        }
+                                        foreach (($option['gallery'] ?? []) as $g) {
+                                            $storageImages->push(str($g)->startsWith(['http://','https://']) ? $g : asset($g));
+                                        }
+                                    @endphp
+                                    <label class="storage-pill">
+                                        <input type="radio" name="storage" value="{{ $option['name'] }}"
+                                            data-name="{{ $option['name'] }}"
+                                            data-price="{{ $option['price'] ?? '' }}"
+                                            data-image="{{ $storageImages->first() ?? '' }}"
+                                            data-gallery="{{ $storageImages->toJson() }}"
+                                            @checked($i === 0)>
+                                        <span>{{ $option['name'] }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="pdp-field">
                         <span class="pdp-field-label">Quantity</span>
@@ -165,7 +196,7 @@
                 <div class="stars">
                     @for($i = 1; $i <= 5; $i++)
                         <span class="s">{{ $i <= round($product->rating) ? '★' : '☆' }}</span>
-                        @endfor
+                    @endfor
                 </div>
                 <div class="reviews-score-count">{{ number_format($product->reviews_count) }} ratings</div>
             </div>
@@ -195,7 +226,7 @@
                     <span class="stars">
                         @for($i = 1; $i <= 5; $i++)
                             <span class="s">{{ $i <= $review->rating ? '★' : '☆' }}</span>
-                    @endfor
+                        @endfor
                     </span>
                     @if($review->is_verified)
                     <span class="review-verified">Verified Purchase</span>
@@ -283,6 +314,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const mainImage = document.getElementById('pdpMainImage');
+
         document.querySelectorAll('.pdp-thumb').forEach(thumb => {
             thumb.addEventListener('click', () => {
                 document.querySelectorAll('.pdp-thumb').forEach(t => t.classList.remove('is-active'));
@@ -291,24 +323,39 @@
             });
         });
 
-    const colorName = document.getElementById('selectedColorName');
-    const priceNowEl = document.getElementById('pdpPriceNow');
-    const priceWasEl = document.getElementById('pdpPriceWas');
-    const priceOffEl = document.getElementById('pdpPriceOff');
-    const basePrice = {{ $product->price }};
+        const colorName = document.getElementById('selectedColorName');
+        const storageNameEl = document.getElementById('selectedStorageName');
+        const priceNowEl = document.getElementById('pdpPriceNow');
+        const priceWasEl = document.getElementById('pdpPriceWas');
+        const priceOffEl = document.getElementById('pdpPriceOff');
+        const basePrice = {{ $product->price }};
+        const baseThumbs = document.getElementById('pdpThumbs');
+        const variantThumbs = document.getElementById('pdpVariantThumbs');
 
-    function formatNaira(amount) {
-        return '₦' + Math.round(amount).toLocaleString('en-NG');
-    }
+        function formatNaira(amount) {
+            return '₦' + Math.round(amount).toLocaleString('en-NG');
+        }
 
-    document.querySelectorAll('input[name="color"]').forEach(input => {
-        input.addEventListener('change', () => {
-            if (colorName) colorName.textContent = input.dataset.name;
+        function getChecked(name) {
+            return document.querySelector(`input[name="${name}"]:checked`);
+        }
 
-            const overridePrice = input.dataset.price;
+        function applyVariantSelection() {
+            const colorInput = getChecked('color');
+            const storageInput = getChecked('storage');
+
+            if (colorName && colorInput) colorName.textContent = colorInput.dataset.name;
+            if (storageNameEl && storageInput) storageNameEl.textContent = storageInput.dataset.name;
+
+            // Storage price wins over color price when both are set —
+            // matches Product::resolvePrice() on the backend.
+            const storagePrice = storageInput && storageInput.dataset.price ? parseInt(storageInput.dataset.price, 10) : null;
+            const colorPrice = colorInput && colorInput.dataset.price ? parseInt(colorInput.dataset.price, 10) : null;
+            const overridePrice = storagePrice ?? colorPrice;
+
             if (priceNowEl) {
                 if (overridePrice) {
-                    priceNowEl.textContent = formatNaira(parseInt(overridePrice, 10));
+                    priceNowEl.textContent = formatNaira(overridePrice);
                     if (priceWasEl) priceWasEl.style.display = 'none';
                     if (priceOffEl) priceOffEl.style.display = 'none';
                 } else {
@@ -318,12 +365,16 @@
                 }
             }
 
-            const baseThumbs = document.getElementById('pdpThumbs');
-            const variantThumbs = document.getElementById('pdpVariantThumbs');
-            let variantGallery = [];
+            // Storage's own photos win over color's, if both are set.
+            const activeInput = (storageInput && storageInput.dataset.gallery && JSON.parse(storageInput.dataset.gallery).length)
+                ? storageInput
+                : colorInput;
 
+            if (!activeInput) return;
+
+            let variantGallery = [];
             try {
-                variantGallery = JSON.parse(input.dataset.gallery || '[]');
+                variantGallery = JSON.parse(activeInput.dataset.gallery || '[]');
             } catch (e) {
                 variantGallery = [];
             }
@@ -340,7 +391,7 @@
 
                     const img = document.createElement('img');
                     img.src = src;
-                    img.alt = input.dataset.name + ' view ' + (i + 1);
+                    img.alt = activeInput.dataset.name + ' view ' + (i + 1);
                     img.loading = 'lazy';
                     btn.appendChild(img);
 
@@ -360,15 +411,18 @@
                 variantThumbs.innerHTML = '';
                 baseThumbs.style.display = baseThumbs.children.length > 1 ? 'flex' : 'none';
 
-                if (input.dataset.image && mainImage) {
-                    mainImage.src = input.dataset.image;
+                if (activeInput.dataset.image && mainImage) {
+                    mainImage.src = activeInput.dataset.image;
                     baseThumbs.querySelectorAll('.pdp-thumb').forEach(thumb => {
-                        thumb.classList.toggle('is-active', thumb.dataset.img === input.dataset.image);
+                        thumb.classList.toggle('is-active', thumb.dataset.img === activeInput.dataset.image);
                     });
                 }
             }
+        }
+
+        document.querySelectorAll('input[name="color"], input[name="storage"]').forEach(input => {
+            input.addEventListener('change', applyVariantSelection);
         });
-    });
 
         const qtyInput = document.getElementById('qtyInput');
         const qtyMinus = document.getElementById('qtyMinus');

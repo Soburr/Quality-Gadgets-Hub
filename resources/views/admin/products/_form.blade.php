@@ -93,7 +93,7 @@
 
         <div class="admin-field">
             <label>Color variants (optional)</label>
-            <p class="admin-hint" style="margin-bottom:12px;">Each color can have its own price and photo. Leave price blank to use the base price above; leave photo blank to use the main image.</p>
+            <p class="admin-hint" style="margin-bottom:12px;">Each color can have its own price and photo. Leave price blank to use the base price above; leave photo blank to use the main image. If storage options are also set below, storage price takes priority.</p>
 
             @if($savedColors->isNotEmpty())
                 <div class="saved-colors">
@@ -128,7 +128,7 @@
             ];
         })->values()) !!}</script>
 
-                <template id="colorVariantTemplate">
+        <template id="colorVariantTemplate">
             <div class="color-variant-row" data-index="__INDEX__">
                 <div class="color-variant-top">
                     <input type="color" name="colors[__INDEX__][hex]" value="#8C0027" class="cv-hex">
@@ -161,6 +161,78 @@
                         <input type="file" id="cvGallery__INDEX__" name="colors[__INDEX__][gallery][]" accept="image/*" multiple class="admin-file-hidden cv-gallery-input">
                         <input type="hidden" name="colors[__INDEX__][existing_gallery]" value="[]" class="cv-existing-gallery">
                         <input type="hidden" name="colors[__INDEX__][removed_gallery]" value="[]" class="cv-removed-gallery">
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <div class="admin-field">
+            <label>Storage / RAM options (optional)</label>
+            <p class="admin-hint" style="margin-bottom:12px;">Same idea as colors — each storage option can have its own price and photo. If a product has both colors and storage set, storage price takes priority.</p>
+
+            @if($savedStorage->isNotEmpty())
+                <div class="saved-colors">
+                    <span class="saved-colors-label">Saved options — click to add</span>
+                    <div class="saved-colors-list">
+                        @foreach($savedStorage as $option)
+                            <button type="button" class="saved-storage-btn" data-name="{{ $option->name }}">
+                                <span class="saved-color-name">{{ $option->name }}</span>
+                                <span class="saved-color-plus">+</span>
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <div id="storageVariantsList" class="color-variants-list"></div>
+            <button type="button" id="addStorageVariantBtn" class="btn btn-ghost" style="margin-top:10px;">+ Add storage option</button>
+        </div>
+
+        <script type="application/json" id="storageExistingField">{!! json_encode(collect($product->storage ?? [])->map(function ($c) {
+            $raw = $c['image'] ?? null;
+            $gallery = $c['gallery'] ?? [];
+            return [
+                'name' => $c['name'] ?? '',
+                'price' => $c['price'] ?? null,
+                'image' => $raw,
+                'image_url' => $raw ? (str($raw)->startsWith(['http://', 'https://']) ? $raw : asset($raw)) : null,
+                'gallery' => $gallery,
+                'gallery_urls' => collect($gallery)->map(fn ($g) => str($g)->startsWith(['http://', 'https://']) ? $g : asset($g))->values(),
+            ];
+        })->values()) !!}</script>
+
+        <template id="storageVariantTemplate">
+            <div class="color-variant-row" data-index="__SINDEX__">
+                <div class="color-variant-top">
+                    <input type="text" name="storage[__SINDEX__][name]" placeholder="e.g. 256GB" class="cv-name" style="flex:0 0 160px;">
+                    <div class="cv-price-wrap">
+                        <span>&#8358;</span>
+                        <input type="number" name="storage[__SINDEX__][price]" min="0" placeholder="Same as base price" class="cv-price">
+                    </div>
+                    <button type="button" class="cv-remove" aria-label="Remove this option">&times;</button>
+                </div>
+                <div class="cv-image-row">
+                    <div class="cv-image-block">
+                        <span class="cv-block-label">Main photo</span>
+                        <div class="admin-image-drop-wrap cv-image-wrap">
+                            <label for="svImage__SINDEX__" class="admin-image-drop admin-image-drop--sm cv-image-drop">
+                                <img class="cv-image-preview" src="" alt="" style="display:none;">
+                                <span class="admin-image-drop-label cv-image-label">Add photo</span>
+                            </label>
+                            <button type="button" class="admin-image-remove is-hidden cv-image-remove-btn" aria-label="Remove photo">&times;</button>
+                        </div>
+                        <input type="file" id="svImage__SINDEX__" name="storage[__SINDEX__][image]" accept="image/*" class="admin-file-hidden cv-image-input">
+                        <input type="hidden" name="storage[__SINDEX__][existing_image]" value="" class="cv-existing-image">
+                        <input type="hidden" name="storage[__SINDEX__][remove_image]" value="0" class="cv-remove-image-flag">
+                    </div>
+
+                    <div class="cv-image-block cv-gallery-block">
+                        <span class="cv-block-label">Other images (optional)</span>
+                        <div class="cv-gallery-strip"></div>
+                        <label for="svGallery__SINDEX__" class="btn btn-ghost cv-gallery-choose">+ Add images</label>
+                        <input type="file" id="svGallery__SINDEX__" name="storage[__SINDEX__][gallery][]" accept="image/*" multiple class="admin-file-hidden cv-gallery-input">
+                        <input type="hidden" name="storage[__SINDEX__][existing_gallery]" value="[]" class="cv-existing-gallery">
+                        <input type="hidden" name="storage[__SINDEX__][removed_gallery]" value="[]" class="cv-removed-gallery">
                     </div>
                 </div>
             </div>
@@ -311,6 +383,7 @@
             });
         });
 
+        // ---------- Color variants ----------
         (function () {
             var list = document.getElementById('colorVariantsList');
             var templateHtml = document.getElementById('colorVariantTemplate').innerHTML;
@@ -341,6 +414,7 @@
                 var existingGalleryField = row.querySelector('.cv-existing-gallery');
                 var removedGalleryField = row.querySelector('.cv-removed-gallery');
                 var removedGalleryPaths = [];
+
                 if (data.hex) hexInput.value = data.hex;
                 if (data.name) nameInput.value = data.name;
                 if (data.price !== null && data.price !== undefined) priceInput.value = data.price;
@@ -376,7 +450,6 @@
                     row.remove();
                 });
 
-                // ---- Variant gallery ----
                 function renderSavedGallery() {
                     galleryStrip.innerHTML = '';
 
@@ -441,6 +514,139 @@
             document.querySelectorAll('.saved-color-btn').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     addRow({ name: btn.dataset.name, hex: btn.dataset.hex });
+                });
+            });
+        })();
+
+        // ---------- Storage / RAM variants (same pattern, no hex) ----------
+        (function () {
+            var list = document.getElementById('storageVariantsList');
+            var templateHtml = document.getElementById('storageVariantTemplate').innerHTML;
+            var addBtn = document.getElementById('addStorageVariantBtn');
+            var existingStorage = JSON.parse(document.getElementById('storageExistingField').textContent || '[]');
+            var index = 0;
+
+            function addRow(data) {
+                data = data || {};
+                var html = templateHtml.split('__SINDEX__').join(index);
+                var wrapper = document.createElement('div');
+                wrapper.innerHTML = html.trim();
+                var row = wrapper.firstElementChild;
+                list.appendChild(row);
+
+                var nameInput = row.querySelector('.cv-name');
+                var priceInput = row.querySelector('.cv-price');
+                var imageInput = row.querySelector('.cv-image-input');
+                var imagePreview = row.querySelector('.cv-image-preview');
+                var imageLabel = row.querySelector('.cv-image-label');
+                var existingImageField = row.querySelector('.cv-existing-image');
+                var removeImageFlag = row.querySelector('.cv-remove-image-flag');
+                var removeImageBtn = row.querySelector('.cv-image-remove-btn');
+                var removeRowBtn = row.querySelector('.cv-remove');
+                var galleryStrip = row.querySelector('.cv-gallery-strip');
+                var galleryInput = row.querySelector('.cv-gallery-input');
+                var existingGalleryField = row.querySelector('.cv-existing-gallery');
+                var removedGalleryField = row.querySelector('.cv-removed-gallery');
+                var removedGalleryPaths = [];
+
+                if (data.name) nameInput.value = data.name;
+                if (data.price !== null && data.price !== undefined) priceInput.value = data.price;
+                if (data.image_url) {
+                    imagePreview.src = data.image_url;
+                    imagePreview.style.display = 'block';
+                    imageLabel.style.display = 'none';
+                    existingImageField.value = data.image;
+                    removeImageBtn.classList.remove('is-hidden');
+                }
+
+                imageInput.addEventListener('change', function () {
+                    var file = imageInput.files[0];
+                    if (!file) return;
+                    imagePreview.src = URL.createObjectURL(file);
+                    imagePreview.style.display = 'block';
+                    imageLabel.style.display = 'none';
+                    removeImageFlag.value = '0';
+                    removeImageBtn.classList.remove('is-hidden');
+                });
+
+                removeImageBtn.addEventListener('click', function () {
+                    imageInput.value = '';
+                    imagePreview.src = '';
+                    imagePreview.style.display = 'none';
+                    imageLabel.style.display = 'block';
+                    existingImageField.value = '';
+                    removeImageFlag.value = '1';
+                    removeImageBtn.classList.add('is-hidden');
+                });
+
+                removeRowBtn.addEventListener('click', function () {
+                    row.remove();
+                });
+
+                function renderSavedGallery() {
+                    galleryStrip.innerHTML = '';
+
+                    var saved = JSON.parse(existingGalleryField.value || '[]');
+                    var urls = data.gallery_urls || [];
+
+                    saved.forEach(function (path, i) {
+                        if (removedGalleryPaths.indexOf(path) !== -1) return;
+
+                        var item = document.createElement('div');
+                        item.className = 'cv-gallery-item';
+
+                        var img = document.createElement('img');
+                        img.src = urls[i] || path;
+                        item.appendChild(img);
+
+                        var rm = document.createElement('button');
+                        rm.type = 'button';
+                        rm.className = 'cv-gallery-remove';
+                        rm.innerHTML = '&times;';
+                        rm.setAttribute('aria-label', 'Remove this image');
+                        rm.addEventListener('click', function () {
+                            removedGalleryPaths.push(path);
+                            removedGalleryField.value = JSON.stringify(removedGalleryPaths);
+                            renderSavedGallery();
+                        });
+                        item.appendChild(rm);
+
+                        galleryStrip.appendChild(item);
+                    });
+
+                    Array.from(galleryInput.files).forEach(function (file) {
+                        var item = document.createElement('div');
+                        item.className = 'cv-gallery-item cv-gallery-item--new';
+                        var img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        item.appendChild(img);
+                        galleryStrip.appendChild(item);
+                    });
+
+                    if (!galleryStrip.children.length) {
+                        var empty = document.createElement('span');
+                        empty.className = 'cv-gallery-empty';
+                        empty.textContent = 'No extra images yet';
+                        galleryStrip.appendChild(empty);
+                    }
+                }
+
+                if (data.gallery && data.gallery.length) {
+                    existingGalleryField.value = JSON.stringify(data.gallery);
+                }
+
+                galleryInput.addEventListener('change', renderSavedGallery);
+                renderSavedGallery();
+
+                index++;
+            }
+
+            existingStorage.forEach(function (c) { addRow(c); });
+            addBtn.addEventListener('click', function () { addRow(); });
+
+            document.querySelectorAll('.saved-storage-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    addRow({ name: btn.dataset.name });
                 });
             });
         })();
