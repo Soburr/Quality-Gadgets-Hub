@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Quality Gadgets Hub — Original Phones, Real Prices')
+@section('title', 'Quality Gadgets Hub — Utmost Quality At All Times')
 
 @section('content')
 

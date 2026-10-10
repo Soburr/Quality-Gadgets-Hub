@@ -25,7 +25,7 @@
 <tr>
 <td style="background-color:#FFF8F6;padding:20px 32px;border-top:1px solid #F0DDE2;">
 <p style="margin:0;font-size:12px;color:#6b5860;">
-&copy; {{ now()->year }} Quality Gadgets Hub. Original phones, real prices.
+&copy; {{ now()->year }} Quality Gadgets Hub. Utmost Quality At All Times.
 </p>
 </td>
 </tr>
