@@ -32,6 +32,10 @@ Thanks for your order! We've received <strong>{{ $order->order_number }}</strong
 </table>
 
 <p style="margin:0 0 4px;font-size:13px;font-weight:bold;color:#20141A;">Delivering to:</p>
+@if($order->customer_note)
+<p style="margin:0 0 4px;font-size:13px;font-weight:bold;color:#20141A;">Your note:</p>
+<p style="margin:0 0 20px;font-size:13px;line-height:1.6;color:#6b5860;">{!! nl2br(e($order->customer_note)) !!}</p>
+@endif
 <p style="margin:0 0 20px;font-size:13px;line-height:1.6;color:#6b5860;">
 {{ $order->shipping_address }}, {{ $order->shipping_city }}, {{ $order->shipping_state }}<br>
 {{ $order->shipping_phone }}

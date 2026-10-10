@@ -22,7 +22,12 @@
             <tbody>
                 @forelse($orders as $order)
                     <tr>
-                        <td>{{ $order->order_number }}</td>
+                        <td>
+                            {{ $order->order_number }}
+                            @if($order->customer_note)
+                                <span class="admin-badge admin-badge--pending" title="Customer left a note" style="margin-left:6px;">Note</span>
+                            @endif
+                        </td>
                         <td>{{ $order->user->name }}</td>
                         <td class="mono">&#8358;{{ number_format($order->total) }}</td>
                         <td><span class="admin-badge admin-badge--{{ $order->status }}">{{ ucfirst($order->status) }}</span></td>

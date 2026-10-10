@@ -79,6 +79,12 @@
                     {{ $order->shipping_address }}, {{ $order->shipping_city }}, {{ $order->shipping_state }}
                 </p>
 
+                @if($order->customer_note)
+                        <div class="order-note-callout">
+                            <strong>Your note</strong>
+                            <p>{!! nl2br(e($order->customer_note)) !!}</p>
+                        </div>
+                @endif
                 <div class="cart-summary-row"><span>Subtotal</span><span class="mono">&#8358;{{ number_format($order->subtotal) }}</span></div>
                     @php
                         $deliveryLabel = match(true) {

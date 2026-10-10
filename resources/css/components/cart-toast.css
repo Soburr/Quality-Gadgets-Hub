@@ -1,0 +1,15 @@
+@layer components {
+  .cart-toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;font-size:13.5px;font-weight:700;
+    padding:12px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.25);
+    z-index:90;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
+  }
+  .cart-toast.is-visible{opacity:1;transform:translateX(-50%) translateY(0);}
+  .cart-toast--error{background:#9B1C1C;}
+
+  @media (max-width:600px){
+    .cart-toast{bottom:90px;left:16px;right:16px;transform:translateY(20px);text-align:center;}
+    .cart-toast.is-visible{transform:translateY(0);}
+  }
+}

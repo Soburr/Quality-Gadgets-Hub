@@ -21,9 +21,22 @@ class CartController extends Controller
         $request->validate([
             'quantity' => 'nullable|integer|min:1',
             'color' => 'nullable|string',
+            'storage' => 'nullable|string',
         ]);
 
-        $cart->add($product, (int) $request->input('quantity', 1), $request->input('color'), $request->input('storage'));
+        $cart->add(
+            $product,
+            (int) $request->input('quantity', 1),
+            $request->input('color'),
+            $request->input('storage')
+        );
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'message' => "{$product->name} added to cart.",
+                'cartCount' => $cart->count(),
+            ]);
+        }
 
         return back()->with('status', "{$product->name} added to cart.");
     }

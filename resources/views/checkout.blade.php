@@ -38,6 +38,14 @@
 
             <div class="checkout-form">
                     <div class="checkout-block">
+                        <h3>Order notes <span class="checkout-optional">(optional)</span></h3>
+                        <div class="auth-field">
+                            <label for="customer_note">Preferred color or any special request</label>
+                            <textarea id="customer_note" name="customer_note" rows="3" maxlength="500" placeholder="e.g. iPhone 15 in blue please. If blue isn't available, black is fine.">{{ old('customer_note') }}</textarea>
+                        </div>
+                        <p class="checkout-note">Max 500 characters. Our team will see this with your order.</p>
+                    </div>
+                    <div class="checkout-block">
                         <h3>Shipping details</h3>
                         <div class="auth-field">
                             <label for="shipping_name">Full name</label>

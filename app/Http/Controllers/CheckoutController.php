@@ -60,6 +60,7 @@ class CheckoutController extends Controller
             'shipping_city' => 'required|string|max:255',
             'delivery_method' => 'required|in:delivery,store_pickup,courier',
             'payment_method' => 'required|in:pay_now',
+            'customer_note' => 'nullable|string|max:500',
         ]);
 
         if ($validated['delivery_method'] === 'store_pickup' && $validated['shipping_state'] !== 'Lagos') {
@@ -113,6 +114,7 @@ class CheckoutController extends Controller
                 'shipping_address' => $validated['shipping_address'],
                 'shipping_city' => $validated['shipping_city'],
                 'shipping_state' => $validated['shipping_state'],
+                'customer_note' => $validated['customer_note'] ?? null,
             ]);
 
             foreach ($items as $item) {

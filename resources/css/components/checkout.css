@@ -143,3 +143,20 @@
     .area-tier{padding:14px;}
   }
 }
+
+@layer components {
+  .checkout-optional{font-size:12px;font-weight:600;color:var(--ink-soft);}
+
+  .checkout-block .auth-field textarea{
+    width:100%;min-height:96px;border-radius:10px;border:1.5px solid var(--line);padding:12px 14px;
+    font-size:14px;background:var(--cream);color:var(--ink);font-family:inherit;
+    resize:vertical;box-sizing:border-box;
+  }
+  .checkout-block .auth-field textarea:focus{border-color:var(--wine);outline:none;}
+
+  .order-note-callout{
+    background:#FCEFD2;border:1px solid #F0D9A0;border-radius:10px;padding:12px 14px;margin:14px 0;
+  }
+  .order-note-callout strong{display:block;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#8A5F00;margin-bottom:4px;}
+  .order-note-callout p{margin:0;font-size:13.5px;line-height:1.6;color:var(--ink);}
+}

@@ -24,6 +24,12 @@
             <p>{{ $order->shipping_name }}<br>{{ $order->shipping_phone }}<br>{{ $order->shipping_address }}, {{ $order->shipping_city }}, {{ $order->shipping_state }}</p>
             <p>Payment: <strong>{{ match($order->payment_method) { 'pod' => 'Pay on Delivery', 'pay_now' => 'Paystack', default => ucfirst(str_replace('_', ' ', $order->payment_method)) } }}</strong> &middot; <strong>{{ ucfirst($order->payment_status ?? 'unpaid') }}</strong></p>
 
+            @if($order->customer_note)
+                <div class="order-note-callout">
+                    <strong>Customer note</strong>
+                    <p>{!! nl2br(e($order->customer_note)) !!}</p>
+                </div>
+            @endif
             <form action="{{ route('admin.orders.updateStatus', $order) }}" method="POST" class="admin-status-form">
                 @csrf
                 @method('PATCH')

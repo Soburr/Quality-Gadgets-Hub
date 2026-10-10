@@ -1,1 +1,1 @@
-//
+import './cart-ajax.js';
