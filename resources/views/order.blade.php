@@ -104,9 +104,16 @@
                     @endif
                 </p>
 
-                @if($order->payment_method === 'pay_now' && $order->payment_status !== 'paid')
-                <a href="{{ route('paystack.retry', $order) }}" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px;">Complete Payment</a>
-                @endif
+                    @if($order->payment_method === 'bank_transfer' && $order->payment_status !== 'paid' && $order->status === 'pending')
+                        @if($order->payment_notified_at)
+                            <div class="order-note-callout" style="margin-top:12px;">
+                                <strong>Payment under verification</strong>
+                                <p>We've received your payment notification. Our team is verifying it and will update this order shortly.</p>
+                            </div>
+                        @else
+                            <a href="{{ route('checkout.bankTransfer', $order) }}" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px;">Complete Payment</a>
+                        @endif
+                    @endif
 
                 <a href="{{ route('home') }}#grid" class="cart-continue-link" style="margin-top:16px;">&larr; Continue shopping</a>
             </aside>

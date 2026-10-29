@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\DeliveryFeeController as AdminDeliveryFeeController;
+use App\Http\Controllers\Admin\BannerController as AdminBannerController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -78,6 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout.show');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/checkout/bank-transfer/{order}', [App\Http\Controllers\CheckoutController::class, 'bankTransfer'])->name('checkout.bankTransfer');
+    Route::post('/checkout/payment-made/{order}', [App\Http\Controllers\CheckoutController::class, 'paymentMade'])->name('checkout.paymentMade');
 
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('order.show');
 
@@ -116,4 +118,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::get('/users/export', [AdminUserController::class, 'export'])->name('users.export');
     Route::patch('/users/{user}/toggle-admin', [AdminUserController::class, 'toggleAdmin'])->name('users.toggleAdmin');
+
+    Route::resource('banners', AdminBannerController::class)->except('show');
+    Route::get('/mail-preview/payment-submitted', [MailPreviewController::class, 'paymentSubmitted'])->name('mail-preview.paymentSubmitted');
 });

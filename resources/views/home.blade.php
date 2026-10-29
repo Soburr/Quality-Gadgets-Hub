@@ -140,6 +140,54 @@
         </div>
     </section>
 
+        {{-- ============ PROMO BANNERS (admin-managed) ============ --}}
+    @if($banners->isNotEmpty())
+        <section class="promo-section">
+            <div class="wrap">
+                <div class="promo" id="promo">
+                    <div class="promo-track" id="promoTrack">
+                        @foreach($banners as $banner)
+                            @php
+                                $imageUrl = str($banner->image)->startsWith(['http://','https://']) ? $banner->image : asset($banner->image);
+                                $hasText = $banner->title || $banner->subtitle || $banner->button_text;
+                            @endphp
+
+                            @if($banner->link_url)
+                                <a href="{{ $banner->link_url }}" class="promo-slide">
+                            @else
+                                <div class="promo-slide">
+                            @endif
+
+                                <img src="{{ $imageUrl }}" alt="{{ $banner->title ?: 'Promotion' }}" class="promo-image" loading="{{ $loop->first ? 'eager' : 'lazy' }}">
+
+                                @if($hasText)
+                                    <div class="promo-overlay">
+                                        @if($banner->title)<h2>{{ $banner->title }}</h2>@endif
+                                        @if($banner->subtitle)<p>{{ $banner->subtitle }}</p>@endif
+                                        @if($banner->button_text)<span class="promo-button">{{ $banner->button_text }} &rarr;</span>@endif
+                                    </div>
+                                @endif
+
+                            @if($banner->link_url)
+                                </a>
+                            @else
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+
+                    @if($banners->count() > 1)
+                        <div class="promo-dots" id="promoDots">
+                            @foreach($banners as $i => $banner)
+                                <button type="button" class="promo-dot @if($i === 0) is-active @endif" data-index="{{ $i }}" aria-label="Show banner {{ $i + 1 }}"></button>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </section>
+    @endif
+
     {{-- ======== FLASH SALE ======== --}}
     <section class="section" id="deals">
         <div class="wrap">
@@ -230,4 +278,42 @@
             </div>
         </div>
     </section>
+
+    @push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var track = document.getElementById('promoTrack');
+    var dots = document.querySelectorAll('#promoDots .promo-dot');
+    if (!track || dots.length < 2) return;
+
+    var current = 0;
+    var timer;
+
+    function goTo(i) {
+        current = (i + dots.length) % dots.length;
+        track.scrollTo({ left: track.clientWidth * current, behavior: 'smooth' });
+    }
+
+    function start() { timer = setInterval(function () { goTo(current + 1); }, 5000); }
+    function stop() { clearInterval(timer); }
+
+    dots.forEach(function (dot) {
+        dot.addEventListener('click', function () { stop(); goTo(parseInt(dot.dataset.index, 10)); start(); });
+    });
+
+    // Keep the dots in sync when someone swipes manually.
+    track.addEventListener('scroll', function () {
+        var i = Math.round(track.scrollLeft / track.clientWidth);
+        current = i;
+        dots.forEach(function (d, idx) { d.classList.toggle('is-active', idx === i); });
+    });
+
+    track.addEventListener('mouseenter', stop);
+    track.addEventListener('mouseleave', start);
+    track.addEventListener('touchstart', stop, { passive: true });
+
+    start();
+});
+</script>
+@endpush
 @endsection

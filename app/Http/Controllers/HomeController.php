@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Banner;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,7 @@ class HomeController extends Controller
     {
         $categories = Category::topLevel()->orderBy('sort_order')->get();
         $brands = Brand::orderBy('sort_order')->get();
+        $banners = Banner::active()->orderBy('sort_order')->get();
 
         $products = Product::inRandomOrder(date('Ymd'))->paginate(24);
         $flashProducts = Product::onFlashSale()->latest()->take(10)->get();
@@ -25,7 +27,7 @@ class HomeController extends Controller
 
         return view('home', compact(
             'categories', 'products', 'flashProducts', 'newArrivals',
-            'bestSellers', 'flashEndsAt', 'brands', 'heroProduct', 'featuredPicks'
+            'bestSellers', 'flashEndsAt', 'brands', 'banners', 'heroProduct', 'featuredPicks'
         ));
     }
 }

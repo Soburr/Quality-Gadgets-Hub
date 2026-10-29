@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
+use App\Mail\PaymentSubmittedMail;
 
 class CheckoutController extends Controller
 {
@@ -153,10 +154,7 @@ class CheckoutController extends Controller
         }
 
         if ($validated['payment_method'] === 'bank_transfer') {
-            return redirect()->route(
-                'checkout.bankTransfer',
-                $order
-            );
+            return redirect()->route('checkout.bankTransfer', $order);
         }
 
         Mail::to($order->user)->queue(
@@ -171,26 +169,56 @@ class CheckoutController extends Controller
     public function bankTransfer(Order $order)
     {
         abort_unless($order->user_id === Auth::id(), 403);
-        abort_unless(
-            $order->payment_method === 'bank_transfer',
-            404
-        );
-
-        $whatsappNumber = Setting::get('whatsapp_number', '');
-
-        $message = "Hi, I just paid ₦"
-            . number_format($order->total)
-            . " for order {$order->order_number}.";
-
-        $whatsappUrl = "https://wa.me/{$whatsappNumber}?text="
-            . urlencode($message);
+        abort_unless($order->payment_method === 'bank_transfer', 404);
 
         return view('checkout-bank-transfer', [
             'order' => $order,
             'accountName' => Setting::get('bank_account_name'),
             'accountNumber' => Setting::get('bank_account_number'),
             'bankName' => Setting::get('bank_name'),
-            'whatsappUrl' => $whatsappUrl,
+            'whatsappUrl' => $this->whatsappUrlFor($order),
         ]);
+    }
+
+    public function paymentMade(Order $order)
+    {
+        abort_unless($order->user_id === Auth::id(), 403);
+        abort_unless($order->payment_method === 'bank_transfer', 404);
+
+        if ($order->payment_status === 'paid' || ! Setting::get('whatsapp_number')) {
+            return redirect()->route('order.show', $order);
+        }
+
+        // Atomic first-click guard: only the request that actually flips
+        // payment_notified_at from NULL sends the email, so a double-tap
+        // or a page revisit can never send a second one.
+        $firstClick = Order::whereKey($order->id)
+            ->whereNull('payment_notified_at')
+            ->update(['payment_notified_at' => now()]) === 1;
+
+        if ($firstClick) {
+            $this->sendPaymentSubmittedEmail($order);
+        }
+
+        return redirect()->away($this->whatsappUrlFor($order));
+    }
+
+    private function whatsappUrlFor(Order $order): string
+    {
+        $number = Setting::get('whatsapp_number', '');
+        $message = 'Hi, I just paid ₦'.number_format($order->total).' for order '.$order->order_number.'.';
+
+        return "https://wa.me/{$number}?text=".urlencode($message);
+    }
+
+    private function sendPaymentSubmittedEmail(Order $order): void
+    {
+        app()->terminating(function () use ($order) {
+            try {
+                Mail::to($order->user)->send(new PaymentSubmittedMail($order));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        });
     }
 }

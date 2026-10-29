@@ -34,12 +34,14 @@
                     </div>
                 </div>
 
-                <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener" class="btn btn-primary bank-transfer-whatsapp">
-                    I have made the payment
-                </a>
+                <form action="{{ route('checkout.paymentMade', $order) }}" method="POST" target="_blank" id="paymentMadeForm">
+                    @csrf
+                    <button type="submit" class="btn btn-primary bank-transfer-whatsapp">
+                        I have made the payment
+                    </button>
+                </form>
 
-                <p class="bank-transfer-note">Tapping the button opens WhatsApp with a pre-filled message — send it and we'll confirm your order shortly.</p>
-            </div>
+                <p class="bank-transfer-note">Tapping the button emails you a confirmation and opens WhatsApp with a pre-filled message. Send it and we'll verify your payment shortly.</p>            </div>
         </div>
     </section>
 
@@ -57,6 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
             copyBtn.textContent = 'Copied';
             setTimeout(() => { copyBtn.innerHTML = original; }, 1500);
         });
+    });
+
+    document.getElementById('paymentMadeForm')?.addEventListener('submit', () => {
+        setTimeout(() => { window.location.href = '{{ route('order.show', $order) }}'; }, 1200);
     });
 });
 </script>

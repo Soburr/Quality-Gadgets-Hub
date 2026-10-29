@@ -1,0 +1,38 @@
+@layer components {
+  .promo-section{padding:8px 0 0;}
+  .promo{position:relative;border-radius:20px;overflow:hidden;background:var(--ink);}
+
+  .promo-track{
+    display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+  }
+  .promo-track::-webkit-scrollbar{display:none;}
+
+  .promo-slide{
+    position:relative;flex:0 0 100%;scroll-snap-align:start;display:block;
+    aspect-ratio:8 / 3;color:#fff;
+  }
+  .promo-image{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* Only appears when headline/subtext/button exist, so image-only banners stay clean. */
+  .promo-overlay{
+    position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+    gap:10px;padding:0 6%;max-width:640px;
+    background:linear-gradient(90deg,rgba(32,20,26,.78) 0%,rgba(32,20,26,.45) 60%,rgba(32,20,26,0) 100%);
+  }
+  .promo-overlay h2{font-size:clamp(22px,3.6vw,40px);line-height:1.08;margin:0;color:#fff;}
+  .promo-overlay p{margin:0;font-size:clamp(13px,1.5vw,17px);color:#F6DCE3;font-weight:600;}
+  .promo-button{
+    align-self:flex-start;margin-top:6px;background:var(--gold);color:#20141A;
+    font-weight:800;font-size:13.5px;padding:11px 20px;border-radius:999px;
+  }
+
+  .promo-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;}
+  .promo-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);padding:0;}
+  .promo-dot.is-active{background:#fff;width:22px;border-radius:999px;}
+
+  @media (max-width:640px){
+    .promo{border-radius:14px;}
+    .promo-slide{aspect-ratio:4 / 3;}
+    .promo-overlay{padding:0 18px;max-width:100%;background:linear-gradient(90deg,rgba(32,20,26,.82) 0%,rgba(32,20,26,.4) 100%);}
+  }
+}

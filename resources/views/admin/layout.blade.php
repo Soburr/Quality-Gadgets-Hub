@@ -30,11 +30,13 @@
                 <a href="{{ route('admin.products.index') }}" class="@if(request()->routeIs('admin.products.*')) is-active @endif">Products</a>
                 <a href="{{ route('admin.categories.index') }}" class="@if(request()->routeIs('admin.categories.*')) is-active @endif">Categories</a>
                 <a href="{{ route('admin.brands.index') }}" class="@if(request()->routeIs('admin.brands.*')) is-active @endif">Brands</a>
+                <a href="{{ route('admin.banners.index') }}" class="@if(request()->routeIs('admin.banners.*')) is-active @endif">Banners</a>
                 <a href="{{ route('admin.orders.index') }}" class="@if(request()->routeIs('admin.orders.*')) is-active @endif">Orders</a>
                 <a href="{{ route('admin.reviews.index') }}" class="@if(request()->routeIs('admin.reviews.*')) is-active @endif">Reviews</a>
                 <a href="{{ route('admin.mail-preview.welcome') }}" target="_blank" class="admin-nav-external">Preview: Welcome Email</a>
                 <a href="{{ route('admin.mail-preview.orderConfirmation') }}" target="_blank" class="admin-nav-external">Preview: Order Confirmation</a>
                 <a href="{{ route('admin.mail-preview.orderStatusUpdated') }}" target="_blank" class="admin-nav-external">Preview: Status Update</a>
+                <a href="{{ route('admin.mail-preview.paymentSubmitted') }}" target="_blank" class="admin-nav-external">Preview: Payment Submitted</a>
                 <a href="{{ route('admin.settings.edit') }}" class="@if(request()->routeIs('admin.settings.*')) is-active @endif">Settings</a>
                 <a href="{{ route('admin.delivery-fees.edit') }}" class="@if(request()->routeIs('admin.delivery-fees.*')) is-active @endif">Delivery Fees</a>
                 <a href="{{ route('admin.pickup-locations.index') }}" class="@if(request()->routeIs('admin.pickup-locations.*')) is-active @endif">Delivery Areas (Lagos)</a>
