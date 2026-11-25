@@ -41,6 +41,8 @@
                 <a href="{{ route('admin.delivery-fees.edit') }}" class="@if(request()->routeIs('admin.delivery-fees.*')) is-active @endif">Delivery Fees</a>
                 <a href="{{ route('admin.pickup-locations.index') }}" class="@if(request()->routeIs('admin.pickup-locations.*')) is-active @endif">Delivery Areas (Lagos)</a>
                 <a href="{{ route('admin.users.index') }}" class="@if(request()->routeIs('admin.users.*')) is-active @endif">Users</a>
+                <a href="{{ route('admin.campaigns.index') }}" class="@if(request()->routeIs('admin.campaigns.*')) is-active @endif">Email Campaigns</a>
+                <a href="{{ route('admin.subscribers.index') }}" class="@if(request()->routeIs('admin.subscribers.*')) is-active @endif">Subscribers</a>
             </nav>
 
             <div class="admin-sidebar-footer">

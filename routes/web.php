@@ -30,6 +30,10 @@ use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\DeliveryFeeController as AdminDeliveryFeeController;
 use App\Http\Controllers\Admin\BannerController as AdminBannerController;
+use App\Http\Controllers\Admin\CampaignController as AdminCampaignController;
+use App\Http\Controllers\Admin\SubscriberController as AdminSubscriberController;
+use App\Http\Controllers\UnsubscribeController;
+
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -65,6 +69,8 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/paystack/webhook', [PaystackWebhookController::class, 'handle'])->name('paystack.webhook');
+Route::get('/unsubscribe/{subscriber}', [UnsubscribeController::class, 'show'])->name('unsubscribe.show')->middleware('signed');
+Route::post('/unsubscribe/{subscriber}', [UnsubscribeController::class, 'confirm'])->name('unsubscribe.confirm')->middleware('signed');
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
@@ -121,4 +127,18 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('banners', AdminBannerController::class)->except('show');
     Route::get('/mail-preview/payment-submitted', [MailPreviewController::class, 'paymentSubmitted'])->name('mail-preview.paymentSubmitted');
+
+    Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');
+    Route::post('/subscribers/import', [AdminSubscriberController::class, 'import'])->name('subscribers.import');
+    Route::delete('/subscribers/{subscriber}', [AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');
+
+    Route::get('/campaigns', [AdminCampaignController::class, 'index'])->name('campaigns.index');
+    Route::get('/campaigns/create', [AdminCampaignController::class, 'create'])->name('campaigns.create');
+    Route::post('/campaigns', [AdminCampaignController::class, 'store'])->name('campaigns.store');
+    Route::get('/campaigns/{campaign}', [AdminCampaignController::class, 'show'])->name('campaigns.show');
+    Route::post('/campaigns/{campaign}/test', [AdminCampaignController::class, 'test'])->name('campaigns.test');
+    Route::post('/campaigns/{campaign}/start', [AdminCampaignController::class, 'start'])->name('campaigns.start');
+    Route::post('/campaigns/{campaign}/batch', [AdminCampaignController::class, 'sendBatch'])->name('campaigns.batch');
+    Route::post('/campaigns/{campaign}/retry', [AdminCampaignController::class, 'retryFailed'])->name('campaigns.retry');
+    Route::delete('/campaigns/{campaign}', [AdminCampaignController::class, 'destroy'])->name('campaigns.destroy');
 });
